@@ -1,0 +1,16 @@
+# lefthook.yml
+pre-commit:
+  parallel: true
+  commands:
+    eslint:
+      run: yarn eslint . --ext .ts
+    test:
+      run: yarn test
+    type-check:
+      glob: '*.{ts}'
+      run: yarn --cwd ./ type-check
+
+commit-msg:
+  commands:
+    lint-commit-msg:
+      run: yarn commitlint --edit "$1"
