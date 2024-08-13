@@ -14,7 +14,7 @@ Appli-Gestion-Backend is a backend API developed using NestJS, GraphQL, PostgreS
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/appli-gestion-backend.git
+   git clone git@gitlab.com:iarivo/appli-gestion-backend.git
    cd appli-gestion-backend
    ```
 
