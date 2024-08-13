@@ -18,11 +18,11 @@ Appli-Gestion-Backend is a backend API developed using NestJS, GraphQL, PostgreS
    cd appli-gestion-backend
    ```
 
-## Installation
+2. **install dependencies :**
 
-```bash
-$ yarn install
-```
+   ```bash
+   $ yarn install
+   ```
 
 ## Configure the database
 
