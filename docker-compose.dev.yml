@@ -1,0 +1,32 @@
+services:
+  db-dev:
+    image: postgres:16.4
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    restart: always
+    networks:
+      - appli_gestion_network
+
+  backend-dev:
+    container_name: backend-dev
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./src:/app/src
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - db-dev
+    networks:
+      - appli_gestion_network
+
+networks:
+  appli_gestion_network:
