@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 
 import { PrismaModule } from './prisma/prisma.module';
+import { MusicCategoryModule } from './music-category/music-category.module';
 import { SettingModule } from './setting/setting.module';
 
 @Module({
@@ -12,6 +13,7 @@ import { SettingModule } from './setting/setting.module';
       autoSchemaFile: true,
     }),
     PrismaModule,
+    MusicCategoryModule,
     SettingModule,
   ],
   controllers: [],

@@ -7,5 +7,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(port);
+  console.log(`server started on ${await app.getUrl()}`);
 }
 bootstrap();
