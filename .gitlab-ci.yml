@@ -1,0 +1,42 @@
+image: node:20.16.0-alpine
+
+cache:
+  paths:
+    - node_modules
+stages:
+  - build
+  - test
+  - deploy
+
+AppBuild:
+  stage: build
+  script:
+    - yarn install
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    
+  
+AppTestCheck:
+  stage: test
+  script:
+     - CI=true yarn test
+  artifacts:
+    paths: 
+     - AppCITest-result
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+#AppDeploy:
+#  stage: deploy
+#  script:
+#    - echo "will be done soon"
+#    - todo connexion ssh serveur 
+#    - npx prisma migrate reset -f 
+   
+    
+
+
+
+
