@@ -1,0 +1,35 @@
+image: node:20.16.0-alpine
+
+cache:
+  paths:
+    - node_modules
+stages:
+  - build
+  - test
+  - deploy
+
+AppBuild:
+  stage: build
+  script:
+    - yarn install
+  
+AppTestCheck:
+  stage: test
+  script:
+     - CI=true yarn test
+  artifacts:
+    paths: 
+     - AppCITest-result
+
+#AppDeploy:
+#  stage: deploy
+#  script:
+#    - echo "will be done soon"
+#    - todo connexion ssh serveur 
+#    - npx prisma migrate reset -f 
+   
+    
+
+
+
+
