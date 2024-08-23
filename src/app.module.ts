@@ -10,6 +10,7 @@ import { RoleModule } from './role/role.module';
 import { SeedModule } from './seed/seed.module';
 import { SeedService } from './seed/seed.service';
 import { SettingModule } from './setting/setting.module';
+import { FeeTypeModule } from './fee-type/fee-type.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { SettingModule } from './setting/setting.module';
     PrismaModule,
     MusicCategoryModule,
     SettingModule,
+    FeeTypeModule,
     RoleModule,
     ActionModule,
     SeedModule,

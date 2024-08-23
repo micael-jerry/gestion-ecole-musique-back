@@ -1,23 +1,32 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "Role" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
 
-  - You are about to drop the `RoleAction` table. If the table is not empty, all the data it contains will be lost.
+    CONSTRAINT "Role_pkey" PRIMARY KEY ("id")
+);
 
-*/
--- DropForeignKey
-ALTER TABLE "RoleAction" DROP CONSTRAINT "RoleAction_actionId_fkey";
+-- CreateTable
+CREATE TABLE "Action" (
+    "id" TEXT NOT NULL,
+    "tag" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
 
--- DropForeignKey
-ALTER TABLE "RoleAction" DROP CONSTRAINT "RoleAction_roleId_fkey";
-
--- DropTable
-DROP TABLE "RoleAction";
+    CONSTRAINT "Action_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "_ActionToRole" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Role_name_key" ON "Role"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Action_tag_key" ON "Action"("tag");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_ActionToRole_AB_unique" ON "_ActionToRole"("A", "B");
