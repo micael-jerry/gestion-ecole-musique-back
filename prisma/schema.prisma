@@ -25,6 +25,12 @@ model Setting {
   value Float
 }
 
+model FeeType {
+  id         String  @id @default(uuid())
+  name       String  @unique @db.VarChar()
+  description String?
+}
+
 model Role {
   id       String @id @default(uuid())
   name     String @unique

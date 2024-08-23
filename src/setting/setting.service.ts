@@ -44,25 +44,19 @@ export class SettingService {
     updateSettingInput: UpdateSettingInput,
   ): Promise<Setting> {
     const { id, name, value } = updateSettingInput;
-    const found = await this.getSettingById(id);
-    if (found) {
-      return this.prisma.setting.update({
-        where: {
-          id,
-        },
-        data: { name, value },
-      });
-    }
+    return this.prisma.setting.update({
+      where: {
+        id,
+      },
+      data: { name, value },
+    });
   }
 
   async deleteSetting(id: string): Promise<Setting> {
-    const found = await this.getSettingById(id);
-    if (found) {
-      return this.prisma.setting.delete({
-        where: {
-          id,
-        },
-      });
-    }
+    return this.prisma.setting.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

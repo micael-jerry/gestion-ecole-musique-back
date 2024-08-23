@@ -21,9 +21,15 @@ export class MusicCategoryService {
   }
 
   async findById(id: string): Promise<MusicCategory> {
-    return await this.prismaService.musicCategory.findUnique({
+    const musicCategory = await this.prismaService.musicCategory.findUnique({
       where: { id: id },
     });
+    if (!musicCategory) {
+      throw new NotFoundException(
+        `Music category with id ${id} does not exist`,
+      );
+    }
+    return musicCategory;
   }
 
   async update(
@@ -36,14 +42,8 @@ export class MusicCategoryService {
   }
 
   async remove(id: string): Promise<MusicCategory> {
-    try {
-      return await this.prismaService.musicCategory.delete({
-        where: { id: id },
-      });
-    } catch (err) {
-      throw new NotFoundException(
-        `Music category with id ${id} does not exist`,
-      );
-    }
+    return await this.prismaService.musicCategory.delete({
+      where: { id: id },
+    });
   }
 }

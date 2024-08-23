@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, PartialType } from '@nestjs/graphql';
 import { IsNumber, MinLength } from 'class-validator';
 
 @InputType()
@@ -13,15 +13,7 @@ export class CreateSettingInput {
 }
 
 @InputType()
-export class UpdateSettingInput {
+export class UpdateSettingInput extends PartialType(CreateSettingInput) {
   @Field()
   id: string;
-
-  @MinLength(3)
-  @Field({ nullable: true })
-  name?: string;
-
-  @IsNumber()
-  @Field({ nullable: true })
-  value?: number;
 }
