@@ -24,3 +24,17 @@ model Setting {
   name  String @unique
   value Float
 }
+
+model Role {
+  id       String @id @default(uuid())
+  name     String @unique
+  actions  Action[]
+}
+
+model Action {
+  id      String @id @default(uuid())
+  tag     String @unique
+  name    String 
+  description String?
+  roles   Role[]
+}
