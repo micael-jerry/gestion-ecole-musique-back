@@ -2,8 +2,13 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 
-import { PrismaModule } from './prisma/prisma.module';
+import { ActionModule } from './action/action.module';
 import { MusicCategoryModule } from './music-category/music-category.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { PrismaService } from './prisma/prisma.service';
+import { RoleModule } from './role/role.module';
+import { SeedModule } from './seed/seed.module';
+import { SeedService } from './seed/seed.service';
 import { SettingModule } from './setting/setting.module';
 
 @Module({
@@ -15,8 +20,11 @@ import { SettingModule } from './setting/setting.module';
     PrismaModule,
     MusicCategoryModule,
     SettingModule,
+    RoleModule,
+    ActionModule,
+    SeedModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [SeedService, PrismaService],
 })
 export class AppModule {}

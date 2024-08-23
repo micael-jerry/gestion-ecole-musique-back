@@ -39,6 +39,12 @@ npx prisma migrate dev --name init
 npx prisma generate
 ```
 
+## Initialize DataBase
+
+```bash
+yarn seed
+```
+
 ## Running the app
 
 ```bash
