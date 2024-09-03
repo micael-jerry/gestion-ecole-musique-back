@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { ActionType } from '../../action/entities/action.type';
+import { ActionType } from '../../action/entities/action.entity';
+import { User } from '../../user/entities/user.entity';
 
 @ObjectType('Role')
 export class RoleType {
@@ -11,4 +12,7 @@ export class RoleType {
 
   @Field(() => [ActionType], { nullable: true })
   actions?: ActionType[];
+
+  @Field(() => [User], { nullable: true })
+  users?: User[];
 }

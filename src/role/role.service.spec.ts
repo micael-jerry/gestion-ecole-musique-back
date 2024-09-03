@@ -62,7 +62,7 @@ describe('RolesService', () => {
       const Roles = await service.getAllRoles();
       expect(Roles).toEqual(result);
       expect(prisma.role.findMany).toHaveBeenCalledWith({
-        include: { actions: true },
+        include: { actions: true, users: true },
       });
     });
   });
@@ -81,7 +81,7 @@ describe('RolesService', () => {
       expect(role).toEqual(result);
       expect(prisma.role.create).toHaveBeenCalledWith({
         data: createRoleInput,
-        include: { actions: true },
+        include: { actions: true, users: true },
       });
     });
   });
@@ -99,7 +99,7 @@ describe('RolesService', () => {
       expect(role).toEqual(result);
       expect(prisma.role.findUnique).toHaveBeenCalledWith({
         where: { id },
-        include: { actions: true },
+        include: { actions: true, users: true },
       });
     });
 
@@ -117,7 +117,7 @@ describe('RolesService', () => {
       );
       expect(prisma.role.findUnique).toHaveBeenCalledWith({
         where: { id },
-        include: { actions: true },
+        include: { actions: true, users: true },
       });
     });
   });
@@ -146,7 +146,7 @@ describe('RolesService', () => {
             })),
           },
         },
-        include: { actions: true },
+        include: { actions: true, users: true },
       });
     });
 
@@ -175,7 +175,7 @@ describe('RolesService', () => {
             })),
           },
         },
-        include: { actions: true },
+        include: { actions: true, users: true },
       });
     });
   });
@@ -195,6 +195,7 @@ describe('RolesService', () => {
       expect(deleteRole).toEqual(result);
       expect(prisma.role.delete).toHaveBeenCalledWith({
         where: { id },
+        include: { actions: true, users: true },
       });
     });
 
@@ -210,7 +211,10 @@ describe('RolesService', () => {
       await expect(service.deleteRole(id)).rejects.toThrow(
         `role with ID "${id}" not found`,
       );
-      expect(prisma.role.delete).toHaveBeenCalledWith({ where: { id } });
+      expect(prisma.role.delete).toHaveBeenCalledWith({
+        where: { id },
+        include: { actions: true, users: true },
+      });
     });
   });
 });

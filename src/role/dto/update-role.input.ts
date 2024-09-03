@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { ActionTypeInput } from 'src/action/dto/actionType.input';
+import { ActionTypeInput } from '../../action/dto/action-type.input';
 
 @InputType()
 export class UpdateRoleInput {

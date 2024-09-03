@@ -2,21 +2,19 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import { exec } from 'child_process';
+import { execSync } from 'child_process';
 import {
   MusicCategoryOne,
   MusicCategoryTwo,
 } from './conf/test-utils/music-category.test-utils';
-import { seedMusicCategory } from './conf/seed/music-category.seed';
 
 describe('MusicCategory (e2e)', () => {
   let app: INestApplication;
 
-  beforeAll(async () => {
-    await seedMusicCategory();
-  });
-
   beforeEach(async () => {
+    execSync('yarn prisma migrate reset -f');
+    execSync('yarn run seed:test');
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -52,6 +50,5 @@ describe('MusicCategory (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
-    exec('npx prisma migrate reset -f');
   });
 });

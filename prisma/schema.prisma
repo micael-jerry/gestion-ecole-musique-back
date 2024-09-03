@@ -17,6 +17,7 @@ model MusicCategory {
   id          String  @id @default(uuid())
   name        String  @unique @db.VarChar()
   description String? @db.Text
+  users       User[]
 }
 
 model Setting {
@@ -26,21 +27,37 @@ model Setting {
 }
 
 model FeeType {
-  id         String  @id @default(uuid())
-  name       String  @unique @db.VarChar()
+  id          String  @id @default(uuid())
+  name        String  @unique @db.VarChar()
   description String?
 }
 
 model Role {
-  id       String @id @default(uuid())
-  name     String @unique
-  actions  Action[]
+  id      String   @id @default(uuid())
+  name    String   @unique
+  actions Action[]
+  users   User[]
 }
 
 model Action {
-  id      String @id @default(uuid())
-  tag     String @unique
-  name    String 
+  id          String  @id @default(uuid())
+  tag         String  @unique
+  name        String
   description String?
-  roles   Role[]
+  roles       Role[]
+}
+
+model User {
+  id              String          @id @default(uuid())
+  roleId          String
+  firstname       String          @db.VarChar(100)
+  lastname        String          @db.VarChar(100)
+  email           String          @unique @db.VarChar(50)
+  password        String
+  address         String          @db.VarChar()
+  phone           String?         @db.VarChar(20)
+  picture         String?         @db.VarChar()
+  description     String?
+  role            Role            @relation(fields: [roleId], references: [id])
+  musicCategories MusicCategory[]
 }
