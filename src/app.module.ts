@@ -7,10 +7,12 @@ import { MusicCategoryModule } from './music-category/music-category.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 import { RoleModule } from './role/role.module';
-import { SeedModule } from './seed/seed.module';
 import { SeedService } from './seed/seed.service';
 import { SettingModule } from './setting/setting.module';
 import { FeeTypeModule } from './fee-type/fee-type.module';
+import { UserModule } from './user/user.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -18,13 +20,21 @@ import { FeeTypeModule } from './fee-type/fee-type.module';
       driver: ApolloDriver,
       autoSchemaFile: true,
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+      serveStaticOptions: {
+        extensions: ['jpg', 'jpeg', 'png', 'gif'],
+        index: false,
+      },
+    }),
     PrismaModule,
     MusicCategoryModule,
     SettingModule,
     FeeTypeModule,
     RoleModule,
     ActionModule,
-    SeedModule,
+    UserModule,
   ],
   controllers: [],
   providers: [SeedService, PrismaService],

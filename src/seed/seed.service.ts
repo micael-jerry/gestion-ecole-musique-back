@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { actionToSeed } from '../../utils/seedAction';
-import { roleToSeed } from '../../utils/seedRole';
+import { actionToSeed } from '../../prisma/seed/data/action-seed.data';
+import { roleToSeed } from '../../prisma/seed/data/role-seed.data';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
