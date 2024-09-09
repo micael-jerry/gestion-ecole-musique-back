@@ -3,6 +3,7 @@ import { Action } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SeedAction } from './data/action-seed.data';
 import { SeedRole } from './data/role-seed.data';
+import { DefaultUser } from './data/user-seed.data';
 
 @Injectable()
 export class SeedService {
@@ -56,5 +57,14 @@ export class SeedService {
     }
 
     console.log('Role seed successfully');
+  }
+
+  async seederDefaultUser() {
+    const role = await this.prisma.role.findUnique({
+      where: { name: 'ADMIN' },
+    });
+    await this.prisma.user
+      .create({ data: DefaultUser(role.id) })
+      .then(() => console.log('Default user created'));
   }
 }

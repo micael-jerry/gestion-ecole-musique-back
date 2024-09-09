@@ -7,6 +7,7 @@ async function main() {
 
   await seedService.seederAction();
   await seedService.seederRole();
+  await seedService.seederDefaultUser();
   await prismaService.$disconnect();
 }
 
