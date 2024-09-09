@@ -1,5 +1,7 @@
+import { Prisma } from '@prisma/client';
+
 //All tag will be uppercase_
-export const actionToSeed = [
+export const SeedAction: Prisma.ActionCreateInput[] = [
   // USER AUTHORIZATION
 
   {
@@ -67,5 +69,51 @@ export const actionToSeed = [
     tag: 'UPDATE_MUSIC',
     name: 'UPDATE MUSIC',
     description: 'Has privileges to update music ',
+  },
+
+  // FEE TYPE AUTHORIZATION
+
+  {
+    tag: 'GET_FEE_TYPE',
+    name: 'GET FEE TYPE',
+    description: 'Has privileges to get fee type ',
+  },
+  {
+    tag: 'CREATE_FEE_TYPE',
+    name: 'CREATE FEE TYPE',
+    description: 'Has privileges to create fee type ',
+  },
+  {
+    tag: 'DELETE_FEE_TYPE',
+    name: 'DELETE FEE TYPE',
+    description: 'Has privileges to delete fee type ',
+  },
+  {
+    tag: 'UPDATE_FEE_TYPE',
+    name: 'UPDATE FEE TYPE',
+    description: 'Has privileges to update fee type ',
+  },
+
+  // ROLE AUTHORIZATION
+
+  {
+    tag: 'GET_ROLE',
+    name: 'GET ROLE',
+    description: 'Has privileges to get fee type ',
+  },
+  {
+    tag: 'CREATE_ROLE',
+    name: 'CREATE ROLE',
+    description: 'Has privileges to create fee type ',
+  },
+  {
+    tag: 'DELETE_ROLE',
+    name: 'DELETE ROLE',
+    description: 'Has privileges to delete fee type ',
+  },
+  {
+    tag: 'UPDATE_ROLE',
+    name: 'UPDATE ROLE',
+    description: 'Has privileges to update fee type ',
   },
 ];

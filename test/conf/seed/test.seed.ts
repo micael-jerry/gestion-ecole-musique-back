@@ -1,32 +1,78 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role, User } from '@prisma/client';
 import { FeeTypeOne, FeeTypeTwo } from '../test-utils/fee-type.test-utils';
 import {
   MusicCategoryOne,
   MusicCategoryTwo,
 } from '../test-utils/music-category.test-utils';
 import { SettingOne } from '../test-utils/setting.test-utils';
-import { RoleOne, RoleTwo } from '../test-utils/role.test-utils';
+import { RoleAdmin, RoleManager } from '../test-utils/role.test-utils';
 import { UserOne, UserTwo } from '../test-utils/user.test-utils';
+import { UserWithIncluded } from 'src/user/types/user-with-included.type';
+import { AllAction } from '../test-utils/action.test-utils';
+import { RoleWithIncluded } from 'src/role/types/role-with-included.type';
 
 const prisma = new PrismaClient();
 
-export const seedTest = async () => {
-  await prisma.role.createMany({ data: [RoleOne, RoleTwo] });
-  await prisma.feeType.createMany({ data: [FeeTypeOne, FeeTypeTwo] });
-  await prisma.musicCategory.createMany({
-    data: [MusicCategoryOne, MusicCategoryTwo],
+const seederTestRole = async (
+  p: PrismaClient,
+  roleWithIncluded: RoleWithIncluded,
+) => {
+  const role: Role = {
+    id: roleWithIncluded.id,
+    name: roleWithIncluded.name,
+  };
+  await p.role.create({
+    data: { ...role, actions: { connect: [...roleWithIncluded.actions] } },
   });
-  await prisma.setting.create({ data: SettingOne });
-  await prisma.user.create({
-    data: { ...UserOne, musicCategories: { connect: [MusicCategoryOne] } },
+};
+
+const seederTestUser = async (
+  p: PrismaClient,
+  userWithIncluded: UserWithIncluded,
+) => {
+  const user: User = {
+    id: userWithIncluded.id,
+    roleId: userWithIncluded.roleId,
+    firstname: userWithIncluded.id,
+    lastname: userWithIncluded.lastname,
+    email: userWithIncluded.email,
+    password: userWithIncluded.password,
+    address: userWithIncluded.address,
+    phone: userWithIncluded.phone,
+    picture: userWithIncluded.picture,
+    description: userWithIncluded.description,
+  };
+  await p.user.create({
+    data: {
+      ...user,
+      musicCategories: { connect: [...userWithIncluded.musicCategories] },
+    },
   });
-  await prisma.user.create({
-    data: { ...UserTwo, musicCategories: { connect: [MusicCategoryOne] } },
+};
+
+export const seederTest = async () => {
+  await prisma.$transaction(async () => {
+    // seed action
+    await prisma.action.createMany({ data: AllAction });
+    // seed role
+    await seederTestRole(prisma, RoleAdmin);
+    await seederTestRole(prisma, RoleManager);
+    // seed feeType
+    await prisma.feeType.createMany({ data: [FeeTypeOne, FeeTypeTwo] });
+    // seed musicCategory
+    await prisma.musicCategory.createMany({
+      data: [MusicCategoryOne, MusicCategoryTwo],
+    });
+    // seed setting
+    await prisma.setting.create({ data: SettingOne });
+    // seed user
+    await seederTestUser(prisma, UserOne);
+    await seederTestUser(prisma, UserTwo);
   });
   await prisma.$disconnect();
 };
 
-seedTest()
+seederTest()
   .then(() => {
     console.log('database seed test finished');
   })

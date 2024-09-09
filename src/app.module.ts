@@ -7,12 +7,13 @@ import { MusicCategoryModule } from './music-category/music-category.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 import { RoleModule } from './role/role.module';
-import { SeedService } from './seed/seed.service';
 import { SettingModule } from './setting/setting.module';
 import { FeeTypeModule } from './fee-type/fee-type.module';
 import { UserModule } from './user/user.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -28,6 +29,11 @@ import { join } from 'path';
         index: false,
       },
     }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: '30d' },
+    }),
     PrismaModule,
     MusicCategoryModule,
     SettingModule,
@@ -35,8 +41,9 @@ import { join } from 'path';
     RoleModule,
     ActionModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [],
-  providers: [SeedService, PrismaService],
+  providers: [PrismaService],
 })
 export class AppModule {}

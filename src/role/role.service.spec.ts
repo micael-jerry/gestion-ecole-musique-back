@@ -54,7 +54,7 @@ describe('RolesService', () => {
       const result: Role[] = [
         {
           id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
-          name: 'Admin',
+          name: 'ADMIN',
         },
       ];
       jest.spyOn(prisma.role, 'findMany').mockResolvedValue(result);
@@ -91,7 +91,7 @@ describe('RolesService', () => {
       const id = '0cdd1713-d391-451c-b60b-0ecefb22c049';
       const result: Role = {
         id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
-        name: 'admin',
+        name: 'ADMIN',
       };
       jest.spyOn(prisma.role, 'findUnique').mockResolvedValue(result);
 

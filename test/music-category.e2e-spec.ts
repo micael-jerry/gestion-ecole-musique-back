@@ -7,14 +7,20 @@ import {
   MusicCategoryOne,
   MusicCategoryTwo,
 } from './conf/test-utils/music-category.test-utils';
+import { loginTestQuery } from './conf/query/login.test-query';
+import { UserOne } from './conf/test-utils/user.test-utils';
+import { findAllMusicCategoryTestQuery } from './conf/query/music-category.test-query';
+import { AuthResponse } from '../src/auth/entities/auth-response.entity';
 
 describe('MusicCategory (e2e)', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     execSync('yarn prisma migrate reset -f');
     execSync('yarn run seed:test');
+  }, 20000);
 
+  beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -23,21 +29,21 @@ describe('MusicCategory (e2e)', () => {
     await app.init();
   });
 
-  it('should return a list of music categories', () => {
-    const query = `
-      query FindAllMusicCategory {
-        findAllMusicCategory {
-          id
-          name
-          description
-        }
-      }
-    `;
+  it('should return a list of music categories', async () => {
+    const loginQuery = loginTestQuery({
+      email: UserOne.email,
+      password: 'password123',
+    });
+    const authResponse: AuthResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .send({ query: loginQuery })
+      .then((res) => res.body.data.login);
 
+    const query = findAllMusicCategoryTestQuery();
     return request(app.getHttpServer())
       .post('/graphql')
+      .set({ Authorization: `Bearer ${authResponse.token}` })
       .send({ query })
-      .expect(200)
       .expect((response) => {
         const data = response.body.data;
         expect(data).toHaveProperty('findAllMusicCategory');

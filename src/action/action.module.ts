@@ -7,5 +7,6 @@ import { ActionService } from './action.service';
 @Module({
   imports: [PrismaModule],
   providers: [ActionService, ActionResolver, PrismaService],
+  exports: [ActionService],
 })
 export class ActionModule {}

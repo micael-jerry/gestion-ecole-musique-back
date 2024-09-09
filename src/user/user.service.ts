@@ -3,7 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { PictureService } from '../picture/picture.service';
@@ -12,6 +12,7 @@ import * as Upload from 'graphql-upload/Upload.js';
 import { UpdateUserInput } from './dto/update-user.input';
 import { RoleType } from '../role/entities/role.entity';
 import * as bcrypt from 'bcrypt';
+import { UserWithIncluded } from './types/user-with-included.type';
 
 @Injectable()
 export class UserService {
@@ -23,7 +24,10 @@ export class UserService {
     private readonly roleService: RoleService,
   ) {}
 
-  async findAll(roleName?: string, criteria?: string): Promise<User[]> {
+  async findAll(
+    roleName?: string,
+    criteria?: string,
+  ): Promise<UserWithIncluded[]> {
     const userWhereInput: Prisma.UserWhereInput = {};
     if (roleName) userWhereInput.role = { name: roleName };
     if (criteria)
@@ -33,14 +37,14 @@ export class UserService {
         { email: { contains: criteria, mode: 'insensitive' } },
       ];
 
-    return await this.prismaService.user.findMany({
+    return this.prismaService.user.findMany({
       where: userWhereInput,
       include: UserService.userInclude,
       orderBy: { lastname: 'asc' },
     });
   }
 
-  async findById(id: string): Promise<User> {
+  async findById(id: string): Promise<UserWithIncluded> {
     const user = await this.prismaService.user.findUnique({
       where: { id: id },
       include: UserService.userInclude,
@@ -51,10 +55,21 @@ export class UserService {
     return user;
   }
 
+  async findByEmail(email: string): Promise<UserWithIncluded> {
+    const user = await this.prismaService.user.findUnique({
+      where: { email: email },
+      include: UserService.userInclude,
+    });
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+    return user;
+  }
+
   async create(
     { role, musicCategories, password, ...createUserInput }: CreateUserInput,
     picture: Upload,
-  ): Promise<User> {
+  ): Promise<UserWithIncluded> {
     const userRole = await this.roleService.getRoleByIdOrName(role);
     const pictureUrl: string | null = await this.pictureService
       .upload(picture)
@@ -63,7 +78,7 @@ export class UserService {
         throw new InternalServerErrorException(err);
       });
 
-    const userCreated = this.prismaService.user.create({
+    return this.prismaService.user.create({
       data: {
         password: bcrypt.hashSync(password, bcrypt.genSaltSync()),
         roleId: userRole.id,
@@ -73,20 +88,19 @@ export class UserService {
       },
       include: UserService.userInclude,
     });
-    return userCreated;
   }
 
-  async remove(id: string): Promise<User> {
+  async remove(id: string): Promise<UserWithIncluded> {
     const user = await this.findById(id);
     if (user) {
       this.pictureService.remove(user.picture);
     }
-    return await this.prismaService.$transaction(async () => {
+    return this.prismaService.$transaction(async () => {
       await this.prismaService.user.update({
         where: { id: id },
         data: { musicCategories: { set: [] } },
       });
-      return await this.prismaService.user.delete({
+      return this.prismaService.user.delete({
         where: { id: id },
         include: UserService.userInclude,
       });
@@ -96,7 +110,7 @@ export class UserService {
   async update(
     { role, musicCategories, password, ...updateUserInput }: UpdateUserInput,
     picture: Upload,
-  ): Promise<User> {
+  ): Promise<UserWithIncluded> {
     const user = await this.findById(updateUserInput.id);
     let newUserRole: RoleType | null = null;
     const newPicture: string = await this.pictureService.update(

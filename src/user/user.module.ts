@@ -13,5 +13,6 @@ import { RoleService } from '../role/role.service';
     PictureService,
     RoleService,
   ],
+  exports: [UserService],
 })
 export class UserModule {}
