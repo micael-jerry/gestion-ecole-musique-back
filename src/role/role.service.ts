@@ -1,30 +1,34 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRoleInput } from './dto/create-role.input';
 import { UpdateRoleInput } from './dto/update-role.input';
+import { RoleWithIncluded } from './types/role-with-included.type';
 
 @Injectable()
 export class RoleService {
+  private static roleInclude = { actions: true, users: true };
+
   constructor(private prisma: PrismaService) {}
 
-  async getAllRoles(): Promise<Role[]> {
+  async getAllRoles(): Promise<RoleWithIncluded[]> {
     return await this.prisma.role.findMany({
-      include: { actions: true, users: true },
+      include: RoleService.roleInclude,
     });
   }
 
-  async createRole(createRoleInput: CreateRoleInput): Promise<Role> {
+  async createRole(
+    createRoleInput: CreateRoleInput,
+  ): Promise<RoleWithIncluded> {
     return await this.prisma.role.create({
       data: createRoleInput,
-      include: { actions: true, users: true },
+      include: RoleService.roleInclude,
     });
   }
 
-  async getRoleById(id: string): Promise<Role> {
+  async getRoleById(id: string): Promise<RoleWithIncluded> {
     const found = await this.prisma.role.findUnique({
       where: { id },
-      include: { actions: true, users: true },
+      include: RoleService.roleInclude,
     });
 
     if (!found) {
@@ -39,16 +43,18 @@ export class RoleService {
   }: {
     id?: string;
     name?: string;
-  }): Promise<Role> {
+  }): Promise<RoleWithIncluded> {
     const role = await this.prisma.role.findUnique({
       where: { id, name },
-      include: { actions: true, users: true },
+      include: RoleService.roleInclude,
     });
     if (!role) throw new NotFoundException(`Role not found`);
     return role;
   }
 
-  async updateRole(updateRoleInput: UpdateRoleInput) {
+  async updateRole(
+    updateRoleInput: UpdateRoleInput,
+  ): Promise<RoleWithIncluded> {
     const { id, name, actions = [] } = updateRoleInput;
     const found = await this.getRoleById(id);
 
@@ -61,18 +67,18 @@ export class RoleService {
             connect: actions.map((actionId) => ({ id: actionId.id })),
           },
         },
-        include: { actions: true, users: true },
+        include: RoleService.roleInclude,
       });
     }
   }
 
-  async deleteRole(id: string) {
+  async deleteRole(id: string): Promise<RoleWithIncluded> {
     const found = await this.getRoleById(id);
 
     if (found) {
       return this.prisma.role.delete({
         where: { id },
-        include: { actions: true, users: true },
+        include: RoleService.roleInclude,
       });
     }
   }

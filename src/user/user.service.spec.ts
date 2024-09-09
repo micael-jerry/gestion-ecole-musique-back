@@ -8,8 +8,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RoleType } from '../role/entities/role.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import * as Upload from 'graphql-upload/Upload.js';
-import { RoleOne } from '../../test/conf/test-utils/role.test-utils';
+import { RoleAdmin } from '../../test/conf/test-utils/role.test-utils';
 import { UpdateUserInput } from './dto/update-user.input';
+import { UserWithIncluded } from './types/user-with-included.type';
 
 describe('UserService', () => {
   let prisma: PrismaService;
@@ -111,6 +112,34 @@ describe('UserService', () => {
     });
   });
 
+  describe('findByEmailUser', () => {
+    it('should throw an error when trying to find a user by email with an invalid email format', async () => {
+      const invalidEmail = 'invalid.email.com';
+      jest
+        .spyOn(prisma.user, 'findUnique')
+        .mockRejectedValue(new Error('User not found'));
+
+      await expect(service.findByEmail(invalidEmail)).rejects.toThrow(
+        'User not found',
+      );
+    });
+    it('should return a user with correct roles and music categories when finding a user by email', async () => {
+      const email = 'userone@example.com';
+      const expectedUser: User = UserOne;
+
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce(expectedUser);
+
+      const result = await service.findByEmail(email);
+
+      expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: { email: email },
+        include: { role: true, musicCategories: true },
+      });
+      expect(result).toEqual(expectedUser);
+    });
+  });
+
   describe('createUser', () => {
     it('should throw an error when trying to create a user with an invalid role', async () => {
       const invalidRole: RoleType = {
@@ -147,7 +176,7 @@ describe('UserService', () => {
         firstname: 'Test',
         lastname: 'User',
         password: 'test1234567',
-        role: { name: 'ROLE_ONE' },
+        role: { name: 'ADMIN' },
         address: '123 Main St',
         phone: '1234567890',
       };
@@ -159,7 +188,7 @@ describe('UserService', () => {
 
       jest
         .spyOn(roleService, 'getRoleByIdOrName')
-        .mockResolvedValueOnce(RoleOne);
+        .mockResolvedValueOnce(RoleAdmin);
       jest
         .spyOn(pictureService, 'upload')
         .mockRejectedValueOnce(new Error('Picture upload failed'));
@@ -182,13 +211,13 @@ describe('UserService', () => {
 
       jest
         .spyOn(roleService, 'getRoleByIdOrName')
-        .mockResolvedValueOnce(RoleOne);
+        .mockResolvedValueOnce(RoleAdmin);
       jest.spyOn(pictureService, 'upload').mockResolvedValueOnce(null);
       jest.spyOn(prisma.user, 'create').mockResolvedValueOnce(UserOne);
 
       const result = await service.create(
         {
-          role: { name: 'ROLE_ONE' },
+          role: { name: 'ADMIN' },
           password: 'password123',
           ...createUserInput,
         } satisfies CreateUserInput,
@@ -199,7 +228,7 @@ describe('UserService', () => {
       expect(prisma.user.create).toHaveBeenCalledWith({
         data: {
           password: expect.any(String),
-          roleId: RoleOne.id,
+          roleId: RoleAdmin.id,
           picture: null,
           musicCategories: { connect: [] },
           ...createUserInput,
@@ -224,7 +253,7 @@ describe('UserService', () => {
 
     it('should remove a user and their associated picture when removing a valid user', async () => {
       const userId = 'user_one_id';
-      const expectedUser: User = UserOne;
+      const expectedUser: UserWithIncluded = UserOne;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(expectedUser);
       jest.spyOn(pictureService, 'remove').getMockImplementation();
@@ -301,7 +330,7 @@ describe('UserService', () => {
       jest.spyOn(service, 'findById').mockResolvedValueOnce(UserOne);
       jest
         .spyOn(roleService, 'getRoleByIdOrName')
-        .mockResolvedValueOnce(RoleOne);
+        .mockResolvedValueOnce(RoleAdmin);
       jest.spyOn(pictureService, 'update').mockResolvedValueOnce(null);
       jest.spyOn(prisma.user, 'update').mockResolvedValueOnce(UserTwo);
 
@@ -312,7 +341,7 @@ describe('UserService', () => {
         where: { id: userId },
         data: {
           password: UserOne.password,
-          roleId: RoleOne.id,
+          roleId: RoleAdmin.id,
           picture: null,
           musicCategories: {
             connect: [],

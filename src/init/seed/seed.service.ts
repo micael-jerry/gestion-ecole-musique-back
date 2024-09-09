@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { actionToSeed } from '../../prisma/seed/data/action-seed.data';
-import { roleToSeed } from '../../prisma/seed/data/role-seed.data';
-import { PrismaService } from '../prisma/prisma.service';
+import { Action } from '@prisma/client';
+import { PrismaService } from '../../prisma/prisma.service';
+import { SeedAction } from './data/action-seed.data';
+import { SeedRole } from './data/role-seed.data';
 
 @Injectable()
 export class SeedService {
   constructor(private prisma: PrismaService) {}
 
-  async seedAction() {
-    for (const action of actionToSeed) {
+  async seederAction() {
+    for (const action of SeedAction) {
       const existingAction = await this.prisma.action.findUnique({
         where: { tag: action.tag },
       });
@@ -26,25 +27,20 @@ export class SeedService {
     console.log('Actions seed successfully');
   }
 
-  async seedRole() {
-    for (const role of roleToSeed) {
+  async seederRole() {
+    for (const role of SeedRole) {
       const existingRole = await this.prisma.role.findUnique({
         where: { name: role.name },
       });
 
       if (!existingRole) {
-        if (role.name === 'Admin') {
+        if (role.name === 'ADMIN') {
+          const action: Action[] = await this.prisma.action.findMany();
           await this.prisma.role.create({
             data: {
               name: role.name,
               actions: {
-                create: [
-                  {
-                    tag: 'ALL',
-                    name: 'ALL',
-                    description: 'Has all privileges',
-                  },
-                ],
+                connect: [...action],
               },
             },
           });

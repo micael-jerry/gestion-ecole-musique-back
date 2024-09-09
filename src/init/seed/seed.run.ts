@@ -1,12 +1,12 @@
-import { PrismaService } from '../../src/prisma/prisma.service';
-import { SeedService } from '../../src/seed/seed.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { SeedService } from './seed.service';
 
 async function main() {
   const prismaService = new PrismaService();
   const seedService = new SeedService(prismaService);
 
-  await seedService.seedAction();
-  await seedService.seedRole();
+  await seedService.seederAction();
+  await seedService.seederRole();
   await prismaService.$disconnect();
 }
 

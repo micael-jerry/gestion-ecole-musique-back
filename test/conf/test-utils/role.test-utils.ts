@@ -1,11 +1,14 @@
-import { Role } from '@prisma/client';
+import { RoleWithIncluded } from 'src/role/types/role-with-included.type';
+import { AllAction } from './action.test-utils';
 
-export const RoleOne: Role = {
+export const RoleAdmin: RoleWithIncluded = {
   id: 'role_one_id',
-  name: 'ROLE_ONE',
+  name: 'ADMIN',
+  actions: AllAction,
 };
 
-export const RoleTwo: Role = {
+export const RoleManager: RoleWithIncluded = {
   id: 'role_two_id',
-  name: 'ROLE_TWO',
+  name: 'MANAGER',
+  actions: [],
 };
