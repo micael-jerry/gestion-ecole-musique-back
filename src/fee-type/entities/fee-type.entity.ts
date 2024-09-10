@@ -10,4 +10,7 @@ export class FeeType {
 
   @Field({ nullable: true })
   description?: string;
+
+  @Field()
+  value: number;
 }

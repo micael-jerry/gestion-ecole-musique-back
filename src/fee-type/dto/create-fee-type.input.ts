@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 @InputType()
 export class CreateFeeTypeInput {
@@ -9,4 +9,8 @@ export class CreateFeeTypeInput {
 
   @Field({ nullable: true })
   description?: string;
+
+  @IsNumber()
+  @Field()
+  value: number;
 }
