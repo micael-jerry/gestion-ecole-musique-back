@@ -30,6 +30,7 @@ model FeeType {
   id          String  @id @default(uuid())
   name        String  @unique @db.VarChar()
   description String?
+  value       Float   @default(0)
 }
 
 model Role {

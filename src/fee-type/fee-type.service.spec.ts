@@ -40,6 +40,7 @@ describe('FeeTypeService', () => {
       const createFeeTypeInput = {
         name: 'fee type',
         description: 'create fee type',
+        value: 0,
       } satisfies Prisma.FeeTypeCreateInput;
 
       const result: FeeType = {
@@ -64,6 +65,7 @@ describe('FeeTypeService', () => {
           id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
           name: 'fee type',
           description: 'fee type description',
+          value: 0,
         },
       ];
       jest.spyOn(prisma.feeType, 'findMany').mockResolvedValue(result);
@@ -80,6 +82,7 @@ describe('FeeTypeService', () => {
         id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
         name: 'fee type',
         description: 'fee type description',
+        value: 0,
       };
       jest.spyOn(prisma.feeType, 'findUnique').mockResolvedValue(result);
 
@@ -116,7 +119,7 @@ describe('FeeTypeService', () => {
         description: 'Updated fee type description',
       };
 
-      const result: FeeType = { ...updateFeeTypeInput };
+      const result: FeeType = { ...updateFeeTypeInput, value: 0 };
 
       jest.spyOn(prisma.feeType, 'update').mockResolvedValue(result);
 
@@ -157,6 +160,7 @@ describe('FeeTypeService', () => {
         id,
         name: 'delete fee type',
         description: 'delete fee type description',
+        value: 0,
       };
 
       jest.spyOn(prisma.feeType, 'delete').mockResolvedValue(result);
