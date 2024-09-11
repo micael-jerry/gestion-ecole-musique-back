@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Setting } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateSettingInput, UpdateSettingInput } from './dto/setting.input';
+import { UpdateSettingInput } from './dto/update-setting.input';
 
 @Injectable()
 export class SettingService {
@@ -25,38 +25,15 @@ export class SettingService {
     return found;
   }
 
-  async createSetting(
-    createSettingInput: CreateSettingInput,
-  ): Promise<Setting> {
-    const { name, value } = createSettingInput;
-
-    const setting = this.prisma.setting.create({
-      data: {
-        name,
-        value,
-      },
-    });
-
-    return setting;
-  }
-
   async updateSetting(
     updateSettingInput: UpdateSettingInput,
   ): Promise<Setting> {
-    const { id, name, value } = updateSettingInput;
+    const { id, ...otherUpdateSettingInputProperty } = updateSettingInput;
     return this.prisma.setting.update({
       where: {
         id,
       },
-      data: { name, value },
-    });
-  }
-
-  async deleteSetting(id: string): Promise<Setting> {
-    return this.prisma.setting.delete({
-      where: {
-        id,
-      },
+      data: otherUpdateSettingInputProperty,
     });
   }
 }

@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CreateSettingInput, UpdateSettingInput } from './dto/setting.input';
+import { UpdateSettingInput } from './dto/update-setting.input';
 import { SettingType } from './entities/setting.entity';
 import { SettingService } from './setting.service';
 import { Actions } from '../auth/decorator/set-metadata-action.decorator';
@@ -23,22 +23,6 @@ export class SettingResolver {
   @Query(() => SettingType)
   getSettingById(@Args('id') id: string) {
     return this.settingService.getSettingById(id);
-  }
-
-  @Actions('DELETE_SETTING')
-  @UseGuards(AuthGuard, ActionGuard)
-  @Query(() => SettingType)
-  deleteSetting(@Args('id') id: string) {
-    return this.settingService.deleteSetting(id);
-  }
-
-  @Actions('CREATE_SETTING')
-  @UseGuards(AuthGuard, ActionGuard)
-  @Mutation(() => SettingType)
-  createSetting(
-    @Args('createSettingInput') createSettingInput: CreateSettingInput,
-  ) {
-    return this.settingService.createSetting(createSettingInput);
   }
 
   @Actions('UPDATE_SETTING')

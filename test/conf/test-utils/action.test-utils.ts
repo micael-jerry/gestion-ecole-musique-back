@@ -37,20 +37,6 @@ export const ActionGetSetting: Action = {
   description: 'Has privileges to get setting',
 };
 
-export const ActionCreateSetting: Action = {
-  id: 'action_create_setting_id',
-  tag: 'CREATE_SETTING',
-  name: 'CREATE SETTING',
-  description: 'Has privileges to create setting',
-};
-
-export const ActionDeleteSetting: Action = {
-  id: 'action_delete_setting_id',
-  tag: 'DELETE_SETTING',
-  name: 'DELETE SETTING',
-  description: 'Has privileges to delete setting',
-};
-
 export const ActionUpdateSetting: Action = {
   id: 'action_update_setting_id',
   tag: 'UPDATE_SETTING',
@@ -151,8 +137,6 @@ export const AllAction: Action[] = [
   ActionDeleteUser,
   ActionUpdateUser,
   ActionGetSetting,
-  ActionCreateSetting,
-  ActionDeleteSetting,
   ActionUpdateSetting,
   ActionGetMusic,
   ActionCreateMusic,

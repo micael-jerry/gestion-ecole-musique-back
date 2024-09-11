@@ -33,16 +33,6 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
     description: 'Has privileges to get setting ',
   },
   {
-    tag: 'CREATE_SETTING',
-    name: 'CREATE SETTING',
-    description: 'Has privileges to create setting ',
-  },
-  {
-    tag: 'DELETE_SETTING',
-    name: 'DELETE SETTING',
-    description: 'Has privileges to delete setting ',
-  },
-  {
     tag: 'UPDATE_SETTING',
     name: 'UPDATE SETTING',
     description: 'Has privileges to update setting ',

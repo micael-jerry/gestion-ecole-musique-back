@@ -4,6 +4,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { SeedAction } from './data/action-seed.data';
 import { SeedRole } from './data/role-seed.data';
 import { DefaultUser } from './data/user-seed.data';
+import { SeedSetting } from './data/setting-seed.data';
 
 @Injectable()
 export class SeedService {
@@ -66,5 +67,17 @@ export class SeedService {
     await this.prisma.user
       .create({ data: DefaultUser(role.id) })
       .then(() => console.log('Default user created'));
+  }
+
+  async seederDefaultSetting() {
+    for (const setting of SeedSetting) {
+      const existSetting = await this.prisma.setting.findUnique({
+        where: { tag: setting.tag },
+      });
+      if (!existSetting) {
+        await this.prisma.setting.create({ data: setting });
+        console.log(`Setting ${setting.tag} created`);
+      }
+    }
   }
 }
