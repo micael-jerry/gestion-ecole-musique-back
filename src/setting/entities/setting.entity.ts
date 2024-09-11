@@ -10,4 +10,10 @@ export class SettingType {
 
   @Field()
   value: number;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field()
+  tag: string;
 }

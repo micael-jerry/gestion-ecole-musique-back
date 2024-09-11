@@ -21,9 +21,11 @@ model MusicCategory {
 }
 
 model Setting {
-  id    String @id @default(uuid())
-  name  String @unique
-  value Float
+  id          String  @id @default(uuid())
+  name        String  @unique
+  value       Float
+  description String? @db.Text
+  tag         String  @db.VarChar(50) @unique
 }
 
 model FeeType {

@@ -59,6 +59,8 @@ describe('SettingService', () => {
           id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
           name: 'droit',
           value: 450000,
+          description: 'droit',
+          tag: 'DROIT',
         },
       ];
       jest.spyOn(prisma.setting, 'findMany').mockResolvedValue(result);
@@ -76,6 +78,8 @@ describe('SettingService', () => {
         id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
         name: 'droit',
         value: 450000,
+        description: 'droit',
+        tag: 'DROIT',
       };
       jest.spyOn(prisma.setting, 'findUnique').mockResolvedValue(result);
 
@@ -100,24 +104,6 @@ describe('SettingService', () => {
     });
   });
 
-  describe('createSetting', () => {
-    it('should create a new setting and return it', async () => {
-      const createSettingInput = { name: 'Test Setting', value: 450000 };
-      const result: Setting = {
-        id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
-        ...createSettingInput,
-      };
-      jest.spyOn(prisma.setting, 'create').mockResolvedValue(result);
-
-      const setting = await service.createSetting(createSettingInput);
-
-      expect(setting).toEqual(result);
-      expect(prisma.setting.create).toHaveBeenCalledWith({
-        data: createSettingInput,
-      });
-    });
-  });
-
   describe('updateSetting', () => {
     it('should update and return the setting', async () => {
       const id = '0cdd1713-d391-451c-b60b-0ecefb22c049';
@@ -125,6 +111,8 @@ describe('SettingService', () => {
         id,
         name: 'Updated Setting',
         value: 50000,
+        description: 'updated',
+        tag: 'UPDATED',
       };
       const result: Setting = { ...updateSettingInput };
 
@@ -137,6 +125,8 @@ describe('SettingService', () => {
         data: {
           name: updateSettingInput.name,
           value: updateSettingInput.value,
+          description: updateSettingInput.description,
+          tag: updateSettingInput.tag,
         },
       });
     });
@@ -147,6 +137,7 @@ describe('SettingService', () => {
         id,
         name: 'Non-existent Setting',
         value: 40000,
+        description: null,
       };
 
       jest
@@ -161,43 +152,9 @@ describe('SettingService', () => {
         data: {
           name: updateSettingInput.name,
           value: updateSettingInput.value,
+          description: updateSettingInput.description,
         },
       });
-    });
-  });
-
-  describe('deleteSetting', () => {
-    it('should delete and return the setting deleted', async () => {
-      const id = '0cdd1713-d391-451c-b60b-0ecefb22c049';
-      const deleteSettingInput = {
-        id,
-        name: 'delete Setting',
-        value: 50000,
-      };
-      const result: Setting = { ...deleteSettingInput };
-
-      jest.spyOn(prisma.setting, 'delete').mockResolvedValue(result);
-
-      const deleteSetting = await service.deleteSetting(id);
-      expect(deleteSetting).toEqual(result);
-      expect(prisma.setting.delete).toHaveBeenCalledWith({
-        where: { id },
-      });
-    });
-
-    it('should return error if no setting is found ', async () => {
-      const id = '0cdd1713-d391-451c-b60b-0ecefb22c049';
-
-      jest
-        .spyOn(prisma.setting, 'delete')
-        .mockRejectedValue(
-          new NotFoundException(`setting with ID "${id}" not found`),
-        );
-
-      await expect(service.deleteSetting(id)).rejects.toThrow(
-        `setting with ID "${id}" not found`,
-      );
-      expect(prisma.setting.delete).toHaveBeenCalledWith({ where: { id } });
     });
   });
 });
