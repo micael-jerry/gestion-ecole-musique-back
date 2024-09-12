@@ -33,7 +33,7 @@ const seederTestUser = async (
   const user: User = {
     id: userWithIncluded.id,
     roleId: userWithIncluded.roleId,
-    firstname: userWithIncluded.id,
+    firstname: userWithIncluded.firstname,
     lastname: userWithIncluded.lastname,
     email: userWithIncluded.email,
     password: userWithIncluded.password,
