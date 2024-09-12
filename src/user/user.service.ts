@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -13,6 +14,7 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { RoleType } from '../role/entities/role.entity';
 import * as bcrypt from 'bcrypt';
 import { UserWithIncluded } from './types/user-with-included.type';
+import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 
 @Injectable()
 export class UserService {
@@ -27,8 +29,10 @@ export class UserService {
   async findAll(
     roleName?: string,
     criteria?: string,
+    isArchive: boolean = false,
   ): Promise<UserWithIncluded[]> {
     const userWhereInput: Prisma.UserWhereInput = {};
+    userWhereInput.isArchive = isArchive;
     if (roleName) userWhereInput.role = { name: roleName };
     if (criteria)
       userWhereInput.OR = [
@@ -44,9 +48,12 @@ export class UserService {
     });
   }
 
-  async findById(id: string): Promise<UserWithIncluded> {
+  async findById(
+    id: string,
+    isArchive: boolean = false,
+  ): Promise<UserWithIncluded> {
     const user = await this.prismaService.user.findUnique({
-      where: { id: id },
+      where: { id: id, isArchive: isArchive },
       include: UserService.userInclude,
     });
     if (!user) {
@@ -55,9 +62,10 @@ export class UserService {
     return user;
   }
 
+  // Only used by auth
   async findByEmail(email: string): Promise<UserWithIncluded> {
     const user = await this.prismaService.user.findUnique({
-      where: { email: email },
+      where: { email: email, isArchive: false },
       include: UserService.userInclude,
     });
     if (!user) {
@@ -90,9 +98,18 @@ export class UserService {
     });
   }
 
-  async remove(id: string): Promise<UserWithIncluded> {
-    const user = await this.findById(id);
+  async remove(
+    authenticatedUser: JwtPayloadType,
+    id: string,
+    isArchive: boolean = false,
+  ): Promise<UserWithIncluded> {
+    const user = await this.findById(id, isArchive);
     if (user) {
+      if (authenticatedUser.userId === user.id) {
+        throw new BadRequestException(
+          'You cannot delete your account yourself',
+        );
+      }
       this.pictureService.remove(user.picture);
     }
     return this.prismaService.$transaction(async () => {

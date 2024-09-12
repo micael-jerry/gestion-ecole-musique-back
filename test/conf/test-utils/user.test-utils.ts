@@ -16,6 +16,7 @@ export const UserOne: UserWithIncluded = {
   description: 'User One Description',
   role: RoleAdmin,
   musicCategories: [MusicCategoryOne],
+  isArchive: false,
 };
 
 export const UserTwo: UserWithIncluded = {
@@ -31,4 +32,5 @@ export const UserTwo: UserWithIncluded = {
   description: 'User Two Description',
   role: RoleManager,
   musicCategories: [MusicCategoryOne],
+  isArchive: false,
 };

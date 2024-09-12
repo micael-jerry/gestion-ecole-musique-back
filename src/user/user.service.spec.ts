@@ -11,6 +11,8 @@ import * as Upload from 'graphql-upload/Upload.js';
 import { RoleAdmin } from '../../test/conf/test-utils/role.test-utils';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UserWithIncluded } from './types/user-with-included.type';
+import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { BadRequestException } from '@nestjs/common';
 
 describe('UserService', () => {
   let prisma: PrismaService;
@@ -105,7 +107,7 @@ describe('UserService', () => {
 
       expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { id: userId },
+        where: { id: userId, isArchive: false },
         include: { role: true, musicCategories: true },
       });
       expect(result).toEqual(expectedUser);
@@ -133,7 +135,7 @@ describe('UserService', () => {
 
       expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { email: email },
+        where: { email: email, isArchive: false },
         include: { role: true, musicCategories: true },
       });
       expect(result).toEqual(expectedUser);
@@ -241,17 +243,47 @@ describe('UserService', () => {
 
   describe('removeUser', () => {
     it('should throw an error when trying to remove a user that does not exist', async () => {
+      const authenticatedUser: JwtPayloadType = {
+        userId: 'user_two_id',
+        roleName: 'ADMIN',
+        actionTags: [],
+      };
       const nonExistentUserId = 'non-existent-user-id';
       jest
         .spyOn(service, 'findById')
         .mockRejectedValue(new Error('User not found'));
 
-      await expect(service.remove(nonExistentUserId)).rejects.toThrow(
-        'User not found',
+      await expect(
+        service.remove(authenticatedUser, nonExistentUserId),
+      ).rejects.toThrow('User not found');
+    });
+
+    it('should return an error if someone tries to delete itself', async () => {
+      const authenticatedUser: JwtPayloadType = {
+        userId: 'user_two_id',
+        roleName: 'ADMIN',
+        actionTags: [],
+      };
+      const userId = 'user_two_id';
+      const expectedUser: UserWithIncluded = UserTwo;
+
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(expectedUser);
+
+      await expect(service.remove(authenticatedUser, userId)).rejects.toThrow(
+        new BadRequestException('You cannot delete your account yourself'),
       );
+
+      expect(service.findById).toHaveBeenCalledTimes(1);
+      expect(service.findById).toHaveBeenCalledWith(userId, false);
+      expect(pictureService.remove).not.toHaveBeenCalled();
     });
 
     it('should remove a user and their associated picture when removing a valid user', async () => {
+      const authenticatedUser: JwtPayloadType = {
+        userId: 'user_two_id',
+        roleName: 'ADMIN',
+        actionTags: [],
+      };
       const userId = 'user_one_id';
       const expectedUser: UserWithIncluded = UserOne;
 
@@ -262,10 +294,10 @@ describe('UserService', () => {
       });
       jest.spyOn(prisma.user, 'update').mockResolvedValueOnce(expectedUser);
       jest.spyOn(prisma.user, 'delete').mockResolvedValueOnce(expectedUser);
-      const result = await service.remove(userId);
+      const result = await service.remove(authenticatedUser, userId);
 
       expect(service.findById).toHaveBeenCalledTimes(1);
-      expect(service.findById).toHaveBeenCalledWith(userId);
+      expect(service.findById).toHaveBeenCalledWith(userId, false);
       expect(pictureService.remove).toHaveBeenCalledTimes(1);
       expect(pictureService.remove).toHaveBeenCalledWith(expectedUser.picture);
       expect(prisma.user.update).toHaveBeenCalledTimes(1);

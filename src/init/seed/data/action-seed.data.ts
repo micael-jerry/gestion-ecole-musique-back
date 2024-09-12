@@ -106,4 +106,22 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
     name: 'UPDATE ROLE',
     description: 'Has privileges to update fee type ',
   },
+
+  // ARCHIVE AUTHORIZATION
+
+  {
+    tag: 'GET_USER_ARCHIVE',
+    name: 'GET USER ARCHIVE',
+    description: 'Has privileges to get user archive',
+  },
+  {
+    tag: 'DELETE_USER_ARCHIVE',
+    name: 'DELETE USER ARCHIVE',
+    description: 'Has privileges to delete user archive',
+  },
+  {
+    tag: 'ARCHIVE_USER',
+    name: 'ARCHIVE USER',
+    description: 'Has privileges to archive user',
+  },
 ];

@@ -41,6 +41,7 @@ const seederTestUser = async (
     phone: userWithIncluded.phone,
     picture: userWithIncluded.picture,
     description: userWithIncluded.description,
+    isArchive: userWithIncluded.isArchive,
   };
   await p.user.create({
     data: {

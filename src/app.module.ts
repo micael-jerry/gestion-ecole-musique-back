@@ -22,7 +22,7 @@ import { JwtModule } from '@nestjs/jwt';
       autoSchemaFile: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
+      rootPath: join(__dirname, 'uploads'),
       serveRoot: '/uploads',
       serveStaticOptions: {
         extensions: ['jpg', 'jpeg', 'png', 'gif'],
