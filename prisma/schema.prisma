@@ -25,7 +25,7 @@ model Setting {
   name        String  @unique
   value       Float
   description String? @db.Text
-  tag         String  @db.VarChar(50) @unique
+  tag         String  @unique @db.VarChar(50)
 }
 
 model FeeType {
@@ -61,6 +61,7 @@ model User {
   phone           String?         @db.VarChar(20)
   picture         String?         @db.VarChar()
   description     String?
+  isArchive       Boolean         @default(false)
   role            Role            @relation(fields: [roleId], references: [id])
   musicCategories MusicCategory[]
 }

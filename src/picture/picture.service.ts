@@ -9,7 +9,7 @@ export class PictureService {
     if (!file) return null;
 
     return new Promise((resolve, reject) => {
-      const dirPath = join(__dirname, '..', '..', 'uploads');
+      const dirPath = join(__dirname, '..', 'uploads');
       const fileName = `${Date.now()}_${file.filename}`;
       if (!existsSync(dirPath)) {
         mkdirSync(dirPath, { recursive: true });
@@ -24,7 +24,7 @@ export class PictureService {
 
   remove(fileName: string) {
     if (!fileName) return;
-    const filePath = join(__dirname, '..', '..', 'uploads', fileName);
+    const filePath = join(__dirname, '..', 'uploads', fileName);
     return unlink(filePath, (err) => {
       if (err) throw err;
       console.log(`${filePath} was deleted`);
