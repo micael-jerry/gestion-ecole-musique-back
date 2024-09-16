@@ -5,5 +5,5 @@ export const pathFinderMiddleware: FieldMiddleware = async (
   next: NextFn,
 ) => {
   const filePath: string | null = await next();
-  return filePath ? `/uploads/${filePath}` : null;
+  return filePath ? `${process.env.BASE_URL}/uploads/${filePath}` : null;
 };
