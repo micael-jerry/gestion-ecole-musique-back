@@ -120,102 +120,102 @@ export const ActionUpdateStudent: Action = {
 export const ActionGetSetting: Action = {
   id: 'action_get_setting_id',
   tag: 'GET_SETTING',
-  name: 'GET SETTING',
-  description: 'Has privileges to get setting',
+  name: 'OBTENIR PARAMÈTRE',
+  description: 'A les privilèges pour obtenir un paramètre',
 };
 
 export const ActionUpdateSetting: Action = {
   id: 'action_update_setting_id',
   tag: 'UPDATE_SETTING',
-  name: 'UPDATE SETTING',
-  description: 'Has privileges to update setting',
+  name: 'METTRE À JOUR PARAMÈTRE',
+  description: 'A les privilèges pour mettre à jour un paramètre',
 };
 
 // MUSIC CATEGORIES AUTHORIZATION
 export const ActionGetMusic: Action = {
   id: 'action_get_music_id',
   tag: 'GET_MUSIC',
-  name: 'GET MUSIC',
-  description: 'Has privileges to get music',
+  name: 'OBTENIR MUSIQUE',
+  description: 'A les privilèges pour obtenir une musique',
 };
 
 export const ActionCreateMusic: Action = {
   id: 'action_create_music_id',
   tag: 'CREATE_MUSIC',
-  name: 'CREATE MUSIC',
-  description: 'Has privileges to create music',
+  name: 'CRÉER MUSIQUE',
+  description: 'A les privilèges pour créer une musique',
 };
 
 export const ActionDeleteMusic: Action = {
   id: 'action_delete_music_id',
   tag: 'DELETE_MUSIC',
-  name: 'DELETE MUSIC',
-  description: 'Has privileges to delete music',
+  name: 'SUPPRIMER MUSIQUE',
+  description: 'A les privilèges pour supprimer une musique',
 };
 
 export const ActionUpdateMusic: Action = {
   id: 'action_update_music_id',
   tag: 'UPDATE_MUSIC',
-  name: 'UPDATE MUSIC',
-  description: 'Has privileges to update music',
+  name: 'METTRE À JOUR MUSIQUE',
+  description: 'A les privilèges pour mettre à jour une musique',
 };
 
 // FEE TYPE AUTHORIZATION
 export const ActionGetFeeType: Action = {
   id: 'action_get_fee_type_id',
   tag: 'GET_FEE_TYPE',
-  name: 'GET FEE TYPE',
-  description: 'Has privileges to get fee type',
+  name: 'OBTENIR TYPE DE FRAIS',
+  description: 'A les privilèges pour obtenir un type de frais',
 };
 
 export const ActionCreateFeeType: Action = {
   id: 'action_create_fee_type_id',
   tag: 'CREATE_FEE_TYPE',
-  name: 'CREATE FEE TYPE',
-  description: 'Has privileges to create fee type',
+  name: 'CRÉER TYPE DE FRAIS',
+  description: 'A les privilèges pour créer un type de frais',
 };
 
 export const ActionDeleteFeeType: Action = {
   id: 'action_delete_fee_type_id',
   tag: 'DELETE_FEE_TYPE',
-  name: 'DELETE FEE TYPE',
-  description: 'Has privileges to delete fee type',
+  name: 'SUPPRIMER TYPE DE FRAIS',
+  description: 'A les privilèges pour supprimer un type de frais',
 };
 
 export const ActionUpdateFeeType: Action = {
   id: 'action_update_fee_type_id',
   tag: 'UPDATE_FEE_TYPE',
-  name: 'UPDATE FEE TYPE',
-  description: 'Has privileges to update fee type',
+  name: 'METTRE À JOUR TYPE DE FRAIS',
+  description: 'A les privilèges pour mettre à jour un type de frais',
 };
 
 // ROLE AUTHORIZATION
 export const ActionGetRole: Action = {
   id: 'action_get_role_id',
   tag: 'GET_ROLE',
-  name: 'GET ROLE',
-  description: 'Has privileges to get role',
+  name: 'OBTENIR RÔLE',
+  description: 'A les privilèges pour obtenir un rôle',
 };
 
 export const ActionCreateRole: Action = {
   id: 'action_create_role_id',
   tag: 'CREATE_ROLE',
-  name: 'CREATE ROLE',
-  description: 'Has privileges to create role',
+  name: 'CRÉER RÔLE',
+  description: 'A les privilèges pour créer un rôle',
 };
 
 export const ActionDeleteRole: Action = {
   id: 'action_delete_role_id',
   tag: 'DELETE_ROLE',
-  name: 'DELETE ROLE',
-  description: 'Has privileges to delete role',
+  name: 'SUPPRIMER RÔLE',
+  description: 'A les privilèges pour supprimer un rôle',
 };
 
 export const ActionUpdateRole: Action = {
   id: 'action_update_role_id',
   tag: 'UPDATE_ROLE',
-  name: 'UPDATE ROLE',
-  description: 'Has privileges to update role',
+  name: 'METTRE À JOUR RÔLE',
+  description: 'A les privilèges pour mettre à jour un rôle',
 };
 
 export const AllAction: Action[] = [

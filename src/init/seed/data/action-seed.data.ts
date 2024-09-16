@@ -91,102 +91,97 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
   },
 
   // SETTING AUTHORIZATION
-
   {
     tag: 'GET_SETTING',
-    name: 'GET SETTING',
-    description: 'Has privileges to get setting ',
+    name: 'OBTENIR PARAMÈTRE',
+    description: 'A les privilèges pour obtenir un paramètre',
   },
   {
     tag: 'UPDATE_SETTING',
-    name: 'UPDATE SETTING',
-    description: 'Has privileges to update setting ',
+    name: 'METTRE À JOUR PARAMÈTRE',
+    description: 'A les privilèges pour mettre à jour un paramètre',
   },
 
   // MUSIC CATEGORIES AUTHORIZATION
-
   {
     tag: 'GET_MUSIC',
-    name: 'GET MUSIC',
-    description: 'Has privileges to get music ',
+    name: 'OBTENIR MUSIQUE',
+    description: 'A les privilèges pour obtenir une musique',
   },
   {
     tag: 'CREATE_MUSIC',
-    name: 'CREATE MUSIC',
-    description: 'Has privileges to create music ',
+    name: 'CRÉER MUSIQUE',
+    description: 'A les privilèges pour créer une musique',
   },
   {
     tag: 'DELETE_MUSIC',
-    name: 'DELETE MUSIC',
-    description: 'Has privileges to delete music ',
+    name: 'SUPPRIMER MUSIQUE',
+    description: 'A les privilèges pour supprimer une musique',
   },
   {
     tag: 'UPDATE_MUSIC',
-    name: 'UPDATE MUSIC',
-    description: 'Has privileges to update music ',
+    name: 'METTRE À JOUR MUSIQUE',
+    description: 'A les privilèges pour mettre à jour une musique',
   },
 
   // FEE TYPE AUTHORIZATION
-
   {
     tag: 'GET_FEE_TYPE',
-    name: 'GET FEE TYPE',
-    description: 'Has privileges to get fee type ',
+    name: 'OBTENIR TYPE DE FRAIS',
+    description: 'A les privilèges pour obtenir un type de frais',
   },
   {
     tag: 'CREATE_FEE_TYPE',
-    name: 'CREATE FEE TYPE',
-    description: 'Has privileges to create fee type ',
+    name: 'CRÉER TYPE DE FRAIS',
+    description: 'A les privilèges pour créer un type de frais',
   },
   {
     tag: 'DELETE_FEE_TYPE',
-    name: 'DELETE FEE TYPE',
-    description: 'Has privileges to delete fee type ',
+    name: 'SUPPRIMER TYPE DE FRAIS',
+    description: 'A les privilèges pour supprimer un type de frais',
   },
   {
     tag: 'UPDATE_FEE_TYPE',
-    name: 'UPDATE FEE TYPE',
-    description: 'Has privileges to update fee type ',
+    name: 'METTRE À JOUR TYPE DE FRAIS',
+    description: 'A les privilèges pour mettre à jour un type de frais',
   },
 
   // ROLE AUTHORIZATION
-
   {
     tag: 'GET_ROLE',
-    name: 'GET ROLE',
-    description: 'Has privileges to get fee type ',
+    name: 'OBTENIR RÔLE',
+    description: 'A les privilèges pour obtenir un rôle',
   },
   {
     tag: 'CREATE_ROLE',
-    name: 'CREATE ROLE',
-    description: 'Has privileges to create fee type ',
+    name: 'CRÉER RÔLE',
+    description: 'A les privilèges pour créer un rôle',
   },
   {
     tag: 'DELETE_ROLE',
-    name: 'DELETE ROLE',
-    description: 'Has privileges to delete fee type ',
+    name: 'SUPPRIMER RÔLE',
+    description: 'A les privilèges pour supprimer un rôle',
   },
   {
     tag: 'UPDATE_ROLE',
-    name: 'UPDATE ROLE',
-    description: 'Has privileges to update fee type ',
+    name: 'METTRE À JOUR RÔLE',
+    description: 'A les privilèges pour mettre à jour un rôle',
   },
 
   // ARCHIVE AUTHORIZATION
-
   {
     tag: 'GET_USER_ARCHIVE',
-    name: 'GET USER ARCHIVE',
-    description: 'Has privileges to get user archive',
+    name: 'OBTENIR ARCHIVE UTILISATEUR',
+    description: 'A les privilèges pour obtenir une archive utilisateur',
   },
   {
     tag: 'DELETE_USER_ARCHIVE',
-    name: 'DELETE USER ARCHIVE',
-    description: 'Has privileges to delete user archive',
+    name: 'SUPPRIMER ARCHIVE UTILISATEUR',
+    description: 'A les privilèges pour supprimer une archive utilisateur',
   },
   {
     tag: 'ARCHIVE_USER',
-    name: 'ARCHIVE USER',
-    description: 'Has privileges to archive user',
+    name: 'ARCHIVER UTILISATEUR',
+    description: 'A les privilèges pour archiver un utilisateur',
   },
 ];
