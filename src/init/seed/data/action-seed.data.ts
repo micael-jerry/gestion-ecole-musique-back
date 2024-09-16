@@ -68,6 +68,28 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
     description: 'A les privilèges pour mettre à jour un enseignant',
   },
 
+  // STUDENT AUTHORIZATION
+  {
+    tag: 'GET_STUDENT',
+    name: 'OBTENIR ÉTUDIANT',
+    description: 'A les privilèges pour obtenir un étudiant',
+  },
+  {
+    tag: 'CREATE_STUDENT',
+    name: 'CRÉER ÉTUDIANT',
+    description: 'A les privilèges pour créer un étudiant',
+  },
+  {
+    tag: 'DELETE_STUDENT',
+    name: 'SUPPRIMER ÉTUDIANT',
+    description: 'A les privilèges pour supprimer un étudiant',
+  },
+  {
+    tag: 'UPDATE_STUDENT',
+    name: 'METTRE À JOUR ÉTUDIANT',
+    description: 'A les privilèges pour mettre à jour un étudiant',
+  },
+
   // SETTING AUTHORIZATION
 
   {

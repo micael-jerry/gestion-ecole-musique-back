@@ -87,6 +87,35 @@ export const ActionUpdateTeacher: Action = {
   description: 'A les privilèges pour mettre à jour un enseignant',
 };
 
+// STUDENT AUTHORIZATION
+export const ActionGetStudent: Action = {
+  id: 'action_get_student_id',
+  tag: 'GET_STUDENT',
+  name: 'OBTENIR ÉTUDIANT',
+  description: 'A les privilèges pour obtenir un étudiant',
+};
+
+export const ActionCreateStudent: Action = {
+  id: 'action_create_student_id',
+  tag: 'CREATE_STUDENT',
+  name: 'CRÉER ÉTUDIANT',
+  description: 'A les privilèges pour créer un étudiant',
+};
+
+export const ActionDeleteStudent: Action = {
+  id: 'action_delete_student_id',
+  tag: 'DELETE_STUDENT',
+  name: 'SUPPRIMER ÉTUDIANT',
+  description: 'A les privilèges pour supprimer un étudiant',
+};
+
+export const ActionUpdateStudent: Action = {
+  id: 'action_update_student_id',
+  tag: 'UPDATE_STUDENT',
+  name: 'METTRE À JOUR ÉTUDIANT',
+  description: 'A les privilèges pour mettre à jour un étudiant',
+};
+
 // SETTING AUTHORIZATION
 export const ActionGetSetting: Action = {
   id: 'action_get_setting_id',
@@ -202,6 +231,10 @@ export const AllAction: Action[] = [
   ActionCreateTeacher,
   ActionDeleteTeacher,
   ActionUpdateTeacher,
+  ActionGetStudent,
+  ActionCreateStudent,
+  ActionDeleteStudent,
+  ActionUpdateStudent,
   ActionGetSetting,
   ActionUpdateSetting,
   ActionGetMusic,
