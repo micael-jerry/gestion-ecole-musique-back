@@ -5,24 +5,24 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
   // USER AUTHORIZATION
 
   {
-    tag: 'GET_USER',
-    name: 'GET USER',
-    description: 'Has privileges to get user ',
+    tag: 'GET_ADMIN',
+    name: 'OBTENIR ADMIN',
+    description: 'A les privilèges pour obtenir un admin',
   },
   {
-    tag: 'CREATE_USER',
-    name: 'CREATE USER',
-    description: 'Has privileges to create user ',
+    tag: 'CREATE_ADMIN',
+    name: 'CRÉER ADMIN',
+    description: 'A les privilèges pour créer un admin',
   },
   {
-    tag: 'DELETE_USER',
-    name: 'DELETE USER',
-    description: 'Has privileges to delete user ',
+    tag: 'DELETE_ADMIN',
+    name: 'SUPPRIMER ADMIN',
+    description: 'A les privilèges pour supprimer un admin',
   },
   {
-    tag: 'UPDATE_USER',
-    name: 'UPDATE USER',
-    description: 'Has privileges to update user ',
+    tag: 'UPDATE_ADMIN',
+    name: 'METTRE À JOUR ADMIN',
+    description: 'A les privilèges pour mettre à jour un admin',
   },
 
   // SETTING AUTHORIZATION

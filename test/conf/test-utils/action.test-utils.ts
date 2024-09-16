@@ -1,32 +1,32 @@
 import { Action } from '@prisma/client';
 
 // USER AUTHORIZATION
-export const ActionGetUser: Action = {
-  id: 'action_get_user_id',
-  tag: 'GET_USER',
-  name: 'GET USER',
-  description: 'Has privileges to get user',
+export const ActionGetAdmin: Action = {
+  id: 'action_get_admin_id',
+  tag: 'GET_ADMIN',
+  name: 'OBTENIR ADMIN',
+  description: 'A les privilèges pour obtenir un admin',
 };
 
-export const ActionCreateUser: Action = {
-  id: 'action_create_user_id',
-  tag: 'CREATE_USER',
-  name: 'CREATE USER',
-  description: 'Has privileges to create user',
+export const ActionCreateAdmin: Action = {
+  id: 'action_create_admin_id',
+  tag: 'CREATE_ADMIN',
+  name: 'CRÉER ADMIN',
+  description: 'A les privilèges pour créer un admin',
 };
 
-export const ActionDeleteUser: Action = {
-  id: 'action_delete_user_id',
-  tag: 'DELETE_USER',
-  name: 'DELETE USER',
-  description: 'Has privileges to delete user',
+export const ActionDeleteAdmin: Action = {
+  id: 'action_delete_admin_id',
+  tag: 'DELETE_ADMIN',
+  name: 'SUPPRIMER ADMIN',
+  description: 'A les privilèges pour supprimer un admin',
 };
 
-export const ActionUpdateUser: Action = {
-  id: 'action_update_user_id',
-  tag: 'UPDATE_USER',
-  name: 'UPDATE USER',
-  description: 'Has privileges to update user',
+export const ActionUpdateAdmin: Action = {
+  id: 'action_update_admin_id',
+  tag: 'UPDATE_ADMIN',
+  name: 'METTRE À JOUR ADMIN',
+  description: 'A les privilèges pour mettre à jour un admin',
 };
 
 // SETTING AUTHORIZATION
@@ -132,10 +132,10 @@ export const ActionUpdateRole: Action = {
 };
 
 export const AllAction: Action[] = [
-  ActionGetUser,
-  ActionCreateUser,
-  ActionDeleteUser,
-  ActionUpdateUser,
+  ActionGetAdmin,
+  ActionCreateAdmin,
+  ActionDeleteAdmin,
+  ActionUpdateAdmin,
   ActionGetSetting,
   ActionUpdateSetting,
   ActionGetMusic,

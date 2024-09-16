@@ -15,7 +15,7 @@ import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Actions('GET_USER')
+  @Actions('GET_ADMIN')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [User])
   findAllUser(
@@ -37,14 +37,14 @@ export class UserResolver {
     return this.userService.findAll(roleName, criteria);
   }
 
-  @Actions('GET_USER')
+  @Actions('GET_ADMIN')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => User)
   findByIdUser(@Args('id') id: string) {
     return this.userService.findById(id);
   }
 
-  @Actions('CREATE_USER')
+  @Actions('CREATE_ADMIN')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => User)
   async createUser(
@@ -62,7 +62,7 @@ export class UserResolver {
     return await this.userService.create(createUserInput, pictureUploaded);
   }
 
-  @Actions('DELETE_USER')
+  @Actions('DELETE_ADMIN')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => User)
   async removeUser(
@@ -72,7 +72,7 @@ export class UserResolver {
     return await this.userService.remove(user, id);
   }
 
-  @Actions('UPDATE_USER')
+  @Actions('UPDATE_ADMIN')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => User)
   async updateUser(
