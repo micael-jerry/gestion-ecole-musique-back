@@ -1,6 +1,6 @@
 import { Action } from '@prisma/client';
 
-// USER AUTHORIZATION
+// ADMIN AUTHORIZATION
 export const ActionGetAdmin: Action = {
   id: 'action_get_admin_id',
   tag: 'GET_ADMIN',
@@ -27,6 +27,35 @@ export const ActionUpdateAdmin: Action = {
   tag: 'UPDATE_ADMIN',
   name: 'METTRE À JOUR ADMIN',
   description: 'A les privilèges pour mettre à jour un admin',
+};
+
+// MANAGER AUTHORIZATION
+export const ActionGetManager: Action = {
+  id: 'action_get_manager_id',
+  tag: 'GET_MANAGER',
+  name: 'OBTENIR MANAGER',
+  description: 'A les privilèges pour obtenir un manager',
+};
+
+export const ActionCreateManager: Action = {
+  id: 'action_create_manager_id',
+  tag: 'CREATE_MANAGER',
+  name: 'CRÉER MANAGER',
+  description: 'A les privilèges pour créer un manager',
+};
+
+export const ActionDeleteManager: Action = {
+  id: 'action_delete_manager_id',
+  tag: 'DELETE_MANAGER',
+  name: 'SUPPRIMER MANAGER',
+  description: 'A les privilèges pour supprimer un manager',
+};
+
+export const ActionUpdateManager: Action = {
+  id: 'action_update_manager_id',
+  tag: 'UPDATE_MANAGER',
+  name: 'METTRE À JOUR MANAGER',
+  description: 'A les privilèges pour mettre à jour un manager',
 };
 
 // SETTING AUTHORIZATION

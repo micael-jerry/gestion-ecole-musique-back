@@ -2,8 +2,7 @@ import { Prisma } from '@prisma/client';
 
 //All tag will be uppercase_
 export const SeedAction: Prisma.ActionCreateInput[] = [
-  // USER AUTHORIZATION
-
+  // ADMIN AUTHORIZATION
   {
     tag: 'GET_ADMIN',
     name: 'OBTENIR ADMIN',
@@ -23,6 +22,28 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
     tag: 'UPDATE_ADMIN',
     name: 'METTRE À JOUR ADMIN',
     description: 'A les privilèges pour mettre à jour un admin',
+  },
+
+  // MANAGER AUTHORIZATION
+  {
+    tag: 'GET_MANAGER',
+    name: 'OBTENIR MANAGER',
+    description: 'A les privilèges pour obtenir un manager',
+  },
+  {
+    tag: 'CREATE_MANAGER',
+    name: 'CRÉER MANAGER',
+    description: 'A les privilèges pour créer un manager',
+  },
+  {
+    tag: 'DELETE_MANAGER',
+    name: 'SUPPRIMER MANAGER',
+    description: 'A les privilèges pour supprimer un manager',
+  },
+  {
+    tag: 'UPDATE_MANAGER',
+    name: 'METTRE À JOUR MANAGER',
+    description: 'A les privilèges pour mettre à jour un manager',
   },
 
   // SETTING AUTHORIZATION
