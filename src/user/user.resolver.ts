@@ -15,7 +15,7 @@ import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Actions('GET_ADMIN', 'GET_MANAGER')
+  @Actions('GET_ADMIN', 'GET_MANAGER', 'GET_TEACHER')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [User])
   findAllUser(
@@ -37,21 +37,21 @@ export class UserResolver {
     return this.userService.findAll(roleName, criteria);
   }
 
-  @Actions('GET_ADMIN', 'GET_MANAGER')
+  @Actions('GET_ADMIN', 'GET_MANAGER', 'GET_TEACHER')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => User)
   findByIdUser(@Args('id') id: string) {
     return this.userService.findById(id);
   }
 
-  @Actions('GET_ADMIN', 'GET_MANAGER')
+  @Actions('GET_ADMIN', 'GET_MANAGER', 'GET_TEACHER')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => User)
   findCurrentUser(@Context('user') user: JwtPayloadType) {
     return this.userService.findById(user.userId);
   }
 
-  @Actions('CREATE_ADMIN', 'CREATE_MANAGER')
+  @Actions('CREATE_ADMIN', 'CREATE_MANAGER', 'CREATE_TEACHER')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => User)
   async createUser(
@@ -69,7 +69,7 @@ export class UserResolver {
     return await this.userService.create(createUserInput, pictureUploaded);
   }
 
-  @Actions('DELETE_ADMIN', 'DELETE_MANAGER')
+  @Actions('DELETE_ADMIN', 'DELETE_MANAGER', 'DELETE_TEACHER')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => User)
   async removeUser(
@@ -79,7 +79,7 @@ export class UserResolver {
     return await this.userService.remove(user, id);
   }
 
-  @Actions('UPDATE_ADMIN', 'UPDATE_MANAGER')
+  @Actions('UPDATE_ADMIN', 'UPDATE_MANAGER', 'UPDATE_TEACHER')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => User)
   async updateUser(

@@ -58,6 +58,35 @@ export const ActionUpdateManager: Action = {
   description: 'A les privilèges pour mettre à jour un manager',
 };
 
+// TEACHER AUTHORIZATION
+export const ActionGetTeacher: Action = {
+  id: 'action_get_teacher_id',
+  tag: 'GET_TEACHER',
+  name: 'OBTENIR ENSEIGNANT',
+  description: 'A les privilèges pour obtenir un enseignant',
+};
+
+export const ActionCreateTeacher: Action = {
+  id: 'action_create_teacher_id',
+  tag: 'CREATE_TEACHER',
+  name: 'CRÉER ENSEIGNANT',
+  description: 'A les privilèges pour créer un enseignant',
+};
+
+export const ActionDeleteTeacher: Action = {
+  id: 'action_delete_teacher_id',
+  tag: 'DELETE_TEACHER',
+  name: 'SUPPRIMER ENSEIGNANT',
+  description: 'A les privilèges pour supprimer un enseignant',
+};
+
+export const ActionUpdateTeacher: Action = {
+  id: 'action_update_teacher_id',
+  tag: 'UPDATE_TEACHER',
+  name: 'METTRE À JOUR ENSEIGNANT',
+  description: 'A les privilèges pour mettre à jour un enseignant',
+};
+
 // SETTING AUTHORIZATION
 export const ActionGetSetting: Action = {
   id: 'action_get_setting_id',
@@ -165,6 +194,14 @@ export const AllAction: Action[] = [
   ActionCreateAdmin,
   ActionDeleteAdmin,
   ActionUpdateAdmin,
+  ActionGetManager,
+  ActionCreateManager,
+  ActionDeleteManager,
+  ActionUpdateManager,
+  ActionGetTeacher,
+  ActionCreateTeacher,
+  ActionDeleteTeacher,
+  ActionUpdateTeacher,
   ActionGetSetting,
   ActionUpdateSetting,
   ActionGetMusic,

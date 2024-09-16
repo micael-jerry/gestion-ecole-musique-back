@@ -46,6 +46,28 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
     description: 'A les privilèges pour mettre à jour un manager',
   },
 
+  // TEACHER AUTHORIZATION
+  {
+    tag: 'GET_TEACHER',
+    name: 'OBTENIR ENSEIGNANT',
+    description: 'A les privilèges pour obtenir un enseignant',
+  },
+  {
+    tag: 'CREATE_TEACHER',
+    name: 'CRÉER ENSEIGNANT',
+    description: 'A les privilèges pour créer un enseignant',
+  },
+  {
+    tag: 'DELETE_TEACHER',
+    name: 'SUPPRIMER ENSEIGNANT',
+    description: 'A les privilèges pour supprimer un enseignant',
+  },
+  {
+    tag: 'UPDATE_TEACHER',
+    name: 'METTRE À JOUR ENSEIGNANT',
+    description: 'A les privilèges pour mettre à jour un enseignant',
+  },
+
   // SETTING AUTHORIZATION
 
   {
