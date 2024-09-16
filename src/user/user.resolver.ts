@@ -44,6 +44,13 @@ export class UserResolver {
     return this.userService.findById(id);
   }
 
+  @Actions('GET_USER')
+  @UseGuards(AuthGuard, ActionGuard)
+  @Query(() => User)
+  findCurrentUser(@Context('user') user: JwtPayloadType) {
+    return this.userService.findById(user.userId);
+  }
+
   @Actions('CREATE_USER')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => User)
