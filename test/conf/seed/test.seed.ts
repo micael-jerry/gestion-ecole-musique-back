@@ -6,7 +6,14 @@ import {
 } from '../test-utils/music-category.test-utils';
 import { SettingOne } from '../test-utils/setting.test-utils';
 import { RoleAdmin, RoleManager } from '../test-utils/role.test-utils';
-import { UserOne, UserTwo } from '../test-utils/user.test-utils';
+import {
+  UserFive,
+  UserFour,
+  UserOne,
+  UserSix,
+  UserThree,
+  UserTwo,
+} from '../test-utils/user.test-utils';
 import { UserWithIncluded } from 'src/user/types/user-with-included.type';
 import { AllAction } from '../test-utils/action.test-utils';
 import { RoleWithIncluded } from 'src/role/types/role-with-included.type';
@@ -69,6 +76,10 @@ export const seederTest = async () => {
     // seed user
     await seederTestUser(prisma, UserOne);
     await seederTestUser(prisma, UserTwo);
+    await seederTestUser(prisma, UserThree);
+    await seederTestUser(prisma, UserFour);
+    await seederTestUser(prisma, UserFive);
+    await seederTestUser(prisma, UserSix);
   });
   await prisma.$disconnect();
 };
