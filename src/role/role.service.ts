@@ -52,10 +52,11 @@ export class RoleService {
     return role;
   }
 
-  async updateRole(
-    updateRoleInput: UpdateRoleInput,
-  ): Promise<RoleWithIncluded> {
-    const { id, name, actions = [] } = updateRoleInput;
+  async updateRole({
+    id,
+    name,
+    actions,
+  }: UpdateRoleInput): Promise<RoleWithIncluded> {
     const found = await this.getRoleById(id);
 
     if (found) {
@@ -64,7 +65,8 @@ export class RoleService {
         data: {
           name,
           actions: {
-            connect: actions.map((actionId) => ({ id: actionId.id })),
+            connect: actions?.connect || [],
+            disconnect: actions?.disconnect || [],
           },
         },
         include: RoleService.roleInclude,

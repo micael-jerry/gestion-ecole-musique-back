@@ -128,7 +128,9 @@ describe('RolesService', () => {
       const updateRoleInput = {
         id,
         name: 'Updated Role',
-        actions: [{ id, name: 'test', description: 'testing' }],
+        actions: {
+          connect: [{ id }],
+        },
       };
       const result: Role = { ...updateRoleInput };
 
@@ -141,9 +143,10 @@ describe('RolesService', () => {
         data: {
           name: updateRoleInput.name,
           actions: {
-            connect: updateRoleInput.actions.map((actionId) => ({
+            connect: updateRoleInput.actions.connect.map((actionId) => ({
               id: actionId.id,
             })),
+            disconnect: [],
           },
         },
         include: { actions: true, users: true },
@@ -155,7 +158,9 @@ describe('RolesService', () => {
       const updateRoleInput = {
         id,
         name: 'Updated Role',
-        actions: [{ id, name: 'test', description: 'testing' }],
+        actions: {
+          connect: [{ id }],
+        },
       };
 
       jest
@@ -170,9 +175,10 @@ describe('RolesService', () => {
         data: {
           name: updateRoleInput.name,
           actions: {
-            connect: updateRoleInput.actions.map((actionId) => ({
+            connect: updateRoleInput.actions.connect.map((actionId) => ({
               id: actionId.id,
             })),
+            disconnect: [],
           },
         },
         include: { actions: true, users: true },
