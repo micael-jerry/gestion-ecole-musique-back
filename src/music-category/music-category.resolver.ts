@@ -12,7 +12,7 @@ import { ActionGuard } from '../auth/guard/action.guard';
 export class MusicCategoryResolver {
   constructor(private readonly musicCategoryService: MusicCategoryService) {}
 
-  @Actions('CREATE_MUSIC')
+  @Actions('CREATE_MUSIC_CATEGORY')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => MusicCategory)
   createMusicCategory(
@@ -22,21 +22,21 @@ export class MusicCategoryResolver {
     return this.musicCategoryService.create(createMusicCategoryInput);
   }
 
-  @Actions('GET_MUSIC')
+  @Actions('GET_MUSIC_CATEGORY')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [MusicCategory])
   findAllMusicCategory() {
     return this.musicCategoryService.findAll();
   }
 
-  @Actions('GET_MUSIC')
+  @Actions('GET_MUSIC_CATEGORY')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => MusicCategory)
   findByIdMusicCategory(@Args('id') id: string) {
     return this.musicCategoryService.findById(id);
   }
 
-  @Actions('UPDATE_MUSIC')
+  @Actions('UPDATE_MUSIC_CATEGORY')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => MusicCategory)
   updateMusicCategory(
@@ -46,7 +46,7 @@ export class MusicCategoryResolver {
     return this.musicCategoryService.update(updateMusicCategoryInput);
   }
 
-  @Actions('DELETE_MUSIC')
+  @Actions('DELETE_MUSIC_CATEGORY')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => MusicCategory)
   removeMusicCategory(@Args('id') id: string) {

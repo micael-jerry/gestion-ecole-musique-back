@@ -5,45 +5,45 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
   // ADMIN AUTHORIZATION
   {
     tag: 'GET_ADMIN',
-    name: 'OBTENIR ADMIN',
-    description: 'A les privilèges pour obtenir un admin',
+    name: 'OBTENIR ADMINISTRATEUR',
+    description: 'A les privilèges pour obtenir un admininistrateur',
   },
   {
     tag: 'CREATE_ADMIN',
-    name: 'CRÉER ADMIN',
-    description: 'A les privilèges pour créer un admin',
+    name: 'CRÉER ADMINISTRATEUR',
+    description: 'A les privilèges pour créer un admininistrateur',
   },
   {
     tag: 'DELETE_ADMIN',
-    name: 'SUPPRIMER ADMIN',
-    description: 'A les privilèges pour supprimer un admin',
+    name: 'SUPPRIMER ADMINISTRATEUR',
+    description: 'A les privilèges pour supprimer un admininistrateur',
   },
   {
     tag: 'UPDATE_ADMIN',
-    name: 'METTRE À JOUR ADMIN',
-    description: 'A les privilèges pour mettre à jour un admin',
+    name: 'METTRE À JOUR ADMINISTRATEUR',
+    description: 'A les privilèges pour mettre à jour un admininistrateur',
   },
 
   // MANAGER AUTHORIZATION
   {
     tag: 'GET_MANAGER',
-    name: 'OBTENIR MANAGER',
-    description: 'A les privilèges pour obtenir un manager',
+    name: 'OBTENIR GESTIONNAIRE',
+    description: 'A les privilèges pour obtenir un gestionnaire',
   },
   {
     tag: 'CREATE_MANAGER',
-    name: 'CRÉER MANAGER',
-    description: 'A les privilèges pour créer un manager',
+    name: 'CRÉER GESTIONNAIRE',
+    description: 'A les privilèges pour créer un gestionnaire',
   },
   {
     tag: 'DELETE_MANAGER',
-    name: 'SUPPRIMER MANAGER',
-    description: 'A les privilèges pour supprimer un manager',
+    name: 'SUPPRIMER GESTIONNAIRE',
+    description: 'A les privilèges pour supprimer un gestionnaire',
   },
   {
     tag: 'UPDATE_MANAGER',
-    name: 'METTRE À JOUR MANAGER',
-    description: 'A les privilèges pour mettre à jour un manager',
+    name: 'METTRE À JOUR GESTIONNAIRE',
+    description: 'A les privilèges pour mettre à jour un gestionnaire',
   },
 
   // TEACHER AUTHORIZATION
@@ -104,24 +104,24 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
 
   // MUSIC CATEGORIES AUTHORIZATION
   {
-    tag: 'GET_MUSIC',
-    name: 'OBTENIR MUSIQUE',
-    description: 'A les privilèges pour obtenir une musique',
+    tag: 'GET_MUSIC_CATEGORY',
+    name: 'OBTENIR CATEGORIE MUSIQUE',
+    description: 'A les privilèges pour obtenir une categorie de musique',
   },
   {
-    tag: 'CREATE_MUSIC',
-    name: 'CRÉER MUSIQUE',
-    description: 'A les privilèges pour créer une musique',
+    tag: 'CREATE_MUSIC_CATEGORY',
+    name: 'CRÉER CATEGORIE MUSIQUE',
+    description: 'A les privilèges pour créer une categorie de musique',
   },
   {
-    tag: 'DELETE_MUSIC',
+    tag: 'DELETE_MUSIC_CATEGORY',
     name: 'SUPPRIMER MUSIQUE',
-    description: 'A les privilèges pour supprimer une musique',
+    description: 'A les privilèges pour supprimer une categorie de musique',
   },
   {
-    tag: 'UPDATE_MUSIC',
-    name: 'METTRE À JOUR MUSIQUE',
-    description: 'A les privilèges pour mettre à jour une musique',
+    tag: 'UPDATE_MUSIC_CATEGORY',
+    name: 'METTRE À JOUR CATEGORIE MUSIQUE',
+    description: 'A les privilèges pour mettre à jour une categorie de musique',
   },
 
   // FEE TYPE AUTHORIZATION
