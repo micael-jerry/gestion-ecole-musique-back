@@ -27,13 +27,15 @@ export class UserService {
   ) {}
 
   async findAll(
-    roleName?: string,
+    roleName?: string[],
     criteria?: string,
     isArchive: boolean = false,
   ): Promise<UserWithIncluded[]> {
     const userWhereInput: Prisma.UserWhereInput = {};
     userWhereInput.isArchive = isArchive;
-    if (roleName) userWhereInput.role = { name: roleName };
+    if (roleName && roleName.length > 0) {
+      userWhereInput.role = { name: { in: roleName } };
+    }
     if (criteria)
       userWhereInput.OR = [
         { firstname: { contains: criteria, mode: 'insensitive' } },

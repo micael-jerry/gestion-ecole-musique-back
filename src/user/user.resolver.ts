@@ -24,8 +24,9 @@ export class UserResolver {
       nullable: true,
       description:
         'if you want a list of users by role, enter the name of the role, or leave out the parameter',
+      type: () => [String],
     })
-    roleName: string,
+    roleName: string[],
     @Args({
       name: 'criteria',
       nullable: true,

@@ -14,7 +14,7 @@ export class UserArchiveService {
   ) {}
 
   async findAll(
-    roleName?: string,
+    roleName?: string[],
     criteria?: string,
   ): Promise<UserWithIncluded[]> {
     return this.userService.findAll(roleName, criteria, true);
