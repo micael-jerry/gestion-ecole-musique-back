@@ -2,8 +2,10 @@ import { RoleWithIncluded } from 'src/role/types/role-with-included.type';
 import {
   ActionCreateManager,
   ActionDeleteManager,
+  ActionGetFeeType,
   ActionGetManager,
   ActionGetMusicCategory,
+  ActionGetSetting,
   ActionUpdateManager,
   AllAction,
 } from './action.test-utils';
@@ -23,5 +25,7 @@ export const RoleManager: RoleWithIncluded = {
     ActionUpdateManager,
     ActionDeleteManager,
     ActionGetMusicCategory,
+    ActionGetFeeType,
+    ActionGetSetting,
   ],
 };
