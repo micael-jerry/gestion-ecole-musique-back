@@ -3,6 +3,7 @@ import {
   ActionCreateManager,
   ActionDeleteManager,
   ActionGetManager,
+  ActionGetMusicCategory,
   ActionUpdateManager,
   AllAction,
 } from './action.test-utils';
@@ -21,5 +22,6 @@ export const RoleManager: RoleWithIncluded = {
     ActionCreateManager,
     ActionUpdateManager,
     ActionDeleteManager,
+    ActionGetMusicCategory,
   ],
 };

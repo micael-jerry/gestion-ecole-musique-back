@@ -132,28 +132,28 @@ export const ActionUpdateSetting: Action = {
 };
 
 // MUSIC CATEGORIES AUTHORIZATION
-export const ActionGetMusic: Action = {
+export const ActionGetMusicCategory: Action = {
   id: 'action_get_music_id',
   tag: 'GET_MUSIC_CATEGORY',
   name: 'OBTENIR CATEGORIE MUSIQUE',
   description: 'A les privilèges pour obtenir une categorie de musique',
 };
 
-export const ActionCreateMusic: Action = {
+export const ActionCreateMusicCategory: Action = {
   id: 'action_create_music_id',
   tag: 'CREATE_MUSIC_CATEGORY',
   name: 'CRÉER CATEGORIE MUSIQUE',
   description: 'A les privilèges pour créer une categorie de musique',
 };
 
-export const ActionDeleteMusic: Action = {
+export const ActionDeleteMusicCategory: Action = {
   id: 'action_delete_music_id',
   tag: 'DELETE_MUSIC_CATEGORY',
   name: 'SUPPRIMER MUSIQUE',
   description: 'A les privilèges pour supprimer une categorie de musique',
 };
 
-export const ActionUpdateMusic: Action = {
+export const ActionUpdateMusicCategory: Action = {
   id: 'action_update_music_id',
   tag: 'UPDATE_MUSIC_CATEGORY',
   name: 'METTRE À JOUR CATEGORIE MUSIQUE',
@@ -237,10 +237,10 @@ export const AllAction: Action[] = [
   ActionUpdateStudent,
   ActionGetSetting,
   ActionUpdateSetting,
-  ActionGetMusic,
-  ActionCreateMusic,
-  ActionDeleteMusic,
-  ActionUpdateMusic,
+  ActionGetMusicCategory,
+  ActionCreateMusicCategory,
+  ActionDeleteMusicCategory,
+  ActionUpdateMusicCategory,
   ActionGetFeeType,
   ActionCreateFeeType,
   ActionDeleteFeeType,

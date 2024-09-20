@@ -1,7 +1,11 @@
 import { PrismaClient, Role, User } from '@prisma/client';
 import { FeeTypeOne, FeeTypeTwo } from '../test-utils/fee-type.test-utils';
 import {
+  MusicCategoryFive,
+  MusicCategoryFour,
   MusicCategoryOne,
+  MusicCategorySix,
+  MusicCategoryThree,
   MusicCategoryTwo,
 } from '../test-utils/music-category.test-utils';
 import { SettingOne } from '../test-utils/setting.test-utils';
@@ -69,7 +73,14 @@ export const seederTest = async () => {
     await prisma.feeType.createMany({ data: [FeeTypeOne, FeeTypeTwo] });
     // seed musicCategory
     await prisma.musicCategory.createMany({
-      data: [MusicCategoryOne, MusicCategoryTwo],
+      data: [
+        MusicCategoryOne,
+        MusicCategoryTwo,
+        MusicCategoryThree,
+        MusicCategoryFour,
+        MusicCategoryFive,
+        MusicCategorySix,
+      ],
     });
     // seed setting
     await prisma.setting.create({ data: SettingOne });
