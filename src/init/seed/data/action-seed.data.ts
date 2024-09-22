@@ -102,26 +102,26 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
     description: 'A les privilèges pour mettre à jour un paramètre',
   },
 
-  // MUSIC CATEGORIES AUTHORIZATION
+  // COURSE AUTHORIZATION
   {
-    tag: 'GET_MUSIC_CATEGORY',
-    name: 'OBTENIR CATEGORIE MUSIQUE',
-    description: 'A les privilèges pour obtenir une categorie de musique',
+    tag: 'GET_COURSE',
+    name: 'VOIR LES COURS',
+    description: 'A les privilèges pour voir les cours',
   },
   {
-    tag: 'CREATE_MUSIC_CATEGORY',
-    name: 'CRÉER CATEGORIE MUSIQUE',
-    description: 'A les privilèges pour créer une categorie de musique',
+    tag: 'CREATE_COURSE',
+    name: 'CRÉER DES COURS',
+    description: 'A les privilèges pour créer des cours',
   },
   {
-    tag: 'DELETE_MUSIC_CATEGORY',
-    name: 'SUPPRIMER MUSIQUE',
-    description: 'A les privilèges pour supprimer une categorie de musique',
+    tag: 'DELETE_COURSE',
+    name: 'SUPPRIMER DES COURS',
+    description: 'A les privilèges pour supprimer des cours',
   },
   {
-    tag: 'UPDATE_MUSIC_CATEGORY',
-    name: 'METTRE À JOUR CATEGORIE MUSIQUE',
-    description: 'A les privilèges pour mettre à jour une categorie de musique',
+    tag: 'UPDATE_COURSE',
+    name: 'METTRE À JOUR DES COURS',
+    description: 'A les privilèges pour mettre à jour des cours',
   },
 
   // FEE TYPE AUTHORIZATION

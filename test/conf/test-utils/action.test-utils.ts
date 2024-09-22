@@ -132,32 +132,32 @@ export const ActionUpdateSetting: Action = {
 };
 
 // MUSIC CATEGORIES AUTHORIZATION
-export const ActionGetMusicCategory: Action = {
-  id: 'action_get_music_id',
-  tag: 'GET_MUSIC_CATEGORY',
-  name: 'OBTENIR CATEGORIE MUSIQUE',
-  description: 'A les privilèges pour obtenir une categorie de musique',
+export const ActionGetCourse: Action = {
+  id: 'action_get_course_id',
+  tag: 'GET_COURSE',
+  name: 'VOIR LES COURS',
+  description: 'A les privilèges pour voir les cours',
 };
 
-export const ActionCreateMusicCategory: Action = {
-  id: 'action_create_music_id',
-  tag: 'CREATE_MUSIC_CATEGORY',
-  name: 'CRÉER CATEGORIE MUSIQUE',
-  description: 'A les privilèges pour créer une categorie de musique',
+export const ActionCreateCourse: Action = {
+  id: 'action_create_course_id',
+  tag: 'CREATE_COURSE',
+  name: 'CRÉER DES COURS',
+  description: 'A les privilèges pour créer des cours',
 };
 
-export const ActionDeleteMusicCategory: Action = {
-  id: 'action_delete_music_id',
-  tag: 'DELETE_MUSIC_CATEGORY',
-  name: 'SUPPRIMER MUSIQUE',
-  description: 'A les privilèges pour supprimer une categorie de musique',
+export const ActionDeleteCourse: Action = {
+  id: 'action_delete_course_id',
+  tag: 'DELETE_COURSE',
+  name: 'SUPPRIMER DES COURS',
+  description: 'A les privilèges pour supprimer des cours',
 };
 
-export const ActionUpdateMusicCategory: Action = {
-  id: 'action_update_music_id',
-  tag: 'UPDATE_MUSIC_CATEGORY',
-  name: 'METTRE À JOUR CATEGORIE MUSIQUE',
-  description: 'A les privilèges pour mettre à jour une categorie de musique',
+export const ActionUpdateCourse: Action = {
+  id: 'action_update_course_id',
+  tag: 'UPDATE_COURSE',
+  name: 'METTRE À JOUR DES COURS',
+  description: 'A les privilèges pour mettre à jour des cours',
 };
 
 // FEE TYPE AUTHORIZATION
@@ -237,10 +237,10 @@ export const AllAction: Action[] = [
   ActionUpdateStudent,
   ActionGetSetting,
   ActionUpdateSetting,
-  ActionGetMusicCategory,
-  ActionCreateMusicCategory,
-  ActionDeleteMusicCategory,
-  ActionUpdateMusicCategory,
+  ActionGetCourse,
+  ActionCreateCourse,
+  ActionDeleteCourse,
+  ActionUpdateCourse,
   ActionGetFeeType,
   ActionCreateFeeType,
   ActionDeleteFeeType,

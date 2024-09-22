@@ -12,7 +12,7 @@ import { ActionGuard } from '../auth/guard/action.guard';
 export class CourseResolver {
   constructor(private readonly courseService: CourseService) {}
 
-  @Actions('CREATE_MUSIC_CATEGORY')
+  @Actions('CREATE_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => Course)
   createCourse(
@@ -22,21 +22,21 @@ export class CourseResolver {
     return this.courseService.create(createCourseInput);
   }
 
-  @Actions('GET_MUSIC_CATEGORY')
+  @Actions('GET_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [Course])
   findAllCourse() {
     return this.courseService.findAll();
   }
 
-  @Actions('GET_MUSIC_CATEGORY')
+  @Actions('GET_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => Course)
   findByIdCourse(@Args('id') id: string) {
     return this.courseService.findById(id);
   }
 
-  @Actions('UPDATE_MUSIC_CATEGORY')
+  @Actions('UPDATE_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => Course)
   updateCourse(
@@ -46,7 +46,7 @@ export class CourseResolver {
     return this.courseService.update(updateCourseInput);
   }
 
-  @Actions('DELETE_MUSIC_CATEGORY')
+  @Actions('DELETE_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => Course)
   removeCourse(@Args('id') id: string) {
