@@ -1,18 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 import { execSync } from 'child_process';
-import {
-  MusicCategoryOne,
-  MusicCategoryTwo,
-} from './conf/test-utils/music-category.test-utils';
+import { CourseOne, CourseTwo } from './conf/test-utils/course.test-utils';
 import { loginTestQuery } from './conf/query/login.test-query';
 import { UserOne } from './conf/test-utils/user.test-utils';
-import { findAllMusicCategoryTestQuery } from './conf/query/music-category.test-query';
+import { findAllCourseTestQuery } from './conf/query/course.test-query';
 import { AuthResponse } from '../src/auth/entities/auth-response.entity';
 
-describe('MusicCategory (e2e)', () => {
+describe('Course (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -29,7 +26,7 @@ describe('MusicCategory (e2e)', () => {
     await app.init();
   });
 
-  it('should return a list of music categories', async () => {
+  it('should return a list of courses', async () => {
     const loginQuery = loginTestQuery({
       email: UserOne.email,
       password: 'password123',
@@ -39,17 +36,17 @@ describe('MusicCategory (e2e)', () => {
       .send({ query: loginQuery })
       .then((res) => res.body.data.login);
 
-    const query = findAllMusicCategoryTestQuery();
+    const query = findAllCourseTestQuery();
     return request(app.getHttpServer())
       .post('/graphql')
       .set({ Authorization: `Bearer ${authResponse.token}` })
       .send({ query })
       .expect((response) => {
         const data = response.body.data;
-        expect(data).toHaveProperty('findAllMusicCategory');
-        expect(data.findAllMusicCategory).toBeInstanceOf(Array);
-        expect(data.findAllMusicCategory).toEqual(
-          expect.arrayContaining([MusicCategoryOne, MusicCategoryTwo]),
+        expect(data).toHaveProperty('findAllCourse');
+        expect(data.findAllCourse).toBeInstanceOf(Array);
+        expect(data.findAllCourse).toEqual(
+          expect.arrayContaining([CourseOne, CourseTwo]),
         );
       });
   });

@@ -14,7 +14,7 @@ export const UserOne: UserWithIncluded = {
   picture: null,
   description: 'Default user',
   role: RoleAdmin,
-  musicCategories: [],
+  courses: [],
   isArchive: false,
 };
 
@@ -30,7 +30,7 @@ export const UserTwo: UserWithIncluded = {
   picture: null,
   description: 'New user exploring the platform',
   role: RoleManager,
-  musicCategories: [],
+  courses: [],
   isArchive: false,
 };
 
@@ -46,7 +46,7 @@ export const UserThree: UserWithIncluded = {
   picture: null,
   description: 'Administrator of the platform',
   role: RoleAdmin,
-  musicCategories: [],
+  courses: [],
   isArchive: false,
 };
 
@@ -62,7 +62,7 @@ export const UserFour: UserWithIncluded = {
   picture: null,
   description: 'User interested in rock music',
   role: RoleManager,
-  musicCategories: [],
+  courses: [],
   isArchive: false,
 };
 
@@ -78,7 +78,7 @@ export const UserFive: UserWithIncluded = {
   picture: null,
   description: 'User exploring jazz music',
   role: RoleAdmin,
-  musicCategories: [],
+  courses: [],
   isArchive: false,
 };
 
@@ -94,6 +94,6 @@ export const UserSix: UserWithIncluded = {
   picture: null,
   description: 'Administrator of multiple categories',
   role: RoleManager,
-  musicCategories: [],
+  courses: [],
   isArchive: false,
 };

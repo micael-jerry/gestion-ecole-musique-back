@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { RoleType } from '../../role/entities/role.entity';
-import { MusicCategory } from '../../music-category/entities/music-category.entity';
+import { Course } from '../../course/entities/course.entity';
 import { pathFinderMiddleware } from '../middleware/path-finder.middleware';
 
 @ObjectType()
@@ -32,6 +32,6 @@ export class User {
   @Field(() => RoleType)
   role: RoleType;
 
-  @Field(() => [MusicCategory], { nullable: true })
-  musicCategories: MusicCategory[];
+  @Field(() => [Course], { nullable: true })
+  courses: Course[];
 }

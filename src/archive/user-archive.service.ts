@@ -6,7 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserArchiveService {
-  private static userInclude = { role: true, musicCategories: true };
+  private static userInclude = { role: true, courses: true };
 
   constructor(
     private readonly userService: UserService,

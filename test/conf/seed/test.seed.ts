@@ -1,13 +1,13 @@
 import { PrismaClient, Role, User } from '@prisma/client';
 import { FeeTypeOne, FeeTypeTwo } from '../test-utils/fee-type.test-utils';
 import {
-  MusicCategoryFive,
-  MusicCategoryFour,
-  MusicCategoryOne,
-  MusicCategorySix,
-  MusicCategoryThree,
-  MusicCategoryTwo,
-} from '../test-utils/music-category.test-utils';
+  CourseFive,
+  CourseFour,
+  CourseOne,
+  CourseSix,
+  CourseThree,
+  CourseTwo,
+} from '../test-utils/course.test-utils';
 import { SettingOne } from '../test-utils/setting.test-utils';
 import { RoleAdmin, RoleManager } from '../test-utils/role.test-utils';
 import {
@@ -57,7 +57,7 @@ const seederTestUser = async (
   await p.user.create({
     data: {
       ...user,
-      musicCategories: { connect: [...userWithIncluded.musicCategories] },
+      courses: { connect: [...userWithIncluded.courses] },
     },
   });
 };
@@ -71,15 +71,15 @@ export const seederTest = async () => {
     await seederTestRole(prisma, RoleManager);
     // seed feeType
     await prisma.feeType.createMany({ data: [FeeTypeOne, FeeTypeTwo] });
-    // seed musicCategory
-    await prisma.musicCategory.createMany({
+    // seed course
+    await prisma.course.createMany({
       data: [
-        MusicCategoryOne,
-        MusicCategoryTwo,
-        MusicCategoryThree,
-        MusicCategoryFour,
-        MusicCategoryFive,
-        MusicCategorySix,
+        CourseOne,
+        CourseTwo,
+        CourseThree,
+        CourseFour,
+        CourseFive,
+        CourseSix,
       ],
     });
     // seed setting
