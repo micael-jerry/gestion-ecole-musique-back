@@ -108,7 +108,7 @@ describe('UserService', () => {
       expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
         where: { id: userId, isArchive: false },
-        include: { role: true, musicCategories: true },
+        include: { role: true, courses: true },
       });
       expect(result).toEqual(expectedUser);
     });
@@ -136,7 +136,7 @@ describe('UserService', () => {
       expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
         where: { email: email, isArchive: false },
-        include: { role: true, musicCategories: true },
+        include: { role: true, courses: true },
       });
       expect(result).toEqual(expectedUser);
     });
@@ -232,10 +232,10 @@ describe('UserService', () => {
           password: expect.any(String),
           roleId: RoleAdmin.id,
           picture: null,
-          musicCategories: { connect: [] },
+          courses: { connect: [] },
           ...createUserInput,
         },
-        include: { role: true, musicCategories: true },
+        include: { role: true, courses: true },
       });
       expect(result).toEqual(UserOne);
     });
@@ -303,12 +303,12 @@ describe('UserService', () => {
       expect(prisma.user.update).toHaveBeenCalledTimes(1);
       expect(prisma.user.update).toHaveBeenCalledWith({
         where: { id: userId },
-        data: { musicCategories: { set: [] } },
+        data: { courses: { set: [] } },
       });
       expect(prisma.user.delete).toHaveBeenCalledTimes(1);
       expect(prisma.user.delete).toHaveBeenCalledWith({
         where: { id: userId },
-        include: { role: true, musicCategories: true },
+        include: { role: true, courses: true },
       });
       expect(result).toEqual(expectedUser);
     });
@@ -341,7 +341,7 @@ describe('UserService', () => {
 
       await expect(
         service.update(
-          { role: invalidRole, musicCategories: null, ...updateUserInput },
+          { role: invalidRole, courses: null, ...updateUserInput },
           picture,
         ),
       ).rejects.toThrow('Role not found');
@@ -375,13 +375,13 @@ describe('UserService', () => {
           password: UserOne.password,
           roleId: RoleAdmin.id,
           picture: null,
-          musicCategories: {
+          courses: {
             connect: [],
             disconnect: [],
           },
           ...updateUserInput,
         },
-        include: { role: true, musicCategories: true },
+        include: { role: true, courses: true },
       });
       expect(result).toEqual(UserTwo);
     });

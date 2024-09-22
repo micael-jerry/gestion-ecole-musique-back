@@ -1,5 +1,5 @@
 import { Field, InputType, PickType } from '@nestjs/graphql';
-import { UserMusicCategoryInput } from './user.music-category.input';
+import { UserCourseInput } from './user.course.input';
 import { UserRoleInput } from './user.role.input';
 import { BaseUserInput } from './base-user.input';
 
@@ -16,6 +16,6 @@ export class CreateUserInput extends PickType(BaseUserInput, [
   @Field(() => UserRoleInput)
   role: UserRoleInput;
 
-  @Field(() => [UserMusicCategoryInput], { nullable: true })
-  musicCategories?: UserMusicCategoryInput[];
+  @Field(() => [UserCourseInput], { nullable: true })
+  courses?: UserCourseInput[];
 }

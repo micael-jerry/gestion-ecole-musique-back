@@ -18,7 +18,7 @@ import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 
 @Injectable()
 export class UserService {
-  private static userInclude = { role: true, musicCategories: true };
+  private static userInclude = { role: true, courses: true };
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -77,7 +77,7 @@ export class UserService {
   }
 
   async create(
-    { role, musicCategories, password, ...createUserInput }: CreateUserInput,
+    { role, courses, password, ...createUserInput }: CreateUserInput,
     picture: Upload,
   ): Promise<UserWithIncluded> {
     const userRole = await this.roleService.getRoleByIdOrName(role);
@@ -93,7 +93,7 @@ export class UserService {
         password: bcrypt.hashSync(password, bcrypt.genSaltSync()),
         roleId: userRole.id,
         picture: pictureUrl,
-        musicCategories: { connect: musicCategories || [] },
+        courses: { connect: courses || [] },
         ...createUserInput,
       },
       include: UserService.userInclude,
@@ -117,7 +117,7 @@ export class UserService {
     return this.prismaService.$transaction(async () => {
       await this.prismaService.user.update({
         where: { id: id },
-        data: { musicCategories: { set: [] } },
+        data: { courses: { set: [] } },
       });
       return this.prismaService.user.delete({
         where: { id: id },
@@ -127,7 +127,7 @@ export class UserService {
   }
 
   async update(
-    { role, musicCategories, password, ...updateUserInput }: UpdateUserInput,
+    { role, courses, password, ...updateUserInput }: UpdateUserInput,
     picture: Upload,
   ): Promise<UserWithIncluded> {
     const user = await this.findById(updateUserInput.id);
@@ -149,9 +149,9 @@ export class UserService {
           : user.password,
         roleId: newUserRole ? newUserRole.id : user.roleId,
         picture: newPicture || user.picture,
-        musicCategories: {
-          connect: musicCategories?.connect || [],
-          disconnect: musicCategories?.disconnect || [],
+        courses: {
+          connect: courses?.connect || [],
+          disconnect: courses?.disconnect || [],
         },
         ...updateUserInput,
       },

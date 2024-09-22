@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 
 import { ActionModule } from './action/action.module';
-import { MusicCategoryModule } from './music-category/music-category.module';
+import { CourseModule } from './course/course.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 import { RoleModule } from './role/role.module';
@@ -35,7 +35,7 @@ import { JwtModule } from '@nestjs/jwt';
       signOptions: { expiresIn: '30d' },
     }),
     PrismaModule,
-    MusicCategoryModule,
+    CourseModule,
     SettingModule,
     FeeTypeModule,
     RoleModule,
