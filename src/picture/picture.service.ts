@@ -18,11 +18,12 @@ export class PictureService {
       mkdirSync(dirPath, { recursive: true });
     }
 
-    return this.base64ToImage(`${dirPath}/${fileName}`, pictureInput.data).then(
-      () => {
-        return fileName;
-      },
-    );
+    return this.base64ToImage(
+      `${dirPath}/${fileName}`,
+      pictureInput.data.split(',')[1],
+    ).then(() => {
+      return fileName;
+    });
   }
 
   remove(fileName: string) {
