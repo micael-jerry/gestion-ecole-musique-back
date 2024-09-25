@@ -3,7 +3,10 @@ import { UserService } from './user.service';
 import { User } from '@prisma/client';
 import { RoleService } from '../role/role.service';
 import { PictureService } from '../picture/picture.service';
-import { UserOne, UserTwo } from '../../test/conf/test-utils/user.test-utils';
+import {
+  UserAdminOne,
+  UserAdminTwo,
+} from '../../test/conf/test-utils/user.test-utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RoleType } from '../role/entities/role.entity';
 import { CreateUserInput } from './dto/create-user.input';
@@ -74,7 +77,7 @@ describe('UserService', () => {
     });
 
     it('should return an array of users with correct roles and music categories', async () => {
-      const expectedUsers: User[] = [UserOne, UserTwo];
+      const expectedUsers: User[] = [UserAdminOne, UserAdminTwo];
 
       jest.spyOn(prisma.user, 'findMany').mockResolvedValueOnce(expectedUsers);
 
@@ -99,7 +102,7 @@ describe('UserService', () => {
 
     it('should return a user with correct roles and music categories when finding a user by ID', async () => {
       const userId = 'test-user-id';
-      const expectedUser: User = UserOne;
+      const expectedUser: User = UserAdminOne;
 
       jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce(expectedUser);
 
@@ -127,7 +130,7 @@ describe('UserService', () => {
     });
     it('should return a user with correct roles and music categories when finding a user by email', async () => {
       const email = 'userone@example.com';
-      const expectedUser: User = UserOne;
+      const expectedUser: User = UserAdminOne;
 
       jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce(expectedUser);
 
@@ -213,7 +216,7 @@ describe('UserService', () => {
         .spyOn(roleService, 'getRoleByIdOrName')
         .mockResolvedValueOnce(RoleAdmin);
       jest.spyOn(pictureService, 'upload').mockResolvedValueOnce(null);
-      jest.spyOn(prisma.user, 'create').mockResolvedValueOnce(UserOne);
+      jest.spyOn(prisma.user, 'create').mockResolvedValueOnce(UserAdminOne);
 
       const result = await service.create(
         {
@@ -235,7 +238,7 @@ describe('UserService', () => {
         },
         include: { role: true, courses: true },
       });
-      expect(result).toEqual(UserOne);
+      expect(result).toEqual(UserAdminOne);
     });
   });
 
@@ -263,7 +266,7 @@ describe('UserService', () => {
         actionTags: [],
       };
       const userId = 'user_two_id';
-      const expectedUser: UserWithIncluded = UserTwo;
+      const expectedUser: UserWithIncluded = UserAdminTwo;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(expectedUser);
 
@@ -283,7 +286,7 @@ describe('UserService', () => {
         actionTags: [],
       };
       const userId = 'user_one_id';
-      const expectedUser: UserWithIncluded = UserOne;
+      const expectedUser: UserWithIncluded = UserAdminOne;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(expectedUser);
       jest.spyOn(pictureService, 'remove').getMockImplementation();
@@ -331,7 +334,7 @@ describe('UserService', () => {
         data: 'data',
       };
 
-      jest.spyOn(service, 'findById').mockResolvedValueOnce(UserOne);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(UserAdminOne);
       jest
         .spyOn(roleService, 'getRoleByIdOrName')
         .mockRejectedValue(new Error('Role not found'));
@@ -356,12 +359,12 @@ describe('UserService', () => {
       };
       const picture: PictureInput = null;
 
-      jest.spyOn(service, 'findById').mockResolvedValueOnce(UserOne);
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(UserAdminOne);
       jest
         .spyOn(roleService, 'getRoleByIdOrName')
         .mockResolvedValueOnce(RoleAdmin);
       jest.spyOn(pictureService, 'update').mockResolvedValueOnce(null);
-      jest.spyOn(prisma.user, 'update').mockResolvedValueOnce(UserTwo);
+      jest.spyOn(prisma.user, 'update').mockResolvedValueOnce(UserAdminTwo);
 
       const result = await service.update(updateUserInput, picture);
 
@@ -369,7 +372,7 @@ describe('UserService', () => {
       expect(prisma.user.update).toHaveBeenCalledWith({
         where: { id: userId },
         data: {
-          password: UserOne.password,
+          password: UserAdminOne.password,
           roleId: RoleAdmin.id,
           picture: null,
           courses: {
@@ -380,7 +383,7 @@ describe('UserService', () => {
         },
         include: { role: true, courses: true },
       });
-      expect(result).toEqual(UserTwo);
+      expect(result).toEqual(UserAdminTwo);
     });
   });
 });

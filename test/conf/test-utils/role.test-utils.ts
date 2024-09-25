@@ -29,3 +29,15 @@ export const RoleManager: RoleWithIncluded = {
     ActionGetSetting,
   ],
 };
+
+export const RoleStudent: RoleWithIncluded = {
+  id: 'role_three_id',
+  name: 'STUDENT',
+  actions: [],
+};
+
+export const RoleTeacher: RoleWithIncluded = {
+  id: 'role_four_id',
+  name: 'TEACHER',
+  actions: [],
+};

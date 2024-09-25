@@ -5,7 +5,7 @@ import { AppModule } from '../src/app.module';
 import { execSync } from 'child_process';
 import { CourseOne, CourseTwo } from './conf/test-utils/course.test-utils';
 import { loginTestQuery } from './conf/query/login.test-query';
-import { UserOne } from './conf/test-utils/user.test-utils';
+import { UserAdminOne } from './conf/test-utils/user.test-utils';
 import { findAllCourseTestQuery } from './conf/query/course.test-query';
 import { AuthResponse } from '../src/auth/entities/auth-response.entity';
 
@@ -28,7 +28,7 @@ describe('Course (e2e)', () => {
 
   it('should return a list of courses', async () => {
     const loginQuery = loginTestQuery({
-      email: UserOne.email,
+      email: UserAdminOne.email,
       password: 'password123',
     });
     const authResponse: AuthResponse = await request(app.getHttpServer())
