@@ -1,187 +1,190 @@
 import { Prisma } from '@prisma/client';
 
-//All tag will be uppercase_
+// All tags will be uppercase_
 export const SeedAction: Prisma.ActionCreateInput[] = [
   // ADMIN AUTHORIZATION
   {
     tag: 'GET_ADMIN',
-    name: 'OBTENIR ADMINISTRATEUR',
-    description: 'A les privilèges pour obtenir un admininistrateur',
+    name: 'Voir un administrateur',
+    description: 'Autorisation pour voir un administrateur.',
   },
   {
     tag: 'CREATE_ADMIN',
-    name: 'CRÉER ADMINISTRATEUR',
-    description: 'A les privilèges pour créer un admininistrateur',
+    name: 'Créer un administrateur',
+    description: 'Autorisation pour créer un nouvel administrateur.',
   },
   {
     tag: 'DELETE_ADMIN',
-    name: 'SUPPRIMER ADMINISTRATEUR',
-    description: 'A les privilèges pour supprimer un admininistrateur',
+    name: 'Supprimer un administrateur',
+    description: 'Autorisation pour supprimer un administrateur.',
   },
   {
     tag: 'UPDATE_ADMIN',
-    name: 'METTRE À JOUR ADMINISTRATEUR',
-    description: 'A les privilèges pour mettre à jour un admininistrateur',
+    name: 'Mettre à jour un administrateur',
+    description:
+      'Autorisation pour modifier les informations d’un administrateur.',
   },
 
   // MANAGER AUTHORIZATION
   {
     tag: 'GET_MANAGER',
-    name: 'OBTENIR GESTIONNAIRE',
-    description: 'A les privilèges pour obtenir un gestionnaire',
+    name: 'Voir un gestionnaire',
+    description: 'Autorisation pour voir un gestionnaire.',
   },
   {
     tag: 'CREATE_MANAGER',
-    name: 'CRÉER GESTIONNAIRE',
-    description: 'A les privilèges pour créer un gestionnaire',
+    name: 'Créer un gestionnaire',
+    description: 'Autorisation pour créer un nouveau gestionnaire.',
   },
   {
     tag: 'DELETE_MANAGER',
-    name: 'SUPPRIMER GESTIONNAIRE',
-    description: 'A les privilèges pour supprimer un gestionnaire',
+    name: 'Supprimer un gestionnaire',
+    description: 'Autorisation pour supprimer un gestionnaire.',
   },
   {
     tag: 'UPDATE_MANAGER',
-    name: 'METTRE À JOUR GESTIONNAIRE',
-    description: 'A les privilèges pour mettre à jour un gestionnaire',
+    name: 'Mettre à jour un gestionnaire',
+    description:
+      'Autorisation pour modifier les informations d’un gestionnaire.',
   },
 
   // TEACHER AUTHORIZATION
   {
     tag: 'GET_TEACHER',
-    name: 'OBTENIR ENSEIGNANT',
-    description: 'A les privilèges pour obtenir un enseignant',
+    name: 'Voir un enseignant',
+    description: 'Autorisation pour voir un enseignant.',
   },
   {
     tag: 'CREATE_TEACHER',
-    name: 'CRÉER ENSEIGNANT',
-    description: 'A les privilèges pour créer un enseignant',
+    name: 'Créer un enseignant',
+    description: 'Autorisation pour créer un nouvel enseignant.',
   },
   {
     tag: 'DELETE_TEACHER',
-    name: 'SUPPRIMER ENSEIGNANT',
-    description: 'A les privilèges pour supprimer un enseignant',
+    name: 'Supprimer un enseignant',
+    description: 'Autorisation pour supprimer un enseignant.',
   },
   {
     tag: 'UPDATE_TEACHER',
-    name: 'METTRE À JOUR ENSEIGNANT',
-    description: 'A les privilèges pour mettre à jour un enseignant',
+    name: 'Mettre à jour un enseignant',
+    description: 'Autorisation pour modifier les informations d’un enseignant.',
   },
 
   // STUDENT AUTHORIZATION
   {
     tag: 'GET_STUDENT',
-    name: 'OBTENIR ÉTUDIANT',
-    description: 'A les privilèges pour obtenir un étudiant',
+    name: 'Voir un étudiant',
+    description: 'Autorisation pour voir un étudiant.',
   },
   {
     tag: 'CREATE_STUDENT',
-    name: 'CRÉER ÉTUDIANT',
-    description: 'A les privilèges pour créer un étudiant',
+    name: 'Créer un étudiant',
+    description: 'Autorisation pour ajouter un nouvel étudiant.',
   },
   {
     tag: 'DELETE_STUDENT',
-    name: 'SUPPRIMER ÉTUDIANT',
-    description: 'A les privilèges pour supprimer un étudiant',
+    name: 'Supprimer un étudiant',
+    description: 'Autorisation pour supprimer un étudiant.',
   },
   {
     tag: 'UPDATE_STUDENT',
-    name: 'METTRE À JOUR ÉTUDIANT',
-    description: 'A les privilèges pour mettre à jour un étudiant',
+    name: 'Mettre à jour un étudiant',
+    description: 'Autorisation pour modifier les informations d’un étudiant.',
   },
 
   // SETTING AUTHORIZATION
   {
     tag: 'GET_SETTING',
-    name: 'OBTENIR PARAMÈTRE',
-    description: 'A les privilèges pour obtenir un paramètre',
+    name: 'Voir les paramètres',
+    description: 'Autorisation pour consulter les paramètres du système.',
   },
   {
     tag: 'UPDATE_SETTING',
-    name: 'METTRE À JOUR PARAMÈTRE',
-    description: 'A les privilèges pour mettre à jour un paramètre',
+    name: 'Mettre à jour les paramètres',
+    description: 'Autorisation pour modifier les paramètres du système.',
   },
 
   // COURSE AUTHORIZATION
   {
     tag: 'GET_COURSE',
-    name: 'VOIR LES COURS',
-    description: 'A les privilèges pour voir les cours',
+    name: 'Voir un cours',
+    description: 'Autorisation pour consulter les cours disponibles.',
   },
   {
     tag: 'CREATE_COURSE',
-    name: 'CRÉER DES COURS',
-    description: 'A les privilèges pour créer des cours',
+    name: 'Créer un cours',
+    description: 'Autorisation pour ajouter un nouveau cours.',
   },
   {
     tag: 'DELETE_COURSE',
-    name: 'SUPPRIMER DES COURS',
-    description: 'A les privilèges pour supprimer des cours',
+    name: 'Supprimer un cours',
+    description: 'Autorisation pour supprimer un cours.',
   },
   {
     tag: 'UPDATE_COURSE',
-    name: 'METTRE À JOUR DES COURS',
-    description: 'A les privilèges pour mettre à jour des cours',
+    name: 'Mettre à jour un cours',
+    description: 'Autorisation pour modifier les informations d’un cours.',
   },
 
   // FEE TYPE AUTHORIZATION
   {
     tag: 'GET_FEE_TYPE',
-    name: 'OBTENIR TYPE DE FRAIS',
-    description: 'A les privilèges pour obtenir un type de frais',
+    name: 'Voir un type de frais',
+    description: 'Autorisation pour accéder aux types de frais.',
   },
   {
     tag: 'CREATE_FEE_TYPE',
-    name: 'CRÉER TYPE DE FRAIS',
-    description: 'A les privilèges pour créer un type de frais',
+    name: 'Créer un type de frais',
+    description: 'Autorisation pour ajouter un nouveau type de frais.',
   },
   {
     tag: 'DELETE_FEE_TYPE',
-    name: 'SUPPRIMER TYPE DE FRAIS',
-    description: 'A les privilèges pour supprimer un type de frais',
+    name: 'Supprimer un type de frais',
+    description: 'Autorisation pour supprimer un type de frais.',
   },
   {
     tag: 'UPDATE_FEE_TYPE',
-    name: 'METTRE À JOUR TYPE DE FRAIS',
-    description: 'A les privilèges pour mettre à jour un type de frais',
+    name: 'Mettre à jour un type de frais',
+    description:
+      'Autorisation pour modifier les informations d’un type de frais.',
   },
 
   // ROLE AUTHORIZATION
   {
     tag: 'GET_ROLE',
-    name: 'OBTENIR RÔLE',
-    description: 'A les privilèges pour obtenir un rôle',
+    name: 'Voir un rôle',
+    description: 'Autorisation pour accéder aux rôles.',
   },
   {
     tag: 'CREATE_ROLE',
-    name: 'CRÉER RÔLE',
-    description: 'A les privilèges pour créer un rôle',
+    name: 'Créer un rôle',
+    description: 'Autorisation pour ajouter un nouveau rôle.',
   },
   {
     tag: 'DELETE_ROLE',
-    name: 'SUPPRIMER RÔLE',
-    description: 'A les privilèges pour supprimer un rôle',
+    name: 'Supprimer un rôle',
+    description: 'Autorisation pour supprimer un rôle.',
   },
   {
     tag: 'UPDATE_ROLE',
-    name: 'METTRE À JOUR RÔLE',
-    description: 'A les privilèges pour mettre à jour un rôle',
+    name: 'Mettre à jour un rôle',
+    description: 'Autorisation pour modifier les informations d’un rôle.',
   },
 
   // ARCHIVE AUTHORIZATION
   {
     tag: 'GET_USER_ARCHIVE',
-    name: 'OBTENIR ARCHIVE UTILISATEUR',
-    description: 'A les privilèges pour obtenir une archive utilisateur',
+    name: 'Voir les archives utilisateurs',
+    description: 'Autorisation pour consulter les archives des utilisateurs.',
   },
   {
     tag: 'DELETE_USER_ARCHIVE',
-    name: 'SUPPRIMER ARCHIVE UTILISATEUR',
-    description: 'A les privilèges pour supprimer une archive utilisateur',
+    name: 'Supprimer une archive utilisateur',
+    description: 'Autorisation pour supprimer une archive utilisateur.',
   },
   {
     tag: 'ARCHIVE_USER',
-    name: 'ARCHIVER UTILISATEUR',
-    description: 'A les privilèges pour archiver un utilisateur',
+    name: 'Archiver un utilisateur',
+    description: 'Autorisation pour archiver un utilisateur.',
   },
 ];

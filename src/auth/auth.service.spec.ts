@@ -5,7 +5,7 @@ import { Test } from '@nestjs/testing';
 import { RoleService } from '../role/role.service';
 import { LoginInput } from './dto/login.input';
 import { UnauthorizedException } from '@nestjs/common';
-import { UserOne } from '../../test/conf/test-utils/user.test-utils';
+import { UserAdminOne } from '../../test/conf/test-utils/user.test-utils';
 
 describe('AuthService', () => {
   let userService: UserService;
@@ -51,11 +51,13 @@ describe('AuthService', () => {
     it('should throw an error when the password is incorrect', async () => {
       // Arrange
       const loginInput: LoginInput = {
-        email: UserOne.email,
+        email: UserAdminOne.email,
         password: 'wrongPassword',
       };
-      (userService.findByEmail as jest.Mock).mockResolvedValue(UserOne);
-      (roleService.getRoleById as jest.Mock).mockResolvedValue(UserOne.role);
+      (userService.findByEmail as jest.Mock).mockResolvedValue(UserAdminOne);
+      (roleService.getRoleById as jest.Mock).mockResolvedValue(
+        UserAdminOne.role,
+      );
 
       // Act
       try {
@@ -70,11 +72,13 @@ describe('AuthService', () => {
     it('should return a valid JWT token when the email and password are correct', async () => {
       // Arrange
       const loginInput: LoginInput = {
-        email: UserOne.email,
+        email: UserAdminOne.email,
         password: 'password123',
       };
-      (userService.findByEmail as jest.Mock).mockResolvedValue(UserOne);
-      (roleService.getRoleById as jest.Mock).mockResolvedValue(UserOne.role);
+      (userService.findByEmail as jest.Mock).mockResolvedValue(UserAdminOne);
+      (roleService.getRoleById as jest.Mock).mockResolvedValue(
+        UserAdminOne.role,
+      );
       (jwtService.sign as jest.Mock).mockReturnValue('validJwtToken');
 
       // Act

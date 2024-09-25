@@ -2,14 +2,13 @@ import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { CreateUserInput } from './dto/create-user.input';
-import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
-import * as Upload from 'graphql-upload/Upload.js';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { ActionGuard } from '../auth/guard/action.guard';
 import { Actions } from '../auth/decorator/set-metadata-action.decorator';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { PictureInput } from '../picture/dto/picture.input';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -59,15 +58,12 @@ export class UserResolver {
     @Args('createUserInput') createUserInput: CreateUserInput,
     @Args({
       name: 'picture',
-      type: () => GraphQLUpload,
+      type: () => PictureInput,
       nullable: true,
-      description:
-        'add this header in request: "apollo-require-preflight=true"',
     })
-    picture: Upload,
+    picture: PictureInput,
   ) {
-    const pictureUploaded = await picture;
-    return await this.userService.create(createUserInput, pictureUploaded);
+    return await this.userService.create(createUserInput, picture);
   }
 
   @Actions('DELETE_ADMIN', 'DELETE_MANAGER', 'DELETE_TEACHER', 'DELETE_STUDENT')
@@ -87,14 +83,11 @@ export class UserResolver {
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
     @Args({
       name: 'picture',
-      type: () => GraphQLUpload,
+      type: () => PictureInput,
       nullable: true,
-      description:
-        'add this header in request: "apollo-require-preflight=true"',
     })
-    picture: Upload,
+    picture: PictureInput,
   ) {
-    const pictureUploaded = await picture;
-    return await this.userService.update(updateUserInput, pictureUploaded);
+    return await this.userService.update(updateUserInput, picture);
   }
 }
