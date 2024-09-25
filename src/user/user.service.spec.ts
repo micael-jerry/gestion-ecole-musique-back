@@ -7,12 +7,12 @@ import { UserOne, UserTwo } from '../../test/conf/test-utils/user.test-utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RoleType } from '../role/entities/role.entity';
 import { CreateUserInput } from './dto/create-user.input';
-import * as Upload from 'graphql-upload/Upload.js';
 import { RoleAdmin } from '../../test/conf/test-utils/role.test-utils';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UserWithIncluded } from './types/user-with-included.type';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 import { BadRequestException } from '@nestjs/common';
+import { PictureInput } from 'src/picture/dto/picture.input';
 
 describe('UserService', () => {
   let prisma: PrismaService;
@@ -157,10 +157,9 @@ describe('UserService', () => {
         address: '123 Main St',
         phone: '1234567890',
       };
-      const picture: Upload = {
+      const picture: PictureInput = {
         filename: 'test-picture.jpg',
-        mimetype: 'image/jpeg',
-        createReadStream: jest.fn(),
+        data: 'data',
       };
 
       jest
@@ -182,10 +181,9 @@ describe('UserService', () => {
         address: '123 Main St',
         phone: '1234567890',
       };
-      const picture: Upload = {
+      const picture: PictureInput = {
         filename: 'test-picture.jpg',
-        mimetype: 'image/jpeg',
-        createReadStream: jest.fn(),
+        data: 'data',
       };
 
       jest
@@ -209,7 +207,7 @@ describe('UserService', () => {
         phone: '0342222222',
         description: 'User One Description',
       };
-      const picture: Upload = null;
+      const picture: PictureInput = null;
 
       jest
         .spyOn(roleService, 'getRoleByIdOrName')
@@ -328,10 +326,9 @@ describe('UserService', () => {
         address: '123 Main St',
         phone: '1234567890',
       };
-      const picture: Upload = {
+      const picture: PictureInput = {
         filename: 'test-picture.jpg',
-        mimetype: 'image/jpeg',
-        createReadStream: jest.fn(),
+        data: 'data',
       };
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(UserOne);
@@ -357,7 +354,7 @@ describe('UserService', () => {
         address: '123 Main St',
         phone: '1234567890',
       };
-      const picture: Upload = null;
+      const picture: PictureInput = null;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(UserOne);
       jest

@@ -14,6 +14,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { PictureModule } from './picture/picture.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { JwtModule } from '@nestjs/jwt';
     ActionModule,
     UserModule,
     AuthModule,
+    PictureModule,
   ],
   controllers: [],
   providers: [PrismaService],

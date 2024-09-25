@@ -1,25 +1,28 @@
-import { Injectable } from '@nestjs/common';
-import * as Upload from 'graphql-upload/Upload.js';
-import { createWriteStream, existsSync, mkdirSync, unlink } from 'fs';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { existsSync, mkdirSync, unlink, writeFileSync } from 'fs';
 import { join } from 'path';
+import { PictureInput } from './dto/picture.input';
+import { PictureValidator } from './validator/picture.validator';
 
 @Injectable()
 export class PictureService {
-  async upload(file: Upload): Promise<string | null> {
-    if (!file) return null;
+  private pictureValidator: PictureValidator;
+  async upload(pictureInput: PictureInput): Promise<string | null> {
+    if (!pictureInput) return null;
+    this.pictureValidator.validate(pictureInput);
 
-    return new Promise((resolve, reject) => {
-      const dirPath = join(__dirname, '..', 'uploads');
-      const fileName = `${Date.now()}_${file.filename}`;
-      if (!existsSync(dirPath)) {
-        mkdirSync(dirPath, { recursive: true });
-      }
-      file
-        .createReadStream()
-        .pipe(createWriteStream(`${dirPath}/${fileName}`))
-        .on('finish', () => resolve(fileName))
-        .on('error', (error) => reject(new Error(`File not upload ${error}`)));
-    });
+    const dirPath = join(__dirname, '..', 'uploads');
+    const fileName = `${Date.now()}_${pictureInput.filename.trim()}`;
+
+    if (!existsSync(dirPath)) {
+      mkdirSync(dirPath, { recursive: true });
+    }
+
+    return this.base64ToImage(`${dirPath}/${fileName}`, pictureInput.data).then(
+      () => {
+        return fileName;
+      },
+    );
   }
 
   remove(fileName: string) {
@@ -31,10 +34,23 @@ export class PictureService {
     });
   }
 
-  async update(oldFileName: string, file: Upload): Promise<string | null> {
-    if (!file) return null;
-    const newFileName: string | null = await this.upload(file);
+  async update(
+    oldFileName: string,
+    pictureInput: PictureInput,
+  ): Promise<string | null> {
+    if (!pictureInput) return null;
+    const newFileName: string | null = await this.upload(pictureInput);
     this.remove(oldFileName);
     return newFileName;
+  }
+
+  private async base64ToImage(filePath: string, base64: string): Promise<void> {
+    try {
+      const buffer: Buffer = Buffer.from(base64, 'base64');
+      writeFileSync(filePath, buffer);
+      return Promise.resolve();
+    } catch (err) {
+      throw new BadRequestException('error during image recording');
+    }
   }
 }

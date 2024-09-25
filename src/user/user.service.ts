@@ -9,12 +9,12 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { PictureService } from '../picture/picture.service';
 import { RoleService } from '../role/role.service';
-import * as Upload from 'graphql-upload/Upload.js';
 import { UpdateUserInput } from './dto/update-user.input';
 import { RoleType } from '../role/entities/role.entity';
 import * as bcrypt from 'bcrypt';
 import { UserWithIncluded } from './types/user-with-included.type';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { PictureInput } from 'src/picture/dto/picture.input';
 
 @Injectable()
 export class UserService {
@@ -78,7 +78,7 @@ export class UserService {
 
   async create(
     { role, courses, password, ...createUserInput }: CreateUserInput,
-    picture: Upload,
+    picture: PictureInput,
   ): Promise<UserWithIncluded> {
     const userRole = await this.roleService.getRoleByIdOrName(role);
     const pictureUrl: string | null = await this.pictureService
@@ -128,7 +128,7 @@ export class UserService {
 
   async update(
     { role, courses, password, ...updateUserInput }: UpdateUserInput,
-    picture: Upload,
+    picture: PictureInput,
   ): Promise<UserWithIncluded> {
     const user = await this.findById(updateUserInput.id);
     let newUserRole: RoleType | null = null;
