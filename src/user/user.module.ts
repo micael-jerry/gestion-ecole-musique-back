@@ -3,11 +3,16 @@ import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RoleService } from '../role/role.service';
-import { PictureModule } from '../picture/picture.module';
+import { PictureService } from 'src/picture/picture.service';
 
 @Module({
-  imports: [PictureModule],
-  providers: [UserResolver, UserService, PrismaService, RoleService],
+  providers: [
+    UserResolver,
+    UserService,
+    PrismaService,
+    RoleService,
+    PictureService,
+  ],
   exports: [UserService],
 })
 export class UserModule {}
