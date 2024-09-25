@@ -28,6 +28,7 @@ export class UserService {
 
   async findAll(
     roleName?: string[],
+    courseId?: string,
     criteria?: string,
     isArchive: boolean = false,
   ): Promise<UserWithIncluded[]> {
@@ -35,6 +36,9 @@ export class UserService {
     userWhereInput.isArchive = isArchive;
     if (roleName && roleName.length > 0) {
       userWhereInput.role = { name: { in: roleName } };
+    }
+    if (courseId && courseId.length > 0) {
+      userWhereInput.courses = { some: { id: courseId } };
     }
     if (criteria)
       userWhereInput.OR = [

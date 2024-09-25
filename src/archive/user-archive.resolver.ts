@@ -24,6 +24,13 @@ export class UserArchiveResolver {
     })
     roleName: string[],
     @Args({
+      name: 'courseId',
+      nullable: true,
+      description:
+        'if you want a list of users by course, enter the id of the course, or leave out the parameter',
+    })
+    courseId: string,
+    @Args({
       name: 'criteria',
       nullable: true,
       description:
@@ -31,7 +38,7 @@ export class UserArchiveResolver {
     })
     criteria: string,
   ) {
-    return this.userArchiveService.findAll(roleName, criteria);
+    return this.userArchiveService.findAll(roleName, courseId, criteria);
   }
 
   @Actions('GET_USER_ARCHIVE')

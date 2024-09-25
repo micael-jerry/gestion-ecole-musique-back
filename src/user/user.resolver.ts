@@ -27,6 +27,13 @@ export class UserResolver {
     })
     roleName: string[],
     @Args({
+      name: 'courseId',
+      nullable: true,
+      description:
+        'if you want a list of users by course, enter the id of the course, or leave out the parameter',
+    })
+    courseId: string,
+    @Args({
       name: 'criteria',
       nullable: true,
       description:
@@ -34,7 +41,7 @@ export class UserResolver {
     })
     criteria: string,
   ) {
-    return this.userService.findAll(roleName, criteria);
+    return this.userService.findAll(roleName, courseId, criteria);
   }
 
   @Actions('GET_ADMIN', 'GET_MANAGER', 'GET_TEACHER', 'GET_STUDENT')

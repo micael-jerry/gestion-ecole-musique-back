@@ -60,8 +60,7 @@ export class PictureService {
     const dataType = pictureInput.data.split(';')[0].split('/')[1];
     if (
       !this.imgValidExtension.includes(filenameExtension) ||
-      !this.imgValidExtension.includes(dataType) ||
-      filenameExtension !== dataType
+      !this.imgValidExtension.includes(dataType)
     ) {
       throw new BadRequestException('Invalid image format');
     }
