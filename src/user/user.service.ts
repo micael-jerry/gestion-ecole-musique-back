@@ -136,11 +136,10 @@ export class UserService {
   ): Promise<UserWithIncluded> {
     const user = await this.findById(updateUserInput.id);
     let newUserRole: RoleType | null = null;
-    const newPicture: string = await this.pictureService.update(
+    const newPicture: string | null = await this.pictureService.update(
       user.picture,
       picture,
     );
-
     if (role && (role.id || role.name)) {
       newUserRole = await this.roleService.getRoleByIdOrName(role);
     }
@@ -152,7 +151,7 @@ export class UserService {
           ? bcrypt.hashSync(password, bcrypt.genSaltSync())
           : user.password,
         roleId: newUserRole ? newUserRole.id : user.roleId,
-        picture: newPicture || user.picture,
+        picture: newPicture ?? user.picture,
         courses: {
           connect: courses?.connect || [],
           disconnect: courses?.disconnect || [],
