@@ -36,12 +36,12 @@ export class PictureService {
   }
 
   async update(
-    oldFileName: string,
+    oldFileName: string | null,
     pictureInput: PictureInput,
   ): Promise<string | null> {
     if (!pictureInput) return null;
     const newFileName: string | null = await this.upload(pictureInput);
-    this.remove(oldFileName);
+    if (!oldFileName) this.remove(oldFileName);
     return newFileName;
   }
 
