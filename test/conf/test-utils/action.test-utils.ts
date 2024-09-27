@@ -218,6 +218,35 @@ export const ActionUpdateRole: Action = {
   description: 'A les privilèges pour mettre à jour un rôle.',
 };
 
+// ARCHIVE AUTHORIZATION
+export const ActionGetArchive: Action = {
+  id: 'action_get_archive_id',
+  tag: 'GET_USER_ARCHIVE',
+  name: 'Voir les archives utilisateurs',
+  description: 'Autorisation pour consulter les archives des utilisateurs.',
+};
+
+export const ActionArchiveUser: Action = {
+  id: 'action_archive_user_id',
+  tag: 'ARCHIVE_USER',
+  name: 'Archiver un utilisateur',
+  description: 'Autorisation pour archiver un utilisateur.',
+};
+
+export const ActionDeleteArchive: Action = {
+  id: 'action_delete_archive_id',
+  tag: 'DELETE_USER_ARCHIVE',
+  name: 'Supprimer une archive utilisateur',
+  description: 'Autorisation pour supprimer une archive utilisateur.',
+};
+
+export const ActionUnarchiveUser: Action = {
+  id: 'action_unarchive_user_id',
+  tag: 'UNARCHIVE_USER',
+  name: 'Desarchiver un utilisateur',
+  description: 'Autorisation pour desarchiver un utilisateur',
+};
+
 export const AllAction: Action[] = [
   ActionGetAdmin,
   ActionCreateAdmin,
@@ -249,4 +278,8 @@ export const AllAction: Action[] = [
   ActionCreateRole,
   ActionDeleteRole,
   ActionUpdateRole,
+  ActionArchiveUser,
+  ActionUnarchiveUser,
+  ActionGetArchive,
+  ActionDeleteArchive,
 ];

@@ -36,13 +36,22 @@ export class UserArchiveService {
     authenticatedUser: JwtPayloadType,
     id: string,
   ): Promise<UserWithIncluded> {
-    const user = await this.findById(id);
+    const user = await this.userService.findById(id);
     if (user && authenticatedUser.userId === user.id) {
       throw new BadRequestException('You cannot archive your account yourself');
     }
     return this.prismaService.user.update({
       where: { id: id },
       data: { isArchive: true },
+      include: UserArchiveService.userInclude,
+    });
+  }
+
+  async unarchive(id: string): Promise<UserWithIncluded> {
+    await this.findById(id);
+    return this.prismaService.user.update({
+      where: { id: id },
+      data: { isArchive: false },
       include: UserArchiveService.userInclude,
     });
   }

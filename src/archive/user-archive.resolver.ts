@@ -65,6 +65,13 @@ export class UserArchiveResolver {
     @Context('user') user: JwtPayloadType,
     @Args('id') id: string,
   ) {
-    return await this.archiveUser(user, id);
+    return await this.userArchiveService.archive(user, id);
+  }
+
+  @Actions('UNARCHIVE_USER')
+  @UseGuards(AuthGuard, ActionGuard)
+  @Mutation(() => User)
+  async unarchiveUser(@Args('id') id: string) {
+    return await this.userArchiveService.unarchive(id);
   }
 }

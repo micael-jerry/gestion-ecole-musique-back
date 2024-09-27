@@ -187,4 +187,9 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
     name: 'Archiver un utilisateur',
     description: 'Autorisation pour archiver un utilisateur.',
   },
+  {
+    tag: 'UNARCHIVE_USER',
+    name: 'Desarchiver un utilisateur',
+    description: 'Autorisation pour desarchiver un utilisateur',
+  },
 ];
