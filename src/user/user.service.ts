@@ -15,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { UserWithIncluded } from './types/user-with-included.type';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 import { PictureInput } from 'src/picture/dto/picture.input';
+import { PaginationInput } from './dto/pagination.input';
 
 @Injectable()
 export class UserService {
@@ -31,6 +32,7 @@ export class UserService {
     courseId?: string,
     criteria?: string,
     isArchive: boolean = false,
+    pagination?: PaginationInput,
   ): Promise<UserWithIncluded[]> {
     const userWhereInput: Prisma.UserWhereInput = {};
     userWhereInput.isArchive = isArchive;
@@ -51,6 +53,8 @@ export class UserService {
       where: userWhereInput,
       include: UserService.userInclude,
       orderBy: { lastname: 'asc' },
+      skip: pagination ? pagination.page * pagination.pageSize : undefined,
+      take: pagination ? pagination.pageSize : undefined,
     });
   }
 
