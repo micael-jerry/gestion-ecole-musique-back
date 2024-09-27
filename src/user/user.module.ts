@@ -3,7 +3,7 @@ import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RoleService } from '../role/role.service';
-import { PictureService } from 'src/picture/picture.service';
+import { PictureService } from '../picture/picture.service';
 
 @Module({
   providers: [

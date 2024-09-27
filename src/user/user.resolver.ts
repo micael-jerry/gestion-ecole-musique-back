@@ -9,6 +9,7 @@ import { ActionGuard } from '../auth/guard/action.guard';
 import { Actions } from '../auth/decorator/set-metadata-action.decorator';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 import { PictureInput } from '../picture/dto/picture.input';
+import { PaginationInput } from './dto/pagination.input';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -40,8 +41,21 @@ export class UserResolver {
         'filter user list by firstname OR lastname OR email (case insensitive)',
     })
     criteria: string,
+    @Args({
+      name: 'pagination',
+      nullable: true,
+      description: 'min page: 0;\nmin page size: 0',
+      type: () => PaginationInput,
+    })
+    pagination: PaginationInput,
   ) {
-    return this.userService.findAll(roleName, courseId, criteria);
+    return this.userService.findAll(
+      roleName,
+      courseId,
+      criteria,
+      false,
+      pagination,
+    );
   }
 
   @Actions('GET_ADMIN', 'GET_MANAGER', 'GET_TEACHER', 'GET_STUDENT')
