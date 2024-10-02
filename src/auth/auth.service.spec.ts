@@ -6,6 +6,7 @@ import { RoleService } from '../role/role.service';
 import { LoginInput } from './dto/login.input';
 import { UnauthorizedException } from '@nestjs/common';
 import { UserAdminOne } from '../../test/conf/test-utils/user.test-utils';
+import { HistoryService } from '../history/history.service';
 
 describe('AuthService', () => {
   let userService: UserService;
@@ -19,6 +20,7 @@ describe('AuthService', () => {
         { provide: UserService, useValue: { findByEmail: jest.fn() } },
         { provide: JwtService, useValue: { sign: jest.fn() } },
         { provide: RoleService, useValue: { getRoleById: jest.fn() } },
+        { provide: HistoryService, useValue: { create: jest.fn() } },
         AuthService,
       ],
     }).compile();

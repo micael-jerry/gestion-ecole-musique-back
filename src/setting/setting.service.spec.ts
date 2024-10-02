@@ -4,10 +4,18 @@ import { Setting } from '@prisma/client';
 import { v4 as uuid } from 'uuid';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { SettingService } from '../../src/setting/setting.service';
+import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { HistoryService } from '../history/history.service';
 
 describe('SettingService', () => {
   let service: SettingService;
   let prisma: PrismaService;
+  let historyService: HistoryService;
+  const JWT_PAYLOAD: JwtPayloadType = {
+    userId: 'userId',
+    roleName: 'roleName',
+    actionTags: [],
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -16,6 +24,7 @@ describe('SettingService', () => {
         {
           provide: PrismaService,
           useValue: {
+            $transaction: jest.fn(),
             setting: {
               findUnique: jest.fn().mockResolvedValue({
                 id: uuid(),
@@ -41,11 +50,18 @@ describe('SettingService', () => {
             },
           },
         },
+        {
+          provide: HistoryService,
+          useValue: {
+            create: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<SettingService>(SettingService);
     prisma = module.get<PrismaService>(PrismaService);
+    historyService = module.get<HistoryService>(HistoryService);
   });
 
   it('should be defined', () => {
@@ -116,10 +132,18 @@ describe('SettingService', () => {
       };
       const result: Setting = { ...updateSettingInput };
 
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
       jest.spyOn(prisma.setting, 'update').mockResolvedValue(result);
 
-      const updatedSetting = await service.updateSetting(updateSettingInput);
+      const updatedSetting = await service.updateSetting(
+        updateSettingInput,
+        JWT_PAYLOAD,
+      );
+
       expect(updatedSetting).toEqual(result);
+      expect(historyService.create).toHaveBeenCalledTimes(1);
       expect(prisma.setting.update).toHaveBeenCalledWith({
         where: { id },
         data: {
@@ -140,13 +164,16 @@ describe('SettingService', () => {
         description: null,
       };
 
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
       jest
         .spyOn(prisma.setting, 'update')
         .mockRejectedValue(new Error('Setting not found'));
 
-      await expect(service.updateSetting(updateSettingInput)).rejects.toThrow(
-        'Setting not found',
-      );
+      await expect(
+        service.updateSetting(updateSettingInput, JWT_PAYLOAD),
+      ).rejects.toThrow('Setting not found');
       expect(prisma.setting.update).toHaveBeenCalledWith({
         where: { id },
         data: {

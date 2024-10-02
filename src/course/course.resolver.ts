@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { CourseService } from './course.service';
 import { Course } from './entities/course.entity';
 import { CreateCourseInput } from './dto/create-course.input';
@@ -7,6 +7,7 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { Actions } from '../auth/decorator/set-metadata-action.decorator';
 import { ActionGuard } from '../auth/guard/action.guard';
+import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 
 @Resolver(() => Course)
 export class CourseResolver {
@@ -16,10 +17,11 @@ export class CourseResolver {
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => Course)
   createCourse(
+    @Context('user') user: JwtPayloadType,
     @Args('createCourseInput')
     createCourseInput: CreateCourseInput,
   ) {
-    return this.courseService.create(createCourseInput);
+    return this.courseService.create(createCourseInput, user);
   }
 
   @Actions('GET_COURSE')
@@ -40,16 +42,17 @@ export class CourseResolver {
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => Course)
   updateCourse(
+    @Context('user') user: JwtPayloadType,
     @Args('updateCourseInput')
     updateCourseInput: UpdateCourseInput,
   ) {
-    return this.courseService.update(updateCourseInput);
+    return this.courseService.update(updateCourseInput, user);
   }
 
   @Actions('DELETE_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => Course)
-  removeCourse(@Args('id') id: string) {
-    return this.courseService.remove(id);
+  removeCourse(@Context('user') user: JwtPayloadType, @Args('id') id: string) {
+    return this.courseService.remove(id, user);
   }
 }

@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { EntityType, OperationType, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { PictureService } from '../picture/picture.service';
@@ -14,17 +14,19 @@ import { RoleType } from '../role/entities/role.entity';
 import * as bcrypt from 'bcrypt';
 import { UserWithIncluded } from './types/user-with-included.type';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
-import { PictureInput } from 'src/picture/dto/picture.input';
+import { PictureInput } from '../picture/dto/picture.input';
 import { PaginationInput } from './dto/pagination.input';
+import { HistoryService } from '../history/history.service';
 
 @Injectable()
 export class UserService {
-  private static userInclude = { role: true, courses: true };
+  private static readonly userInclude = { role: true, courses: true };
 
   constructor(
     private readonly prismaService: PrismaService,
     private readonly pictureService: PictureService,
     private readonly roleService: RoleService,
+    private readonly historyService: HistoryService,
   ) {}
 
   async findAll(
@@ -87,6 +89,7 @@ export class UserService {
   async create(
     { role, courses, password, ...createUserInput }: CreateUserInput,
     picture: PictureInput,
+    authenticatedUser: JwtPayloadType,
   ): Promise<UserWithIncluded> {
     const userRole = await this.roleService.getRoleByIdOrName(role);
     const pictureUrl: string | null = await this.pictureService
@@ -96,15 +99,24 @@ export class UserService {
         throw new InternalServerErrorException(err);
       });
 
-    return this.prismaService.user.create({
-      data: {
-        password: bcrypt.hashSync(password, bcrypt.genSaltSync()),
-        roleId: userRole.id,
-        picture: pictureUrl,
-        courses: { connect: courses || [] },
-        ...createUserInput,
-      },
-      include: UserService.userInclude,
+    return this.prismaService.$transaction(async () => {
+      const created = await this.prismaService.user.create({
+        data: {
+          password: bcrypt.hashSync(password, bcrypt.genSaltSync()),
+          roleId: userRole.id,
+          picture: pictureUrl,
+          courses: { connect: courses || [] },
+          ...createUserInput,
+        },
+        include: UserService.userInclude,
+      });
+      await this.historyService.create({
+        entityId: created.id,
+        userId: authenticatedUser.userId,
+        entityType: EntityType.USER,
+        operationType: OperationType.CREATE,
+      });
+      return created;
     });
   }
 
@@ -127,16 +139,24 @@ export class UserService {
         where: { id: id },
         data: { courses: { set: [] } },
       });
-      return this.prismaService.user.delete({
+      const userDeleted = await this.prismaService.user.delete({
         where: { id: id },
         include: UserService.userInclude,
       });
+      await this.historyService.create({
+        entityId: userDeleted.id,
+        userId: authenticatedUser.userId,
+        entityType: EntityType.USER,
+        operationType: OperationType.CREATE,
+      });
+      return userDeleted;
     });
   }
 
   async update(
     { role, courses, password, ...updateUserInput }: UpdateUserInput,
     picture: PictureInput,
+    authenticatedUser: JwtPayloadType,
   ): Promise<UserWithIncluded> {
     const user = await this.findById(updateUserInput.id);
     let newUserRole: RoleType | null = null;
@@ -148,21 +168,30 @@ export class UserService {
       newUserRole = await this.roleService.getRoleByIdOrName(role);
     }
 
-    return this.prismaService.user.update({
-      where: { id: updateUserInput.id },
-      data: {
-        password: password
-          ? bcrypt.hashSync(password, bcrypt.genSaltSync())
-          : user.password,
-        roleId: newUserRole ? newUserRole.id : user.roleId,
-        picture: newPicture ?? user.picture,
-        courses: {
-          connect: courses?.connect || [],
-          disconnect: courses?.disconnect || [],
+    return this.prismaService.$transaction(async () => {
+      const userUpdated = await this.prismaService.user.update({
+        where: { id: updateUserInput.id },
+        data: {
+          password: password
+            ? bcrypt.hashSync(password, bcrypt.genSaltSync())
+            : user.password,
+          roleId: newUserRole ? newUserRole.id : user.roleId,
+          picture: newPicture ?? user.picture,
+          courses: {
+            connect: courses?.connect || [],
+            disconnect: courses?.disconnect || [],
+          },
+          ...updateUserInput,
         },
-        ...updateUserInput,
-      },
-      include: UserService.userInclude,
+        include: UserService.userInclude,
+      });
+      await this.historyService.create({
+        entityId: userUpdated.id,
+        userId: authenticatedUser.userId,
+        entityType: EntityType.USER,
+        operationType: OperationType.CREATE,
+      });
+      return userUpdated;
     });
   }
 }

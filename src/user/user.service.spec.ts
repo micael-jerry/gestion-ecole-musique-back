@@ -15,13 +15,20 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { UserWithIncluded } from './types/user-with-included.type';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 import { BadRequestException } from '@nestjs/common';
-import { PictureInput } from 'src/picture/dto/picture.input';
+import { PictureInput } from '../picture/dto/picture.input';
+import { HistoryService } from '../history/history.service';
 
 describe('UserService', () => {
   let prisma: PrismaService;
   let roleService: RoleService;
   let pictureService: PictureService;
+  let historyService: HistoryService;
   let service: UserService;
+  const JWT_PAYLOAD: JwtPayloadType = {
+    userId: 'userId',
+    roleName: 'roleName',
+    actionTags: [],
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -53,6 +60,12 @@ describe('UserService', () => {
             update: jest.fn(),
           },
         },
+        {
+          provide: HistoryService,
+          useValue: {
+            create: jest.fn(),
+          },
+        },
         UserService,
       ],
     }).compile();
@@ -60,6 +73,7 @@ describe('UserService', () => {
     prisma = module.get<PrismaService>(PrismaService);
     roleService = module.get<RoleService>(RoleService);
     pictureService = module.get<PictureService>(PictureService);
+    historyService = module.get<HistoryService>(HistoryService);
     service = module.get<UserService>(UserService);
   });
 
@@ -169,9 +183,9 @@ describe('UserService', () => {
         .spyOn(roleService, 'getRoleByIdOrName')
         .mockRejectedValue(new Error('Role not found'));
 
-      await expect(service.create(createUserInput, picture)).rejects.toThrow(
-        'Role not found',
-      );
+      await expect(
+        service.create(createUserInput, picture, JWT_PAYLOAD),
+      ).rejects.toThrow('Role not found');
     });
 
     it('should throw an error when trying to create a user with a failed picture upload', async () => {
@@ -196,9 +210,9 @@ describe('UserService', () => {
         .spyOn(pictureService, 'upload')
         .mockRejectedValueOnce(new Error('Picture upload failed'));
 
-      await expect(service.create(createUserInput, picture)).rejects.toThrow(
-        'Picture upload failed',
-      );
+      await expect(
+        service.create(createUserInput, picture, JWT_PAYLOAD),
+      ).rejects.toThrow('Picture upload failed');
     });
 
     it('should create a user with valid inputs', async () => {
@@ -217,6 +231,9 @@ describe('UserService', () => {
         .mockResolvedValueOnce(RoleAdmin);
       jest.spyOn(pictureService, 'upload').mockResolvedValueOnce(null);
       jest.spyOn(prisma.user, 'create').mockResolvedValueOnce(UserAdminOne);
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
 
       const result = await service.create(
         {
@@ -225,9 +242,11 @@ describe('UserService', () => {
           ...createUserInput,
         } satisfies CreateUserInput,
         picture,
+        JWT_PAYLOAD,
       );
 
       expect(prisma.user.create).toHaveBeenCalledTimes(1);
+      expect(historyService.create).toHaveBeenCalledTimes(1);
       expect(prisma.user.create).toHaveBeenCalledWith({
         data: {
           password: expect.any(String),
@@ -253,6 +272,9 @@ describe('UserService', () => {
       jest
         .spyOn(service, 'findById')
         .mockRejectedValue(new Error('User not found'));
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
 
       await expect(
         service.remove(authenticatedUser, nonExistentUserId),
@@ -269,6 +291,9 @@ describe('UserService', () => {
       const expectedUser: UserWithIncluded = UserAdminTwo;
 
       jest.spyOn(service, 'findById').mockResolvedValueOnce(expectedUser);
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
 
       await expect(service.remove(authenticatedUser, userId)).rejects.toThrow(
         new BadRequestException('You cannot delete your account yourself'),
@@ -295,6 +320,10 @@ describe('UserService', () => {
       });
       jest.spyOn(prisma.user, 'update').mockResolvedValueOnce(expectedUser);
       jest.spyOn(prisma.user, 'delete').mockResolvedValueOnce(expectedUser);
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
+
       const result = await service.remove(authenticatedUser, userId);
 
       expect(service.findById).toHaveBeenCalledTimes(1);
@@ -338,11 +367,15 @@ describe('UserService', () => {
       jest
         .spyOn(roleService, 'getRoleByIdOrName')
         .mockRejectedValue(new Error('Role not found'));
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
 
       await expect(
         service.update(
           { role: invalidRole, courses: null, ...updateUserInput },
           picture,
+          JWT_PAYLOAD,
         ),
       ).rejects.toThrow('Role not found');
     });
@@ -365,8 +398,15 @@ describe('UserService', () => {
         .mockResolvedValueOnce(RoleAdmin);
       jest.spyOn(pictureService, 'update').mockResolvedValueOnce(null);
       jest.spyOn(prisma.user, 'update').mockResolvedValueOnce(UserAdminTwo);
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
 
-      const result = await service.update(updateUserInput, picture);
+      const result = await service.update(
+        updateUserInput,
+        picture,
+        JWT_PAYLOAD,
+      );
 
       expect(prisma.user.update).toHaveBeenCalledTimes(1);
       expect(prisma.user.update).toHaveBeenCalledWith({

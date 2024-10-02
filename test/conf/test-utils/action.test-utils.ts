@@ -247,6 +247,13 @@ export const ActionUnarchiveUser: Action = {
   description: 'Autorisation pour desarchiver un utilisateur',
 };
 
+export const ActionGetHistory: Action = {
+  id: 'action_get_history_id',
+  tag: 'GET_HISTORY',
+  name: 'Voir l’historique',
+  description: "Autorisation pour consulter l’historique d'activité.",
+};
+
 export const AllAction: Action[] = [
   ActionGetAdmin,
   ActionCreateAdmin,
@@ -282,4 +289,5 @@ export const AllAction: Action[] = [
   ActionUnarchiveUser,
   ActionGetArchive,
   ActionDeleteArchive,
+  ActionGetHistory,
 ];

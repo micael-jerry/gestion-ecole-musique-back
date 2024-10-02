@@ -192,4 +192,11 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
     name: 'Desarchiver un utilisateur',
     description: 'Autorisation pour desarchiver un utilisateur',
   },
+
+  // HISTORY AUTHORIZATION
+  {
+    tag: 'GET_HISTORY',
+    name: 'Voir l’historique',
+    description: "Autorisation pour consulter l’historique d'activité.",
+  },
 ];
