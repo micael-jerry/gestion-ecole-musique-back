@@ -102,19 +102,34 @@ export class HistoryService {
         return await this.prismaService.user.findMany({
           include: { role: true, courses: true },
         });
+      case EntityType.PAYMENT:
+        return await this.prismaService.payment.findMany({
+          include: { user: true, feeType: true },
+        });
       case 'ALL': {
-        const [courses, settings, feeTypes, roles, users] = await Promise.all([
-          this.prismaService.course.findMany(),
-          this.prismaService.setting.findMany(),
-          this.prismaService.feeType.findMany(),
-          this.prismaService.role.findMany({
-            include: { actions: true, users: true },
-          }),
-          this.prismaService.user.findMany({
-            include: { role: true, courses: true },
-          }),
-        ]);
-        return [...courses, ...settings, ...feeTypes, ...roles, ...users];
+        const [courses, settings, feeTypes, roles, users, payments] =
+          await Promise.all([
+            this.prismaService.course.findMany(),
+            this.prismaService.setting.findMany(),
+            this.prismaService.feeType.findMany(),
+            this.prismaService.role.findMany({
+              include: { actions: true, users: true },
+            }),
+            this.prismaService.user.findMany({
+              include: { role: true, courses: true },
+            }),
+            this.prismaService.payment.findMany({
+              include: { user: true, feeType: true },
+            }),
+          ]);
+        return [
+          ...courses,
+          ...settings,
+          ...feeTypes,
+          ...roles,
+          ...users,
+          ...payments,
+        ];
       }
       default:
         throw new BadRequestException(`Unknown entity type`);
@@ -142,6 +157,11 @@ export class HistoryService {
             include: { actions: true, users: true },
           });
         case EntityType.USER:
+          return await this.prismaService.user.findUnique({
+            where: { id: entityId },
+            include: { role: true, courses: true },
+          });
+        case EntityType.PAYMENT:
           return await this.prismaService.user.findUnique({
             where: { id: entityId },
             include: { role: true, courses: true },
