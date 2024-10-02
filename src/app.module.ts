@@ -15,12 +15,15 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { UserArchiveModule } from './archive/user-archive.module';
+import { HistoryModule } from './history/history.module';
+import GraphQLJSON from 'graphql-type-json';
 
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
+      resolvers: { JSON: GraphQLJSON },
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'uploads'),
@@ -44,6 +47,7 @@ import { UserArchiveModule } from './archive/user-archive.module';
     UserModule,
     AuthModule,
     UserArchiveModule,
+    HistoryModule,
   ],
   controllers: [],
   providers: [PrismaService],

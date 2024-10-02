@@ -4,10 +4,18 @@ import { Role } from '@prisma/client';
 import { v4 as uuid } from 'uuid';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { RoleService } from './role.service';
+import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { HistoryService } from '../history/history.service';
 
 describe('RolesService', () => {
   let service: RoleService;
   let prisma: PrismaService;
+  let historyService: HistoryService;
+  const JWT_PAYLOAD: JwtPayloadType = {
+    userId: 'userId',
+    roleName: 'roleName',
+    actionTags: [],
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -16,6 +24,7 @@ describe('RolesService', () => {
         {
           provide: PrismaService,
           useValue: {
+            $transaction: jest.fn(),
             role: {
               findMany: jest.fn().mockResolvedValue([]),
               create: jest.fn().mockResolvedValue({
@@ -38,11 +47,18 @@ describe('RolesService', () => {
             },
           },
         },
+        {
+          provide: HistoryService,
+          useValue: {
+            create: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<RoleService>(RoleService);
     prisma = module.get<PrismaService>(PrismaService);
+    historyService = module.get<HistoryService>(HistoryService);
   });
 
   it('should be defined', () => {
@@ -74,11 +90,15 @@ describe('RolesService', () => {
         id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
         ...createRoleInput,
       };
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
       jest.spyOn(prisma.role, 'create').mockResolvedValue(result);
 
-      const role = await service.createRole(createRoleInput);
+      const role = await service.createRole(createRoleInput, JWT_PAYLOAD);
 
       expect(role).toEqual(result);
+      expect(historyService.create).toHaveBeenCalledTimes(1);
       expect(prisma.role.create).toHaveBeenCalledWith({
         data: createRoleInput,
         include: { actions: true, users: true },
@@ -134,10 +154,17 @@ describe('RolesService', () => {
       };
       const result: Role = { ...updateRoleInput };
 
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
       jest.spyOn(prisma.role, 'update').mockResolvedValue(result);
 
-      const updatedRole = await service.updateRole(updateRoleInput);
+      const updatedRole = await service.updateRole(
+        updateRoleInput,
+        JWT_PAYLOAD,
+      );
       expect(updatedRole).toEqual(result);
+      expect(historyService.create).toHaveBeenCalledTimes(1);
       expect(prisma.role.update).toHaveBeenCalledWith({
         where: { id },
         data: {
@@ -163,13 +190,16 @@ describe('RolesService', () => {
         },
       };
 
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
       jest
         .spyOn(prisma.role, 'update')
         .mockRejectedValue(new Error('role not found'));
 
-      await expect(service.updateRole(updateRoleInput)).rejects.toThrow(
-        'role not found',
-      );
+      await expect(
+        service.updateRole(updateRoleInput, JWT_PAYLOAD),
+      ).rejects.toThrow('role not found');
       expect(prisma.role.update).toHaveBeenCalledWith({
         where: { id },
         data: {
@@ -195,10 +225,14 @@ describe('RolesService', () => {
       };
       const result: Role = { ...deleteRoleInput };
 
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
       jest.spyOn(prisma.role, 'delete').mockResolvedValue(result);
 
-      const deleteRole = await service.deleteRole(id);
+      const deleteRole = await service.deleteRole(id, JWT_PAYLOAD);
       expect(deleteRole).toEqual(result);
+      expect(historyService.create).toHaveBeenCalledTimes(1);
       expect(prisma.role.delete).toHaveBeenCalledWith({
         where: { id },
         include: { actions: true, users: true },
@@ -208,13 +242,16 @@ describe('RolesService', () => {
     it('should return error if no role is found ', async () => {
       const id = '0cdd1713-d391-451c-b60b-0ecefb22c049';
 
+      jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
+        return callback(prisma);
+      });
       jest
         .spyOn(prisma.role, 'delete')
         .mockRejectedValue(
           new NotFoundException(`role with ID "${id}" not found`),
         );
 
-      await expect(service.deleteRole(id)).rejects.toThrow(
+      await expect(service.deleteRole(id, JWT_PAYLOAD)).rejects.toThrow(
         `role with ID "${id}" not found`,
       );
       expect(prisma.role.delete).toHaveBeenCalledWith({

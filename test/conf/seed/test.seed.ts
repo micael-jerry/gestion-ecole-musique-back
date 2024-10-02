@@ -19,6 +19,8 @@ import { AllUser } from '../test-utils/user.test-utils';
 import { UserWithIncluded } from 'src/user/types/user-with-included.type';
 import { AllAction } from '../test-utils/action.test-utils';
 import { RoleWithIncluded } from 'src/role/types/role-with-included.type';
+import { AllHistory } from '../test-utils/history.test-utils';
+import { HistoryWithIncluded } from '../../../src/history/types/history-with-included.type';
 
 const prisma = new PrismaClient();
 
@@ -55,14 +57,12 @@ const seederTestUser = async (
       description: userWithIncluded.description,
       isArchive: userWithIncluded.isArchive,
     };
-    await p.user
-      .create({
-        data: {
-          ...user,
-          courses: { connect: [...userWithIncluded.courses] },
-        },
-      })
-      .catch(() => console.log(user.email));
+    await p.user.create({
+      data: {
+        ...user,
+        courses: { connect: [...userWithIncluded.courses] },
+      },
+    });
   });
 };
 
@@ -94,6 +94,24 @@ export const seederTest = async () => {
     await prisma.setting.create({ data: SettingOne });
     // seed user
     await seederTestUser(prisma, AllUser);
+    // seed history
+    await prisma.history.createMany({
+      data: AllHistory.map(
+        ({
+          entityId,
+          entityType,
+          operationType,
+          userId,
+          createdAt,
+        }: HistoryWithIncluded) => ({
+          entityId,
+          entityType,
+          operationType,
+          userId,
+          createdAt,
+        }),
+      ),
+    });
   });
   await prisma.$disconnect();
 };

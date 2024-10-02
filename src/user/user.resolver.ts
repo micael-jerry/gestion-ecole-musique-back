@@ -76,6 +76,7 @@ export class UserResolver {
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => User)
   async createUser(
+    @Context('user') user: JwtPayloadType,
     @Args('createUserInput') createUserInput: CreateUserInput,
     @Args({
       name: 'picture',
@@ -84,7 +85,7 @@ export class UserResolver {
     })
     picture: PictureInput,
   ) {
-    return await this.userService.create(createUserInput, picture);
+    return await this.userService.create(createUserInput, picture, user);
   }
 
   @Actions('DELETE_ADMIN', 'DELETE_MANAGER', 'DELETE_TEACHER', 'DELETE_STUDENT')
@@ -101,6 +102,7 @@ export class UserResolver {
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => User)
   async updateUser(
+    @Context('user') user: JwtPayloadType,
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
     @Args({
       name: 'picture',
@@ -109,6 +111,6 @@ export class UserResolver {
     })
     picture: PictureInput,
   ) {
-    return await this.userService.update(updateUserInput, picture);
+    return await this.userService.update(updateUserInput, picture, user);
   }
 }
