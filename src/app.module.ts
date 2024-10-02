@@ -16,6 +16,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { UserArchiveModule } from './archive/user-archive.module';
 import { HistoryModule } from './history/history.module';
+import { PaymentModule } from './payment/payment.module';
 import GraphQLJSON from 'graphql-type-json';
 
 @Module({
@@ -48,6 +49,7 @@ import GraphQLJSON from 'graphql-type-json';
     AuthModule,
     UserArchiveModule,
     HistoryModule,
+    PaymentModule,
   ],
   controllers: [],
   providers: [PrismaService],

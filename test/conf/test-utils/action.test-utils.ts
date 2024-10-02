@@ -254,6 +254,21 @@ export const ActionGetHistory: Action = {
   description: "Autorisation pour consulter l’historique d'activité.",
 };
 
+//Payment AUTHORIZATION
+export const ActionGetPayment: Action = {
+  id: 'action_get_payment_id',
+  tag: 'GET_PAYMENT',
+  name: 'Voir toute les paiements',
+  description: 'A les privilèges pour voir toute les paiements.',
+};
+
+export const ActionCreatePayment: Action = {
+  id: 'action_create_payment_id',
+  tag: 'CREATE_PAYMENT',
+  name: 'Créer un paiement',
+  description: 'A les privilèges pour créer un paiement.',
+};
+
 export const AllAction: Action[] = [
   ActionGetAdmin,
   ActionCreateAdmin,
@@ -290,4 +305,6 @@ export const AllAction: Action[] = [
   ActionGetArchive,
   ActionDeleteArchive,
   ActionGetHistory,
+  ActionGetPayment,
+  ActionCreatePayment,
 ];

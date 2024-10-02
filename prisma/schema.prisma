@@ -33,6 +33,7 @@ model FeeType {
   name        String  @unique @db.VarChar()
   description String?
   value       Float   @default(0)
+  payment     Payment[]
 }
 
 model Role {
@@ -65,6 +66,7 @@ model User {
   role        Role      @relation(fields: [roleId], references: [id])
   courses     Course[]
   History     History[]
+  payments    Payment[]
 }
 
 enum EntityType {
@@ -73,6 +75,7 @@ enum EntityType {
   FEE_TYPE
   ROLE
   USER
+  PAYMENT
 }
 
 enum OperationType {
@@ -91,4 +94,24 @@ model History {
   userId        String
   user          User          @relation(fields: [userId], references: [id])
   createdAt     DateTime      @default(now())
+}
+
+
+model Payment {
+  id          String  @id @default(uuid())
+  amount      Float
+  description String?
+  date        DateTime[]
+  paymentType PaymentType
+  userId      String
+  user       User    @relation(fields: [userId], references: [id])
+  feeTypeId   String
+  feeType     FeeType @relation(fields: [feeTypeId], references: [id])
+}
+
+enum PaymentType {
+  CASH
+  BANK
+  MOBILE
+  CARD
 }
