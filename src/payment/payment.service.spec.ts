@@ -19,6 +19,7 @@ describe('PaymentService', () => {
         {
           provide: PrismaService,
           useValue: {
+            $transaction: jest.fn(),
             payment: {
               create: jest.fn(),
               findMany: jest.fn(),
@@ -72,6 +73,11 @@ describe('PaymentService', () => {
       };
 
       jest
+        .spyOn(prismaService, '$transaction')
+        .mockImplementation((callback) => {
+          return callback(prismaService);
+        });
+      jest
         .spyOn(prismaService.payment, 'create')
         .mockResolvedValue(createdPayment as any);
       jest.spyOn(historyService, 'create').mockResolvedValue(undefined);
@@ -86,12 +92,15 @@ describe('PaymentService', () => {
           feeType: true,
         },
       });
-      expect(historyService.create).toHaveBeenCalledWith({
-        entityId: createdPayment.id,
-        entityType: EntityType.PAYMENT,
-        operationType: OperationType.CREATE,
-        userId: authenticatedUser.userId,
-      });
+      expect(historyService.create).toHaveBeenCalledWith(
+        {
+          entityId: createdPayment.id,
+          entityType: EntityType.PAYMENT,
+          operationType: OperationType.CREATE,
+          userId: authenticatedUser.userId,
+        },
+        prismaService,
+      );
     });
 
     it('should throw an error if payment creation fails', async () => {
@@ -110,8 +119,15 @@ describe('PaymentService', () => {
       };
 
       jest
+        .spyOn(prismaService, '$transaction')
+        .mockImplementation((callback) => {
+          return callback(prismaService);
+        });
+      jest
         .spyOn(prismaService.payment, 'create')
-        .mockRejectedValue(new Error('Creation error'));
+        .mockRejectedValue(
+          new Error('Payment creation failed: Creation error'),
+        );
 
       await expect(
         service.create(paymentInput, authenticatedUser),

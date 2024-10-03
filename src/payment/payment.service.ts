@@ -14,32 +14,30 @@ export class PaymentService {
     feeType: true,
   };
   constructor(
-    private prismaService: PrismaService,
-    private historyService: HistoryService,
+    private readonly prismaService: PrismaService,
+    private readonly historyService: HistoryService,
   ) {}
 
   async create(
     paymentInput: PaymentInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<Payment> {
-    let payment: Payment;
-    try {
-      payment = await this.prismaService.payment.create({
+    return await this.prismaService.$transaction(async (tx) => {
+      const payment = await tx.payment.create({
         data: paymentInput,
         include: PaymentService.paymentsInclude,
       });
-    } catch (error) {
-      throw new Error(`Payment creation failed: ${error.message}`);
-    }
-
-    await this.historyService.create({
-      entityId: payment.id,
-      entityType: EntityType.PAYMENT,
-      operationType: OperationType.CREATE,
-      userId: authenticatedUser.userId,
+      await this.historyService.create(
+        {
+          entityId: payment.id,
+          entityType: EntityType.PAYMENT,
+          operationType: OperationType.CREATE,
+          userId: authenticatedUser.userId,
+        },
+        tx,
+      );
+      return payment;
     });
-
-    return payment;
   }
 
   /**

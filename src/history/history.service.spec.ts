@@ -77,7 +77,7 @@ describe('HistoryService', () => {
         .spyOn(prismaService.history, 'create')
         .mockResolvedValue(HistoryCourseOne);
 
-      const result = await service.create(historyInput);
+      const result = await service.create(historyInput, prismaService);
 
       expect(service.findEntityById).toHaveBeenCalledWith(
         CourseOne.id,

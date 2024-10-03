@@ -8,7 +8,11 @@ import { UserService } from '../user/user.service';
 
 @Injectable()
 export class UserArchiveService {
-  private static userInclude = { role: true, courses: true, payments: true };
+  private static readonly userInclude = {
+    role: true,
+    courses: true,
+    payments: true,
+  };
 
   constructor(
     private readonly userService: UserService,
@@ -43,18 +47,21 @@ export class UserArchiveService {
     if (user && authenticatedUser.userId === user.id) {
       throw new BadRequestException('You cannot archive your account yourself');
     }
-    return await this.prismaService.$transaction(async () => {
-      const userArchived = await this.prismaService.user.update({
+    return await this.prismaService.$transaction(async (tx) => {
+      const userArchived = await tx.user.update({
         where: { id: id },
         data: { isArchive: true },
         include: UserArchiveService.userInclude,
       });
-      await this.historyService.create({
-        entityId: userArchived.id,
-        entityType: EntityType.USER,
-        operationType: OperationType.ARCHIVE,
-        userId: authenticatedUser.userId,
-      });
+      await this.historyService.create(
+        {
+          entityId: userArchived.id,
+          entityType: EntityType.USER,
+          operationType: OperationType.ARCHIVE,
+          userId: authenticatedUser.userId,
+        },
+        tx,
+      );
       return userArchived;
     });
   }
@@ -64,18 +71,21 @@ export class UserArchiveService {
     id: string,
   ): Promise<UserWithIncluded> {
     await this.findById(id);
-    return this.prismaService.$transaction(async () => {
-      const userUnarchived = await this.prismaService.user.update({
+    return this.prismaService.$transaction(async (tx) => {
+      const userUnarchived = await tx.user.update({
         where: { id: id },
         data: { isArchive: false },
         include: UserArchiveService.userInclude,
       });
-      await this.historyService.create({
-        entityId: userUnarchived.id,
-        entityType: EntityType.USER,
-        operationType: OperationType.ARCHIVE,
-        userId: authenticatedUser.userId,
-      });
+      await this.historyService.create(
+        {
+          entityId: userUnarchived.id,
+          entityType: EntityType.USER,
+          operationType: OperationType.UNARCHIVE,
+          userId: authenticatedUser.userId,
+        },
+        tx,
+      );
       return userUnarchived;
     });
   }

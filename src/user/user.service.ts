@@ -103,8 +103,8 @@ export class UserService {
         throw new InternalServerErrorException(err);
       });
 
-    return this.prismaService.$transaction(async () => {
-      const created = await this.prismaService.user.create({
+    return this.prismaService.$transaction(async (tx) => {
+      const created = await tx.user.create({
         data: {
           password: bcrypt.hashSync(password, bcrypt.genSaltSync()),
           roleId: userRole.id,
@@ -114,12 +114,15 @@ export class UserService {
         },
         include: UserService.userInclude,
       });
-      await this.historyService.create({
-        entityId: created.id,
-        userId: authenticatedUser.userId,
-        entityType: EntityType.USER,
-        operationType: OperationType.CREATE,
-      });
+      await this.historyService.create(
+        {
+          entityId: created.id,
+          userId: authenticatedUser.userId,
+          entityType: EntityType.USER,
+          operationType: OperationType.CREATE,
+        },
+        tx,
+      );
       return created;
     });
   }
@@ -138,21 +141,24 @@ export class UserService {
       }
       this.pictureService.remove(user.picture);
     }
-    return this.prismaService.$transaction(async () => {
-      await this.prismaService.user.update({
+    return await this.prismaService.$transaction(async (tx) => {
+      await tx.user.update({
         where: { id: id },
         data: { courses: { set: [] } },
       });
-      const userDeleted = await this.prismaService.user.delete({
+      const userDeleted = await tx.user.delete({
         where: { id: id },
         include: UserService.userInclude,
       });
-      await this.historyService.create({
-        entityId: userDeleted.id,
-        userId: authenticatedUser.userId,
-        entityType: EntityType.USER,
-        operationType: OperationType.CREATE,
-      });
+      await this.historyService.create(
+        {
+          entityId: userDeleted.id,
+          userId: authenticatedUser.userId,
+          entityType: EntityType.USER,
+          operationType: OperationType.DELETE,
+        },
+        tx,
+      );
       return userDeleted;
     });
   }
@@ -172,8 +178,8 @@ export class UserService {
       newUserRole = await this.roleService.getRoleByIdOrName(role);
     }
 
-    return this.prismaService.$transaction(async () => {
-      const userUpdated = await this.prismaService.user.update({
+    return this.prismaService.$transaction(async (tx) => {
+      const userUpdated = await tx.user.update({
         where: { id: updateUserInput.id },
         data: {
           password: password
@@ -189,12 +195,15 @@ export class UserService {
         },
         include: UserService.userInclude,
       });
-      await this.historyService.create({
-        entityId: userUpdated.id,
-        userId: authenticatedUser.userId,
-        entityType: EntityType.USER,
-        operationType: OperationType.CREATE,
-      });
+      await this.historyService.create(
+        {
+          entityId: userUpdated.id,
+          userId: authenticatedUser.userId,
+          entityType: EntityType.USER,
+          operationType: OperationType.UPDATE,
+        },
+        tx,
+      );
       return userUpdated;
     });
   }

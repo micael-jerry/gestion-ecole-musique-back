@@ -26,17 +26,20 @@ export class RoleService {
     createRoleInput: CreateRoleInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<RoleWithIncluded> {
-    return await this.prisma.$transaction(async () => {
-      const roleCreated = await this.prisma.role.create({
+    return await this.prisma.$transaction(async (tx) => {
+      const roleCreated = await tx.role.create({
         data: createRoleInput,
         include: RoleService.roleInclude,
       });
-      await this.historyService.create({
-        entityId: roleCreated.id,
-        entityType: EntityType.ROLE,
-        operationType: OperationType.CREATE,
-        userId: authenticatedUser.userId,
-      });
+      await this.historyService.create(
+        {
+          entityId: roleCreated.id,
+          entityType: EntityType.ROLE,
+          operationType: OperationType.CREATE,
+          userId: authenticatedUser.userId,
+        },
+        tx,
+      );
       return roleCreated;
     });
   }
@@ -75,8 +78,8 @@ export class RoleService {
     const found = await this.getRoleById(id);
 
     if (found) {
-      return await this.prisma.$transaction(async () => {
-        const roleUpdated = await this.prisma.role.update({
+      return await this.prisma.$transaction(async (tx) => {
+        const roleUpdated = await tx.role.update({
           where: { id },
           data: {
             name,
@@ -87,12 +90,15 @@ export class RoleService {
           },
           include: RoleService.roleInclude,
         });
-        await this.historyService.create({
-          entityId: roleUpdated.id,
-          entityType: EntityType.ROLE,
-          operationType: OperationType.UPDATE,
-          userId: authenticatedUser.userId,
-        });
+        await this.historyService.create(
+          {
+            entityId: roleUpdated.id,
+            entityType: EntityType.ROLE,
+            operationType: OperationType.UPDATE,
+            userId: authenticatedUser.userId,
+          },
+          tx,
+        );
         return roleUpdated;
       });
     }
@@ -105,17 +111,20 @@ export class RoleService {
     const found = await this.getRoleById(id);
 
     if (found) {
-      return await this.prisma.$transaction(async () => {
-        const roleDeleted = await this.prisma.role.delete({
+      return await this.prisma.$transaction(async (tx) => {
+        const roleDeleted = await tx.role.delete({
           where: { id },
           include: RoleService.roleInclude,
         });
-        await this.historyService.create({
-          entityId: roleDeleted.id,
-          entityType: EntityType.ROLE,
-          operationType: OperationType.DELETE,
-          userId: authenticatedUser.userId,
-        });
+        await this.historyService.create(
+          {
+            entityId: roleDeleted.id,
+            entityType: EntityType.ROLE,
+            operationType: OperationType.DELETE,
+            userId: authenticatedUser.userId,
+          },
+          tx,
+        );
         return roleDeleted;
       });
     }
