@@ -9,6 +9,10 @@ import { Payment } from './entities/payment.entity';
 
 @Injectable()
 export class PaymentService {
+  private static readonly paymentsInclude = {
+    user: { include: { role: true, courses: true, payments: true } },
+    feeType: true,
+  };
   constructor(
     private prismaService: PrismaService,
     private historyService: HistoryService,
@@ -18,9 +22,16 @@ export class PaymentService {
     paymentInput: PaymentInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<Payment> {
-    const payment = await this.prismaService.payment.create({
-      data: paymentInput,
-    });
+    let payment: Payment;
+    try {
+      payment = await this.prismaService.payment.create({
+        data: paymentInput,
+        include: PaymentService.paymentsInclude,
+      });
+    } catch (error) {
+      throw new Error(`Payment creation failed: ${error.message}`);
+    }
+
     await this.historyService.create({
       entityId: payment.id,
       entityType: EntityType.PAYMENT,
@@ -32,6 +43,8 @@ export class PaymentService {
   }
 
   async getPayments(): Promise<Payment[]> {
-    return await this.prismaService.payment.findMany();
+    return await this.prismaService.payment.findMany({
+      include: PaymentService.paymentsInclude,
+    });
   }
 }

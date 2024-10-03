@@ -1,22 +1,22 @@
-import { PrismaService } from '../prisma/prisma.service';
-import { UserService } from './user.service';
+import { BadRequestException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
-import { RoleService } from '../role/role.service';
-import { PictureService } from '../picture/picture.service';
+import { RoleAdmin } from '../../test/conf/test-utils/role.test-utils';
 import {
   UserAdminOne,
   UserAdminTwo,
 } from '../../test/conf/test-utils/user.test-utils';
-import { Test, TestingModule } from '@nestjs/testing';
+import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { HistoryService } from '../history/history.service';
+import { PictureInput } from '../picture/dto/picture.input';
+import { PictureService } from '../picture/picture.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { RoleType } from '../role/entities/role.entity';
+import { RoleService } from '../role/role.service';
 import { CreateUserInput } from './dto/create-user.input';
-import { RoleAdmin } from '../../test/conf/test-utils/role.test-utils';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UserWithIncluded } from './types/user-with-included.type';
-import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
-import { BadRequestException } from '@nestjs/common';
-import { PictureInput } from '../picture/dto/picture.input';
-import { HistoryService } from '../history/history.service';
+import { UserService } from './user.service';
 
 describe('UserService', () => {
   let prisma: PrismaService;
@@ -125,7 +125,7 @@ describe('UserService', () => {
       expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
         where: { id: userId, isArchive: false },
-        include: { role: true, courses: true },
+        include: { role: true, courses: true, payments: true },
       });
       expect(result).toEqual(expectedUser);
     });
@@ -153,7 +153,7 @@ describe('UserService', () => {
       expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
         where: { email: email, isArchive: false },
-        include: { role: true, courses: true },
+        include: { role: true, courses: true, payments: true },
       });
       expect(result).toEqual(expectedUser);
     });
@@ -255,7 +255,7 @@ describe('UserService', () => {
           courses: { connect: [] },
           ...createUserInput,
         },
-        include: { role: true, courses: true },
+        include: { role: true, courses: true, payments: true },
       });
       expect(result).toEqual(UserAdminOne);
     });
@@ -338,7 +338,7 @@ describe('UserService', () => {
       expect(prisma.user.delete).toHaveBeenCalledTimes(1);
       expect(prisma.user.delete).toHaveBeenCalledWith({
         where: { id: userId },
-        include: { role: true, courses: true },
+        include: { role: true, courses: true, payments: true },
       });
       expect(result).toEqual(expectedUser);
     });
@@ -421,7 +421,7 @@ describe('UserService', () => {
           },
           ...updateUserInput,
         },
-        include: { role: true, courses: true },
+        include: { role: true, courses: true, payments: true },
       });
       expect(result).toEqual(UserAdminTwo);
     });

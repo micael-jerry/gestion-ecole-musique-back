@@ -1,12 +1,12 @@
+import * as bcrypt from 'bcrypt';
+import { UserWithIncluded } from 'src/user/types/user-with-included.type';
+import { CourseOne, CourseThree, CourseTwo } from './course.test-utils';
 import {
   RoleAdmin,
   RoleManager,
   RoleStudent,
   RoleTeacher,
 } from './role.test-utils';
-import * as bcrypt from 'bcrypt';
-import { UserWithIncluded } from 'src/user/types/user-with-included.type';
-import { CourseOne, CourseThree, CourseTwo } from './course.test-utils';
 
 export const UserAdminOne: UserWithIncluded = {
   id: 'user_one_id',
@@ -22,6 +22,7 @@ export const UserAdminOne: UserWithIncluded = {
   role: RoleAdmin,
   courses: [],
   isArchive: false,
+  payments: [],
 };
 
 export const UserAdminTwo: UserWithIncluded = {
@@ -38,6 +39,7 @@ export const UserAdminTwo: UserWithIncluded = {
   role: RoleAdmin,
   courses: [],
   isArchive: false,
+  payments: [],
 };
 
 export const UserAdminThree: UserWithIncluded = {
@@ -54,6 +56,7 @@ export const UserAdminThree: UserWithIncluded = {
   role: RoleAdmin,
   courses: [],
   isArchive: false,
+  payments: [],
 };
 
 export const UserManagerOne: UserWithIncluded = {
@@ -70,6 +73,7 @@ export const UserManagerOne: UserWithIncluded = {
   role: RoleManager,
   courses: [],
   isArchive: false,
+  payments: [],
 };
 
 export const UserManagerTwo: UserWithIncluded = {
@@ -86,6 +90,7 @@ export const UserManagerTwo: UserWithIncluded = {
   role: RoleManager,
   courses: [],
   isArchive: false,
+  payments: [],
 };
 
 export const UserManagerThree: UserWithIncluded = {
@@ -101,6 +106,7 @@ export const UserManagerThree: UserWithIncluded = {
   description: null,
   role: RoleManager,
   courses: [],
+  payments: [],
   isArchive: false,
 };
 
@@ -118,6 +124,7 @@ export const UserStudentOne: UserWithIncluded = {
   role: RoleStudent,
   courses: [CourseOne, CourseTwo],
   isArchive: false,
+  payments: [],
 };
 
 export const UserStudentTwo: UserWithIncluded = {
@@ -134,6 +141,7 @@ export const UserStudentTwo: UserWithIncluded = {
   role: RoleStudent,
   courses: [CourseOne, CourseTwo],
   isArchive: false,
+  payments: [],
 };
 
 export const UserStudentThree: UserWithIncluded = {
@@ -150,6 +158,7 @@ export const UserStudentThree: UserWithIncluded = {
   role: RoleStudent,
   courses: [CourseOne, CourseTwo],
   isArchive: false,
+  payments: [],
 };
 
 export const UserStudentFour: UserWithIncluded = {
@@ -166,6 +175,7 @@ export const UserStudentFour: UserWithIncluded = {
   role: RoleStudent,
   courses: [CourseOne],
   isArchive: false,
+  payments: [],
 };
 
 export const UserStudentFive: UserWithIncluded = {
@@ -182,6 +192,7 @@ export const UserStudentFive: UserWithIncluded = {
   role: RoleStudent,
   courses: [CourseOne],
   isArchive: false,
+  payments: [],
 };
 
 export const UserStudentSix: UserWithIncluded = {
@@ -198,6 +209,7 @@ export const UserStudentSix: UserWithIncluded = {
   role: RoleStudent,
   courses: [CourseTwo],
   isArchive: false,
+  payments: [],
 };
 
 export const UserStudentSeven: UserWithIncluded = {
@@ -214,6 +226,7 @@ export const UserStudentSeven: UserWithIncluded = {
   role: RoleStudent,
   courses: [CourseTwo],
   isArchive: false,
+  payments: [],
 };
 
 export const UserStudentEight: UserWithIncluded = {
@@ -230,6 +243,7 @@ export const UserStudentEight: UserWithIncluded = {
   role: RoleStudent,
   courses: [CourseThree],
   isArchive: false,
+  payments: [],
 };
 
 export const UserStudentNine: UserWithIncluded = {
@@ -246,6 +260,7 @@ export const UserStudentNine: UserWithIncluded = {
   role: RoleStudent,
   courses: [CourseThree],
   isArchive: false,
+  payments: [],
 };
 
 export const UserStudentTen: UserWithIncluded = {
@@ -262,8 +277,8 @@ export const UserStudentTen: UserWithIncluded = {
   role: RoleStudent,
   courses: [CourseThree],
   isArchive: false,
+  payments: [],
 };
-
 export const UserTeacherOne: UserWithIncluded = {
   id: 'user_seventeen_id',
   roleId: RoleTeacher.id,
@@ -278,6 +293,7 @@ export const UserTeacherOne: UserWithIncluded = {
   role: RoleTeacher,
   courses: [CourseOne],
   isArchive: false,
+  payments: [],
 };
 
 export const UserTeacherTwo: UserWithIncluded = {
@@ -294,6 +310,7 @@ export const UserTeacherTwo: UserWithIncluded = {
   role: RoleTeacher,
   courses: [CourseTwo],
   isArchive: false,
+  payments: [],
 };
 
 export const UserTeacherThree: UserWithIncluded = {
@@ -310,6 +327,7 @@ export const UserTeacherThree: UserWithIncluded = {
   role: RoleTeacher,
   courses: [CourseThree],
   isArchive: false,
+  payments: [],
 };
 
 export const UserTeacherFour: UserWithIncluded = {
@@ -326,6 +344,7 @@ export const UserTeacherFour: UserWithIncluded = {
   role: RoleTeacher,
   courses: [CourseOne, CourseTwo],
   isArchive: false,
+  payments: [],
 };
 
 export const UserTeacherFive: UserWithIncluded = {
@@ -343,6 +362,7 @@ export const UserTeacherFive: UserWithIncluded = {
   role: RoleTeacher,
   courses: [CourseOne, CourseTwo, CourseThree],
   isArchive: false,
+  payments: [],
 };
 
 export const UserTeacherSix: UserWithIncluded = {
@@ -359,6 +379,7 @@ export const UserTeacherSix: UserWithIncluded = {
   role: RoleTeacher,
   courses: [CourseOne, CourseTwo, CourseThree],
   isArchive: false,
+  payments: [],
 };
 
 export const UserTeacherSeven: UserWithIncluded = {
@@ -376,6 +397,7 @@ export const UserTeacherSeven: UserWithIncluded = {
   role: RoleTeacher,
   courses: [CourseOne, CourseTwo, CourseThree],
   isArchive: false,
+  payments: [],
 };
 
 export const UserTeacherEight: UserWithIncluded = {
@@ -393,6 +415,7 @@ export const UserTeacherEight: UserWithIncluded = {
   role: RoleTeacher,
   courses: [CourseOne, CourseTwo, CourseThree],
   isArchive: false,
+  payments: [],
 };
 
 export const UserTeacherNine: UserWithIncluded = {
@@ -410,6 +433,7 @@ export const UserTeacherNine: UserWithIncluded = {
   role: RoleTeacher,
   courses: [CourseOne, CourseTwo, CourseThree],
   isArchive: false,
+  payments: [],
 };
 
 export const UserTeacherTen: UserWithIncluded = {
@@ -427,6 +451,7 @@ export const UserTeacherTen: UserWithIncluded = {
   role: RoleTeacher,
   courses: [CourseOne, CourseTwo, CourseThree],
   isArchive: false,
+  payments: [],
 };
 
 export const AllUser: UserWithIncluded[] = [

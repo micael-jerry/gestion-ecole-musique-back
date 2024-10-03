@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UserWithIncluded } from '../user/types/user-with-included.type';
-import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
-import { UserService } from '../user/user.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { HistoryService } from '../history/history.service';
 import { EntityType, OperationType } from '@prisma/client';
+import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { HistoryService } from '../history/history.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { UserWithIncluded } from '../user/types/user-with-included.type';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class UserArchiveService {
-  private static userInclude = { role: true, courses: true };
+  private static userInclude = { role: true, courses: true, payments: true };
 
   constructor(
     private readonly userService: UserService,

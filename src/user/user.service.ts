@@ -5,22 +5,26 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { EntityType, OperationType, Prisma } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserInput } from './dto/create-user.input';
-import { PictureService } from '../picture/picture.service';
-import { RoleService } from '../role/role.service';
-import { UpdateUserInput } from './dto/update-user.input';
-import { RoleType } from '../role/entities/role.entity';
 import * as bcrypt from 'bcrypt';
-import { UserWithIncluded } from './types/user-with-included.type';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
-import { PictureInput } from '../picture/dto/picture.input';
-import { PaginationInput } from './dto/pagination.input';
 import { HistoryService } from '../history/history.service';
+import { PictureInput } from '../picture/dto/picture.input';
+import { PictureService } from '../picture/picture.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { RoleType } from '../role/entities/role.entity';
+import { RoleService } from '../role/role.service';
+import { CreateUserInput } from './dto/create-user.input';
+import { PaginationInput } from './dto/pagination.input';
+import { UpdateUserInput } from './dto/update-user.input';
+import { UserWithIncluded } from './types/user-with-included.type';
 
 @Injectable()
 export class UserService {
-  private static readonly userInclude = { role: true, courses: true };
+  private static readonly userInclude = {
+    role: true,
+    courses: true,
+    payments: true,
+  };
 
   constructor(
     private readonly prismaService: PrismaService,
