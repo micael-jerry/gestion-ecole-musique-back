@@ -10,7 +10,10 @@ import { HistoryWithIncluded } from './types/history-with-included.type';
 
 @Injectable()
 export class HistoryService {
-  private static readonly historyInclude = { user: true };
+  private static readonly historyInclude = {
+    user: { include: { role: true, courses: true } },
+  };
+
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(history: CreateHistoryInput): Promise<HistoryWithIncluded> {
@@ -162,9 +165,12 @@ export class HistoryService {
             include: { role: true, courses: true },
           });
         case EntityType.PAYMENT:
-          return await this.prismaService.user.findUnique({
+          return await this.prismaService.payment.findUnique({
             where: { id: entityId },
-            include: { role: true, courses: true },
+            include: {
+              feeType: true,
+              user: { include: { role: true, courses: true } },
+            },
           });
         default:
           throw new BadRequestException(`Unknown entity type`);

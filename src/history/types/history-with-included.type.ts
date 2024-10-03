@@ -1,6 +1,7 @@
-import { History, User } from '@prisma/client';
+import { History } from '@prisma/client';
+import { UserWithIncluded } from 'src/user/types/user-with-included.type';
 
 export type HistoryWithIncluded = History & {
-  user: User;
+  user: UserWithIncluded;
   entity: object | null;
 };
