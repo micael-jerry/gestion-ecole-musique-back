@@ -23,10 +23,22 @@ export class PaymentResolver {
     return this.paymentService.create(paymentInput, user);
   }
 
-  @Actions('GET_PAYMENT')
+  @Actions('SEARCH_PAYMENT')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [Payment])
-  getPayments() {
-    return this.paymentService.getPayments();
+  getPayments(
+    @Args('keyword', { nullable: true }) keyword?: string,
+    @Args('startDate', { nullable: true }) startDate?: Date,
+    @Args('endDate', { nullable: true }) endDate?: Date,
+    @Args('page', { nullable: true }) page?: number,
+    @Args('limit', { nullable: true }) limit?: number,
+  ) {
+    return this.paymentService.getPayments(
+      keyword,
+      startDate,
+      endDate,
+      page,
+      limit,
+    );
   }
 }

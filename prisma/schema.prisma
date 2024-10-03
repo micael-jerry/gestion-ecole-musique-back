@@ -104,6 +104,7 @@ model Payment {
   date        DateTime[]
   paymentType PaymentType
   userId      String
+  createdAt   DateTime @default(now())
   user       User    @relation(fields: [userId], references: [id])
   feeTypeId   String
   feeType     FeeType @relation(fields: [feeTypeId], references: [id])

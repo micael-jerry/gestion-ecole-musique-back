@@ -68,6 +68,7 @@ describe('PaymentService', () => {
         paymentType: 'CASH',
         user: null,
         feeType: null,
+        createdAt: new Date(),
       };
 
       jest
@@ -133,6 +134,7 @@ describe('PaymentService', () => {
           description: 'test',
           date: [date],
           paymentType: 'CASH',
+          createdAt: new Date(),
           user: {
             id: 'user_nine_id',
             firstname: 'Charlie',
@@ -162,6 +164,7 @@ describe('PaymentService', () => {
           description: 'test',
           date: [date],
           paymentType: 'CASH',
+          createdAt: new Date(),
           user: {
             id: 'user_nine_id',
             firstname: 'Charlie',
@@ -190,10 +193,117 @@ describe('PaymentService', () => {
 
       expect(result).toEqual(payments);
       expect(prismaService.payment.findMany).toHaveBeenCalledWith({
+        where: {},
         include: {
           user: { include: { role: true, courses: true, payments: true } },
           feeType: true,
         },
+        take: 25,
+        skip: 0,
+      });
+    });
+
+    it('should apply filters and pagination', async () => {
+      const date = new Date();
+      const payments: Payment[] = [
+        {
+          id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
+          feeType: {
+            id: 'fee_type_one_id',
+            name: 'Ecolage',
+            value: 100000,
+          },
+          amount: 7000,
+          description: 'test',
+          date: [date],
+          paymentType: 'CASH',
+          createdAt: new Date(),
+          user: {
+            id: 'user_nine_id',
+            firstname: 'Charlie',
+            lastname: 'Brown',
+            email: 'charliebrown@example.com',
+            phone: '0350000000',
+            picture: null,
+            address: '345 Pine St',
+            courses: [],
+            payments: [],
+            role: {
+              id: 'role_one_id',
+              name: 'Student',
+            },
+          },
+          feeTypeId: 'fee_type_one_id',
+          userId: 'user_nine_id',
+        },
+      ];
+
+      jest
+        .spyOn(prismaService.payment, 'findMany')
+        .mockResolvedValue(payments as any);
+
+      const keyword = 'Charlie';
+      const startDate = new Date('2023-01-01');
+      const endDate = new Date('2023-12-31');
+      const page = 2;
+      const limit = 10;
+
+      const result = await service.getPayments(
+        keyword,
+        startDate,
+        endDate,
+        page,
+        limit,
+      );
+
+      expect(result).toEqual(payments);
+      expect(prismaService.payment.findMany).toHaveBeenCalledWith({
+        where: {
+          OR: [
+            {
+              OR: [
+                {
+                  user: {
+                    firstname: {
+                      contains: 'Charlie',
+                      mode: 'insensitive',
+                    },
+                  },
+                },
+                {
+                  user: {
+                    lastname: {
+                      contains: 'Charlie',
+                      mode: 'insensitive',
+                    },
+                  },
+                },
+                {
+                  feeType: {
+                    name: {
+                      contains: 'Charlie',
+                      mode: 'insensitive',
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+          AND: [
+            {
+              createdAt: {
+                gte: startDate,
+                lte: endDate,
+              },
+            },
+          ],
+        },
+        include: {
+          user: { include: { role: true, courses: true, payments: true } },
+          feeType: true,
+        },
+        take: 10,
+        skip: 10,
       });
     });
   });
