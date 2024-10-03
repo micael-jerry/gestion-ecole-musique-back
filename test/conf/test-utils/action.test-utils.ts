@@ -269,6 +269,13 @@ export const ActionCreatePayment: Action = {
   description: 'A les privilèges pour créer un paiement.',
 };
 
+export const ActionSearchPayment: Action = {
+  id: 'action_search_payment_id',
+  tag: 'SEARCH_PAYMENT',
+  name: 'Chercher un paiement',
+  description: 'A les privilèges pour faire des recherche sur le paiment.',
+};
+
 export const AllAction: Action[] = [
   ActionGetAdmin,
   ActionCreateAdmin,
@@ -307,4 +314,5 @@ export const AllAction: Action[] = [
   ActionGetHistory,
   ActionGetPayment,
   ActionCreatePayment,
+  ActionSearchPayment,
 ];

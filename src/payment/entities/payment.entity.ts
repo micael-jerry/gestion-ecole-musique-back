@@ -23,6 +23,9 @@ export class Payment {
   @Field()
   paymentType: PaymentType;
 
+  @Field(() => Date)
+  createdAt: Date;
+
   @Field()
   userId: string;
 
