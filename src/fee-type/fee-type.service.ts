@@ -17,16 +17,19 @@ export class FeeTypeService {
     createFeeTypeInput: CreateFeeTypeInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<FeeType> {
-    return await this.prismaService.$transaction(async () => {
-      const feeTypeCreated = await this.prismaService.feeType.create({
+    return await this.prismaService.$transaction(async (tx) => {
+      const feeTypeCreated = await tx.feeType.create({
         data: createFeeTypeInput,
       });
-      await this.historyService.create({
-        entityId: feeTypeCreated.id,
-        entityType: EntityType.FEE_TYPE,
-        operationType: OperationType.CREATE,
-        userId: authenticatedUser.userId,
-      });
+      await this.historyService.create(
+        {
+          entityId: feeTypeCreated.id,
+          entityType: EntityType.FEE_TYPE,
+          operationType: OperationType.CREATE,
+          userId: authenticatedUser.userId,
+        },
+        tx,
+      );
       return feeTypeCreated;
     });
   }
@@ -49,17 +52,20 @@ export class FeeTypeService {
     updateFeeTypeInput: UpdateFeeTypeInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<FeeType> {
-    return await this.prismaService.$transaction(async () => {
-      const feeTypeUpdated = await this.prismaService.feeType.update({
+    return await this.prismaService.$transaction(async (tx) => {
+      const feeTypeUpdated = await tx.feeType.update({
         where: { id: updateFeeTypeInput.id },
         data: updateFeeTypeInput,
       });
-      await this.historyService.create({
-        entityId: feeTypeUpdated.id,
-        entityType: EntityType.FEE_TYPE,
-        operationType: OperationType.UPDATE,
-        userId: authenticatedUser.userId,
-      });
+      await this.historyService.create(
+        {
+          entityId: feeTypeUpdated.id,
+          entityType: EntityType.FEE_TYPE,
+          operationType: OperationType.UPDATE,
+          userId: authenticatedUser.userId,
+        },
+        tx,
+      );
       return feeTypeUpdated;
     });
   }
@@ -69,16 +75,19 @@ export class FeeTypeService {
     authenticatedUser: JwtPayloadType,
   ): Promise<FeeType> {
     try {
-      return await this.prismaService.$transaction(async () => {
-        const feeTypeRemoved = await this.prismaService.feeType.delete({
+      return await this.prismaService.$transaction(async (tx) => {
+        const feeTypeRemoved = await tx.feeType.delete({
           where: { id: id },
         });
-        await this.historyService.create({
-          entityId: feeTypeRemoved.id,
-          entityType: EntityType.FEE_TYPE,
-          operationType: OperationType.DELETE,
-          userId: authenticatedUser.userId,
-        });
+        await this.historyService.create(
+          {
+            entityId: feeTypeRemoved.id,
+            entityType: EntityType.FEE_TYPE,
+            operationType: OperationType.DELETE,
+            userId: authenticatedUser.userId,
+          },
+          tx,
+        );
         return feeTypeRemoved;
       });
     } catch (err) {

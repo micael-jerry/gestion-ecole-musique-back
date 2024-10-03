@@ -3,10 +3,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { EntityType } from '@prisma/client';
+import { EntityType, Prisma, PrismaClient } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateHistoryInput } from './dto/create-history.input';
 import { HistoryWithIncluded } from './types/history-with-included.type';
+import { DefaultArgs } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class HistoryService {
@@ -16,12 +17,18 @@ export class HistoryService {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(history: CreateHistoryInput): Promise<HistoryWithIncluded> {
+  async create(
+    history: CreateHistoryInput,
+    tx: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+    >,
+  ): Promise<HistoryWithIncluded> {
     const entity = await this.findEntityById(
       history.entityId,
       history.entityType,
     );
-    const createdHistory = await this.prismaService.history.create({
+    const createdHistory = await tx.history.create({
       data: history,
       include: HistoryService.historyInclude,
     });

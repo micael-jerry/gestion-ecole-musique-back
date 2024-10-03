@@ -8,7 +8,7 @@ import { HistoryService } from '../history/history.service';
 @Injectable()
 export class SettingService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private readonly historyService: HistoryService,
   ) {}
 
@@ -35,19 +35,22 @@ export class SettingService {
     authenticatedUser: JwtPayloadType,
   ): Promise<Setting> {
     const { id, ...otherUpdateSettingInputProperty } = updateSettingInput;
-    return await this.prisma.$transaction(async () => {
-      const settingUpdated = await this.prisma.setting.update({
+    return await this.prisma.$transaction(async (tx) => {
+      const settingUpdated = await tx.setting.update({
         where: {
           id,
         },
         data: otherUpdateSettingInputProperty,
       });
-      await this.historyService.create({
-        entityId: settingUpdated.id,
-        entityType: EntityType.SETTING,
-        operationType: OperationType.UPDATE,
-        userId: authenticatedUser.userId,
-      });
+      await this.historyService.create(
+        {
+          entityId: settingUpdated.id,
+          entityType: EntityType.SETTING,
+          operationType: OperationType.UPDATE,
+          userId: authenticatedUser.userId,
+        },
+        tx,
+      );
       return settingUpdated;
     });
   }

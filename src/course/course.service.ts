@@ -17,16 +17,19 @@ export class CourseService {
     createCourseInput: CreateCourseInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<Course> {
-    return await this.prismaService.$transaction(async () => {
-      const courseCreated = await this.prismaService.course.create({
+    return await this.prismaService.$transaction(async (tx) => {
+      const courseCreated = await tx.course.create({
         data: createCourseInput,
       });
-      await this.historyService.create({
-        entityId: courseCreated.id,
-        entityType: EntityType.COURSE,
-        operationType: OperationType.CREATE,
-        userId: authenticatedUser.userId,
-      });
+      await this.historyService.create(
+        {
+          entityId: courseCreated.id,
+          entityType: EntityType.COURSE,
+          operationType: OperationType.CREATE,
+          userId: authenticatedUser.userId,
+        },
+        tx,
+      );
       return courseCreated;
     });
   }
@@ -49,32 +52,38 @@ export class CourseService {
     updateCourseInput: UpdateCourseInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<Course> {
-    return await this.prismaService.$transaction(async () => {
-      const courseUpdated = await this.prismaService.course.update({
+    return await this.prismaService.$transaction(async (tx) => {
+      const courseUpdated = await tx.course.update({
         where: { id: updateCourseInput.id },
         data: updateCourseInput,
       });
-      await this.historyService.create({
-        entityId: courseUpdated.id,
-        entityType: EntityType.COURSE,
-        operationType: OperationType.UPDATE,
-        userId: authenticatedUser.userId,
-      });
+      await this.historyService.create(
+        {
+          entityId: courseUpdated.id,
+          entityType: EntityType.COURSE,
+          operationType: OperationType.UPDATE,
+          userId: authenticatedUser.userId,
+        },
+        tx,
+      );
       return courseUpdated;
     });
   }
 
   async remove(id: string, authenticatedUser: JwtPayloadType): Promise<Course> {
-    return await this.prismaService.$transaction(async () => {
-      const courseRemoved = await this.prismaService.course.delete({
+    return await this.prismaService.$transaction(async (tx) => {
+      const courseRemoved = await tx.course.delete({
         where: { id: id },
       });
-      await this.historyService.create({
-        entityId: courseRemoved.id,
-        entityType: EntityType.COURSE,
-        operationType: OperationType.DELETE,
-        userId: authenticatedUser.userId,
-      });
+      await this.historyService.create(
+        {
+          entityId: courseRemoved.id,
+          entityType: EntityType.COURSE,
+          operationType: OperationType.DELETE,
+          userId: authenticatedUser.userId,
+        },
+        tx,
+      );
       return courseRemoved;
     });
   }
