@@ -1,18 +1,18 @@
+import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { EntityType, OperationType } from '@prisma/client';
 import {
   CourseOne,
   CourseTwo,
 } from '../../test/conf/test-utils/course.test-utils';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateHistoryInput } from './dto/create-history.input';
-import { HistoryService } from './history.service';
-import { Test, TestingModule } from '@nestjs/testing';
-import { EntityType, OperationType } from '@prisma/client';
-import { UserAdminOne } from '../../test/conf/test-utils/user.test-utils';
 import {
   HistoryCourseOne,
   HistoryCourseTwo,
 } from '../../test/conf/test-utils/history.test-utils';
-import { NotFoundException } from '@nestjs/common';
+import { UserAdminOne } from '../../test/conf/test-utils/user.test-utils';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateHistoryInput } from './dto/create-history.input';
+import { HistoryService } from './history.service';
 
 describe('HistoryService', () => {
   let service: HistoryService;
@@ -63,7 +63,6 @@ describe('HistoryService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-
   describe('createHistory', () => {
     it('should create history with valid input data', async () => {
       const historyInput: CreateHistoryInput = {
@@ -86,7 +85,9 @@ describe('HistoryService', () => {
       );
       expect(prismaService.history.create).toHaveBeenCalledWith({
         data: historyInput,
-        include: { user: true },
+        include: {
+          user: { include: { role: true, courses: true, payments: true } },
+        },
       });
       expect(result).toEqual({ ...HistoryCourseOne, entity: CourseOne });
     });
@@ -116,7 +117,9 @@ describe('HistoryService', () => {
 
       expect(prismaService.history.findUnique).toHaveBeenCalledWith({
         where: { id: historyId },
-        include: { user: true },
+        include: {
+          user: { include: { role: true, courses: true, payments: true } },
+        },
       });
       expect(service.findEntityById).toHaveBeenCalledWith(
         expectedHistory.entityId,

@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { RoleType } from '../../role/entities/role.entity';
+import { Payment } from 'src/payment/entities/payment.entity';
 import { Course } from '../../course/entities/course.entity';
+import { RoleType } from '../../role/entities/role.entity';
 import { pathFinderMiddleware } from '../middleware/path-finder.middleware';
 
 @ObjectType()
@@ -34,4 +35,7 @@ export class User {
 
   @Field(() => [Course], { nullable: true })
   courses: Course[];
+
+  @Field(() => [Payment], { nullable: true })
+  payments: Payment[];
 }

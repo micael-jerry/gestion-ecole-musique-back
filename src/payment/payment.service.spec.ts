@@ -1,14 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  EntityType,
-  OperationType,
-  Payment,
-  PaymentType,
-} from '@prisma/client';
+import { EntityType, OperationType } from '@prisma/client';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 import { HistoryService } from '../history/history.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaymentInput } from './dto/payment.input';
+import { Payment } from './entities/payment.entity';
 import { PaymentService } from './payment.service';
 
 describe('PaymentService', () => {
@@ -46,72 +42,159 @@ describe('PaymentService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
   describe('create', () => {
     it('should create a payment and log history', async () => {
       const paymentInput: PaymentInput = {
-        feeTypeId: 'feeType123',
-        amount: 100,
-        description: 'Test payment',
+        feeTypeId: 'fee_type_one_id',
+        amount: 7000,
+        description: 'test',
         date: [new Date()],
-        paymentType: PaymentType.CASH,
-        userId: 'user123',
+        userId: 'user_nine_id',
+        paymentType: 'CASH',
       };
       const authenticatedUser: JwtPayloadType = {
         userId: 'user123',
         roleName: 'testrole',
         actionTags: ['CREATE_PAYMENT'],
       };
-      const payment = { id: 'payment123', ...paymentInput };
+      const createdPayment: Payment = {
+        id: 'payment-id',
+        feeTypeId: 'fee_type_one_id',
+        amount: 7000,
+        description: 'test',
+        date: [new Date()],
+        userId: 'user_nine_id',
+        paymentType: 'CASH',
+        user: null,
+        feeType: null,
+      };
 
       jest
         .spyOn(prismaService.payment, 'create')
-        .mockResolvedValue(payment as Payment);
+        .mockResolvedValue(createdPayment as any);
       jest.spyOn(historyService, 'create').mockResolvedValue(undefined);
 
       const result = await service.create(paymentInput, authenticatedUser);
 
+      expect(result).toEqual(createdPayment);
       expect(prismaService.payment.create).toHaveBeenCalledWith({
         data: paymentInput,
+        include: {
+          user: { include: { role: true, courses: true, payments: true } },
+          feeType: true,
+        },
       });
       expect(historyService.create).toHaveBeenCalledWith({
-        entityId: payment.id,
+        entityId: createdPayment.id,
         entityType: EntityType.PAYMENT,
         operationType: OperationType.CREATE,
         userId: authenticatedUser.userId,
       });
-      expect(result).toEqual(payment);
+    });
+
+    it('should throw an error if payment creation fails', async () => {
+      const paymentInput: PaymentInput = {
+        feeTypeId: 'fee_type_one_id',
+        amount: 7000,
+        description: 'test',
+        date: [new Date()],
+        userId: 'user_nine_id',
+        paymentType: 'CASH',
+      };
+      const authenticatedUser: JwtPayloadType = {
+        userId: 'user123',
+        roleName: 'testrole',
+        actionTags: ['CREATE_PAYMENT'],
+      };
+
+      jest
+        .spyOn(prismaService.payment, 'create')
+        .mockRejectedValue(new Error('Creation error'));
+
+      await expect(
+        service.create(paymentInput, authenticatedUser),
+      ).rejects.toThrow('Payment creation failed: Creation error');
     });
   });
 
   describe('getPayments', () => {
     it('should return an array of payments', async () => {
-      const payments = [
+      const date = new Date();
+      const payments: Payment[] = [
         {
-          id: 'payment1',
-          feeTypeId: 'feeType1',
-          amount: 100,
-          description: 'Payment 1',
-          date: [new Date()],
-          paymentType: PaymentType.CARD,
-          userId: 'user1',
+          id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
+          feeType: {
+            id: 'fee_type_one_id',
+            name: 'Ecolage',
+            value: 100000,
+          },
+          amount: 7000,
+          description: 'test',
+          date: [date],
+          paymentType: 'CASH',
+          user: {
+            id: 'user_nine_id',
+            firstname: 'Charlie',
+            lastname: 'Brown',
+            email: 'charliebrown@example.com',
+            phone: '0350000000',
+            picture: null,
+            address: '345 Pine St',
+            courses: [],
+            payments: [],
+            role: {
+              id: 'role_one_id',
+              name: 'Student',
+            },
+          },
+          feeTypeId: 'fee_type_one_id',
+          userId: 'user_nine_id',
         },
         {
-          id: 'payment2',
-          feeTypeId: 'feeType2',
-          amount: 200,
-          description: 'Payment 2',
-          date: [new Date()],
-          paymentType: PaymentType.CASH,
-          userId: 'user2',
+          id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
+          feeType: {
+            id: 'fee_type_one_id',
+            name: 'Ecolage',
+            value: 100000,
+          },
+          amount: 7000,
+          description: 'test',
+          date: [date],
+          paymentType: 'CASH',
+          user: {
+            id: 'user_nine_id',
+            firstname: 'Charlie',
+            lastname: 'Brown',
+            email: 'charliebrown@example.com',
+            phone: '0350000000',
+            picture: null,
+            address: '345 Pine St',
+            courses: [],
+            payments: [],
+            role: {
+              id: 'role_one_id',
+              name: 'Student',
+            },
+          },
+          feeTypeId: 'fee_type_one_id',
+          userId: 'user_nine_id',
         },
       ];
 
-      jest.spyOn(prismaService.payment, 'findMany').mockResolvedValue(payments);
+      jest
+        .spyOn(prismaService.payment, 'findMany')
+        .mockResolvedValue(payments as any);
 
       const result = await service.getPayments();
 
-      expect(prismaService.payment.findMany).toHaveBeenCalled();
       expect(result).toEqual(payments);
+      expect(prismaService.payment.findMany).toHaveBeenCalledWith({
+        include: {
+          user: { include: { role: true, courses: true, payments: true } },
+          feeType: true,
+        },
+      });
     });
   });
 });

@@ -11,7 +11,7 @@ import { HistoryWithIncluded } from './types/history-with-included.type';
 @Injectable()
 export class HistoryService {
   private static readonly historyInclude = {
-    user: { include: { role: true, courses: true } },
+    user: { include: { role: true, courses: true, payments: true } },
   };
 
   constructor(private readonly prismaService: PrismaService) {}
