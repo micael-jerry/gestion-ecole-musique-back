@@ -4,8 +4,9 @@ import { ActionWithIncluded } from './types/action-with-included.type';
 
 @Injectable()
 export class ActionService {
-  private static actionInclude = { roles: true };
-  constructor(private prisma: PrismaService) {}
+  private static readonly actionInclude = { roles: true };
+
+  constructor(private readonly prisma: PrismaService) {}
 
   async getAllActions(): Promise<ActionWithIncluded[]> {
     return this.prisma.action.findMany({

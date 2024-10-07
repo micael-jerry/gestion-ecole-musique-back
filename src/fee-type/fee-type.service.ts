@@ -1,13 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateFeeTypeInput } from './dto/create-fee-type.input';
-import { EntityType, FeeType, OperationType } from '@prisma/client';
+import { EntityType, OperationType } from '@prisma/client';
 import { UpdateFeeTypeInput } from './dto/update-fee-type.input';
 import { HistoryService } from '../history/history.service';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { FeeTypeWithIncluded } from './types/fee-type-with-included.type';
 
 @Injectable()
 export class FeeTypeService {
+  private static readonly feeTypeInclude = { payments: true };
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly historyService: HistoryService,
@@ -16,10 +23,11 @@ export class FeeTypeService {
   async create(
     createFeeTypeInput: CreateFeeTypeInput,
     authenticatedUser: JwtPayloadType,
-  ): Promise<FeeType> {
+  ): Promise<FeeTypeWithIncluded> {
     return await this.prismaService.$transaction(async (tx) => {
       const feeTypeCreated = await tx.feeType.create({
         data: createFeeTypeInput,
+        include: FeeTypeService.feeTypeInclude,
       });
       await this.historyService.create(
         {
@@ -34,13 +42,16 @@ export class FeeTypeService {
     });
   }
 
-  async findAll(): Promise<FeeType[]> {
-    return await this.prismaService.feeType.findMany();
+  async findAll(): Promise<FeeTypeWithIncluded[]> {
+    return await this.prismaService.feeType.findMany({
+      include: FeeTypeService.feeTypeInclude,
+    });
   }
 
-  async findById(id: string): Promise<FeeType> {
+  async findById(id: string): Promise<FeeTypeWithIncluded> {
     const feeType = await this.prismaService.feeType.findUnique({
       where: { id: id },
+      include: FeeTypeService.feeTypeInclude,
     });
     if (!feeType) {
       throw new NotFoundException(`Fee type with id ${id} does not exist`);
@@ -51,11 +62,12 @@ export class FeeTypeService {
   async update(
     updateFeeTypeInput: UpdateFeeTypeInput,
     authenticatedUser: JwtPayloadType,
-  ): Promise<FeeType> {
+  ): Promise<FeeTypeWithIncluded> {
     return await this.prismaService.$transaction(async (tx) => {
       const feeTypeUpdated = await tx.feeType.update({
         where: { id: updateFeeTypeInput.id },
         data: updateFeeTypeInput,
+        include: FeeTypeService.feeTypeInclude,
       });
       await this.historyService.create(
         {
@@ -73,11 +85,18 @@ export class FeeTypeService {
   async remove(
     id: string,
     authenticatedUser: JwtPayloadType,
-  ): Promise<FeeType> {
+  ): Promise<FeeTypeWithIncluded> {
+    const feeType = await this.findById(id);
+    if (feeType.payments.length > 0) {
+      throw new BadRequestException(
+        `This fee type with id ${id} is linked with several payments`,
+      );
+    }
     try {
       return await this.prismaService.$transaction(async (tx) => {
         const feeTypeRemoved = await tx.feeType.delete({
           where: { id: id },
+          include: FeeTypeService.feeTypeInclude,
         });
         await this.historyService.create(
           {

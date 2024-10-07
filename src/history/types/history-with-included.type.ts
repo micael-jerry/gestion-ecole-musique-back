@@ -3,5 +3,5 @@ import { UserWithIncluded } from 'src/user/types/user-with-included.type';
 
 export type HistoryWithIncluded = History & {
   user: UserWithIncluded;
-  entity: object | null;
+  entity: JSON | null;
 };

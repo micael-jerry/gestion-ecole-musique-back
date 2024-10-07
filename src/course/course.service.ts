@@ -1,13 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCourseInput } from './dto/create-course.input';
 import { UpdateCourseInput } from './dto/update-course.input';
 import { PrismaService } from '../prisma/prisma.service';
-import { Course, EntityType, OperationType } from '@prisma/client';
+import { EntityType, OperationType } from '@prisma/client';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 import { HistoryService } from '../history/history.service';
+import { CourseWithIncluded } from './types/course-with-include.type';
 
 @Injectable()
 export class CourseService {
+  private static readonly courseInclude = { users: true };
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly historyService: HistoryService,
@@ -16,10 +23,11 @@ export class CourseService {
   async create(
     createCourseInput: CreateCourseInput,
     authenticatedUser: JwtPayloadType,
-  ): Promise<Course> {
+  ): Promise<CourseWithIncluded> {
     return await this.prismaService.$transaction(async (tx) => {
       const courseCreated = await tx.course.create({
         data: createCourseInput,
+        include: CourseService.courseInclude,
       });
       await this.historyService.create(
         {
@@ -34,13 +42,16 @@ export class CourseService {
     });
   }
 
-  async findAll(): Promise<Course[]> {
-    return await this.prismaService.course.findMany();
+  async findAll(): Promise<CourseWithIncluded[]> {
+    return await this.prismaService.course.findMany({
+      include: CourseService.courseInclude,
+    });
   }
 
-  async findById(id: string): Promise<Course> {
+  async findById(id: string): Promise<CourseWithIncluded> {
     const course = await this.prismaService.course.findUnique({
       where: { id: id },
+      include: CourseService.courseInclude,
     });
     if (!course) {
       throw new NotFoundException(`Course with id ${id} does not exist`);
@@ -51,11 +62,12 @@ export class CourseService {
   async update(
     updateCourseInput: UpdateCourseInput,
     authenticatedUser: JwtPayloadType,
-  ): Promise<Course> {
+  ): Promise<CourseWithIncluded> {
     return await this.prismaService.$transaction(async (tx) => {
       const courseUpdated = await tx.course.update({
         where: { id: updateCourseInput.id },
         data: updateCourseInput,
+        include: CourseService.courseInclude,
       });
       await this.historyService.create(
         {
@@ -70,10 +82,21 @@ export class CourseService {
     });
   }
 
-  async remove(id: string, authenticatedUser: JwtPayloadType): Promise<Course> {
+  async remove(
+    id: string,
+    authenticatedUser: JwtPayloadType,
+  ): Promise<CourseWithIncluded> {
+    const course = await this.findById(id);
+    if (course.users.length > 0) {
+      throw new BadRequestException(
+        `This course with id ${id} is linked with several users`,
+      );
+    }
+
     return await this.prismaService.$transaction(async (tx) => {
       const courseRemoved = await tx.course.delete({
         where: { id: id },
+        include: CourseService.courseInclude,
       });
       await this.historyService.create(
         {

@@ -1,13 +1,13 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Field, ObjectType, PickType } from '@nestjs/graphql';
+import { CourseBase } from './course-base.entity';
+import { UserBase } from '../../user/entities/user-base.entity';
 
 @ObjectType()
-export class Course {
-  @Field(() => ID)
-  id: string;
-
-  @Field()
-  name: string;
-
-  @Field({ nullable: true })
-  description?: string;
+export class Course extends PickType(CourseBase, [
+  'id',
+  'name',
+  'description',
+]) {
+  @Field(() => [UserBase], { nullable: true })
+  users: UserBase[];
 }

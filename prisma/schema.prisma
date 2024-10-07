@@ -29,11 +29,11 @@ model Setting {
 }
 
 model FeeType {
-  id          String  @id @default(uuid())
-  name        String  @unique @db.VarChar()
+  id          String    @id @default(uuid())
+  name        String    @unique @db.VarChar()
   description String?
-  value       Float   @default(0)
-  payment     Payment[]
+  value       Float     @default(0)
+  payments    Payment[]
 }
 
 model Role {
@@ -65,7 +65,7 @@ model User {
   isArchive   Boolean   @default(false)
   role        Role      @relation(fields: [roleId], references: [id])
   courses     Course[]
-  History     History[]
+  histories   History[]
   payments    Payment[]
 }
 
@@ -96,18 +96,17 @@ model History {
   createdAt     DateTime      @default(now())
 }
 
-
 model Payment {
-  id          String  @id @default(uuid())
+  id          String      @id @default(uuid())
   amount      Float
   description String?
   date        DateTime[]
   paymentType PaymentType
   userId      String
-  createdAt   DateTime @default(now())
-  user       User    @relation(fields: [userId], references: [id])
+  createdAt   DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id])
   feeTypeId   String
-  feeType     FeeType @relation(fields: [feeTypeId], references: [id])
+  feeType     FeeType     @relation(fields: [feeTypeId], references: [id])
 }
 
 enum PaymentType {

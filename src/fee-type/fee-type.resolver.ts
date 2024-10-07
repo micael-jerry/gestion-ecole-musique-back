@@ -11,46 +11,49 @@ import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 
 @Resolver()
 export class FeeTypeResolver {
-  constructor(private feeTypeService: FeeTypeService) {}
+  constructor(private readonly feeTypeService: FeeTypeService) {}
 
   @Actions('CREATE_FEE_TYPE')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => FeeType)
-  createFeeType(
+  async createFeeType(
     @Context('user') user: JwtPayloadType,
     @Args('createFeeTypeInput') createFeeTypeInput: CreateFeeTypeInput,
-  ) {
+  ): Promise<FeeType> {
     return this.feeTypeService.create(createFeeTypeInput, user);
   }
 
   @Actions('GET_FEE_TYPE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [FeeType])
-  findAllFeeType() {
+  async findAllFeeType(): Promise<FeeType[]> {
     return this.feeTypeService.findAll();
   }
 
   @Actions('GET_FEE_TYPE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => FeeType)
-  findByIdFeeType(@Args('id') id: string) {
+  async findByIdFeeType(@Args('id') id: string): Promise<FeeType> {
     return this.feeTypeService.findById(id);
   }
 
   @Actions('UPDATE_FEE_TYPE')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => FeeType)
-  updateFeeType(
+  async updateFeeType(
     @Context('user') user: JwtPayloadType,
     @Args('updateFeeTypeInput') updateFeeTypeInput: UpdateFeeTypeInput,
-  ) {
+  ): Promise<FeeType> {
     return this.feeTypeService.update(updateFeeTypeInput, user);
   }
 
   @Actions('DELETE_FEE_TYPE')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => FeeType)
-  removeFeeType(@Context('user') user: JwtPayloadType, @Args('id') id: string) {
+  async removeFeeType(
+    @Context('user') user: JwtPayloadType,
+    @Args('id') id: string,
+  ): Promise<FeeType> {
     return this.feeTypeService.remove(id, user);
   }
 }

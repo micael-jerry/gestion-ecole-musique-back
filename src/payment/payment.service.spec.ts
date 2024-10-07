@@ -4,8 +4,8 @@ import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 import { HistoryService } from '../history/history.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaymentInput } from './dto/payment.input';
-import { Payment } from './entities/payment.entity';
 import { PaymentService } from './payment.service';
+import { PaymentWithIncluded } from './types/payment-with-included.type';
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -59,17 +59,15 @@ describe('PaymentService', () => {
         roleName: 'testrole',
         actionTags: ['CREATE_PAYMENT'],
       };
-      const createdPayment: Payment = {
+      const createdPayment: PaymentWithIncluded = {
         id: 'payment-id',
-        feeTypeId: 'fee_type_one_id',
         amount: 7000,
         description: 'test',
         date: [new Date()],
-        userId: 'user_nine_id',
         paymentType: 'CASH',
-        user: null,
-        feeType: null,
         createdAt: new Date(),
+        feeType: null,
+        user: null,
       };
 
       jest
@@ -138,13 +136,14 @@ describe('PaymentService', () => {
   describe('getPayments', () => {
     it('should return an array of payments', async () => {
       const date = new Date();
-      const payments: Payment[] = [
+      const payments: PaymentWithIncluded[] = [
         {
           id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
           feeType: {
             id: 'fee_type_one_id',
             name: 'Ecolage',
             value: 100000,
+            description: null,
           },
           amount: 7000,
           description: 'test',
@@ -165,9 +164,11 @@ describe('PaymentService', () => {
               id: 'role_one_id',
               name: 'Student',
             },
+            description: null,
+            isArchive: null,
+            password: null,
+            roleId: null,
           },
-          feeTypeId: 'fee_type_one_id',
-          userId: 'user_nine_id',
         },
         {
           id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
@@ -175,6 +176,7 @@ describe('PaymentService', () => {
             id: 'fee_type_one_id',
             name: 'Ecolage',
             value: 100000,
+            description: null,
           },
           amount: 7000,
           description: 'test',
@@ -195,9 +197,11 @@ describe('PaymentService', () => {
               id: 'role_one_id',
               name: 'Student',
             },
+            description: null,
+            isArchive: null,
+            password: null,
+            roleId: null,
           },
-          feeTypeId: 'fee_type_one_id',
-          userId: 'user_nine_id',
         },
       ];
 
@@ -221,13 +225,14 @@ describe('PaymentService', () => {
 
     it('should apply filters and pagination', async () => {
       const date = new Date();
-      const payments: Payment[] = [
+      const payments: PaymentWithIncluded[] = [
         {
           id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
           feeType: {
             id: 'fee_type_one_id',
             name: 'Ecolage',
             value: 100000,
+            description: null,
           },
           amount: 7000,
           description: 'test',
@@ -248,9 +253,11 @@ describe('PaymentService', () => {
               id: 'role_one_id',
               name: 'Student',
             },
+            description: null,
+            isArchive: false,
+            password: null,
+            roleId: null,
           },
-          feeTypeId: 'fee_type_one_id',
-          userId: 'user_nine_id',
         },
       ];
 

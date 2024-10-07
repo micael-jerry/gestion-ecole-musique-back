@@ -1,3 +1,3 @@
-import { Action, Role } from '@prisma/client';
+import { Action, Role, User } from '@prisma/client';
 
-export type RoleWithIncluded = Role & { actions: Action[] };
+export type RoleWithIncluded = Role & { actions: Action[]; users: User[] };

@@ -1,11 +1,21 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Payment } from 'src/payment/entities/payment.entity';
-import { Course } from '../../course/entities/course.entity';
-import { RoleType } from '../../role/entities/role.entity';
+import { Field, ID, ObjectType, PickType } from '@nestjs/graphql';
 import { pathFinderMiddleware } from '../middleware/path-finder.middleware';
+import { UserBase } from './user-base.entity';
+import { RoleTypeBase } from '../../role/entities/role-base.entity';
+import { CourseBase } from '../../course/entities/course-base.entity';
+import { PaymentBase } from 'src/payment/entities/payment-base.entity';
 
 @ObjectType()
-export class User {
+export class User extends PickType(UserBase, [
+  'id',
+  'firstname',
+  'lastname',
+  'email',
+  'address',
+  'phone',
+  'picture',
+  'description',
+]) {
   @Field(() => ID)
   id: string;
 
@@ -30,12 +40,12 @@ export class User {
   @Field({ nullable: true })
   description?: string;
 
-  @Field(() => RoleType)
-  role: RoleType;
+  @Field(() => RoleTypeBase)
+  role: RoleTypeBase;
 
-  @Field(() => [Course], { nullable: true })
-  courses: Course[];
+  @Field(() => [CourseBase], { nullable: true })
+  courses: CourseBase[];
 
-  @Field(() => [Payment], { nullable: true })
-  payments: Payment[];
+  @Field(() => [PaymentBase], { nullable: true })
+  payments: PaymentBase[];
 }
