@@ -5,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 import { HistoryService } from '../history/history.service';
+import { CourseWithIncluded } from './types/course-with-include.type';
 
 describe('CourseService', () => {
   let service: CourseService;
@@ -72,6 +73,7 @@ describe('CourseService', () => {
       expect(course).toEqual(result);
       expect(prisma.course.create).toHaveBeenCalledWith({
         data: createCourseInput,
+        include: { users: true },
       });
       expect(historyService.create).toHaveBeenCalledTimes(1);
     });
@@ -124,6 +126,7 @@ describe('CourseService', () => {
       );
       expect(prisma.course.findUnique).toHaveBeenCalledWith({
         where: { id },
+        include: { users: true },
       });
     });
   });
@@ -151,6 +154,7 @@ describe('CourseService', () => {
       expect(prisma.course.update).toHaveBeenCalledWith({
         where: { id: updateCourseInput.id },
         data: updateCourseInput,
+        include: { users: true },
       });
       expect(historyService.create).toHaveBeenCalledTimes(1);
     });
@@ -175,6 +179,7 @@ describe('CourseService', () => {
       expect(prisma.course.update).toHaveBeenCalledWith({
         where: { id: updateCourseInput.id },
         data: updateCourseInput,
+        include: { users: true },
       });
     });
   });
@@ -183,12 +188,14 @@ describe('CourseService', () => {
     it('should delete and return the course deleted', async () => {
       const id = '0cdd1713-d391-451c-b60b-0ecefb22c049';
 
-      const result: Course = {
+      const result: CourseWithIncluded = {
         id,
         name: 'delete course',
         description: 'delete course description',
+        users: [],
       };
 
+      jest.spyOn(service, 'findById').mockResolvedValue(result);
       jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
         return callback(prisma);
       });
@@ -198,6 +205,7 @@ describe('CourseService', () => {
       expect(deleteCourse).toEqual(result);
       expect(prisma.course.delete).toHaveBeenCalledWith({
         where: { id },
+        include: { users: true },
       });
     });
 
@@ -208,7 +216,7 @@ describe('CourseService', () => {
         return callback(prisma);
       });
       jest
-        .spyOn(prisma.course, 'delete')
+        .spyOn(service, 'findById')
         .mockRejectedValue(
           new NotFoundException(`Course with id ${id} does not exist`),
         );
@@ -216,8 +224,9 @@ describe('CourseService', () => {
       await expect(service.remove(id, JWT_PAYLOAD)).rejects.toThrow(
         `Course with id ${id} does not exist`,
       );
-      expect(prisma.course.delete).toHaveBeenCalledWith({
+      expect(prisma.course.delete).not.toHaveBeenCalledWith({
         where: { id },
+        include: { users: true },
       });
     });
   });

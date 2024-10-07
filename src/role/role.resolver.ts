@@ -1,5 +1,4 @@
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CreateRoleInput } from './dto/create-role.input';
 import { UpdateRoleInput } from './dto/update-role.input';
 import { RoleType } from './entities/role.entity';
 import { RoleService } from './role.service';
@@ -16,41 +15,24 @@ export class RoleResolver {
   @Actions('GET_ROLE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [RoleType])
-  getAllRoles() {
+  async getAllRoles(): Promise<RoleType[]> {
     return this.roleService.getAllRoles();
-  }
-
-  @Actions('CREATE_ROLE')
-  @UseGuards(AuthGuard, ActionGuard)
-  @Mutation(() => RoleType)
-  createRole(
-    @Context('user') user: JwtPayloadType,
-    @Args('createRoleInput') createRoleInput: CreateRoleInput,
-  ) {
-    return this.roleService.createRole(createRoleInput, user);
   }
 
   @Actions('GET_ROLE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => RoleType)
-  getRoleById(@Args('id') id: string) {
+  async getRoleById(@Args('id') id: string): Promise<RoleType> {
     return this.roleService.getRoleById(id);
   }
 
   @Actions('UPDATE_ROLE')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => RoleType)
-  updateRole(
+  async updateRole(
     @Context('user') user: JwtPayloadType,
     @Args('updateRoleInput') updateRoleInput: UpdateRoleInput,
-  ) {
+  ): Promise<RoleType> {
     return this.roleService.updateRole(updateRoleInput, user);
-  }
-
-  @Actions('DELETE_ROLE')
-  @UseGuards(AuthGuard, ActionGuard)
-  @Query(() => RoleType)
-  deleteRole(@Context('user') user: JwtPayloadType, @Args('id') id: string) {
-    return this.roleService.deleteRole(id, user);
   }
 }

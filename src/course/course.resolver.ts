@@ -16,43 +16,46 @@ export class CourseResolver {
   @Actions('CREATE_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => Course)
-  createCourse(
+  async createCourse(
     @Context('user') user: JwtPayloadType,
     @Args('createCourseInput')
     createCourseInput: CreateCourseInput,
-  ) {
+  ): Promise<Course> {
     return this.courseService.create(createCourseInput, user);
   }
 
   @Actions('GET_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [Course])
-  findAllCourse() {
+  async findAllCourse(): Promise<Course[]> {
     return this.courseService.findAll();
   }
 
   @Actions('GET_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => Course)
-  findByIdCourse(@Args('id') id: string) {
+  async findByIdCourse(@Args('id') id: string): Promise<Course> {
     return this.courseService.findById(id);
   }
 
   @Actions('UPDATE_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => Course)
-  updateCourse(
+  async updateCourse(
     @Context('user') user: JwtPayloadType,
     @Args('updateCourseInput')
     updateCourseInput: UpdateCourseInput,
-  ) {
+  ): Promise<Course> {
     return this.courseService.update(updateCourseInput, user);
   }
 
   @Actions('DELETE_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => Course)
-  removeCourse(@Context('user') user: JwtPayloadType, @Args('id') id: string) {
+  async removeCourse(
+    @Context('user') user: JwtPayloadType,
+    @Args('id') id: string,
+  ): Promise<Course> {
     return this.courseService.remove(id, user);
   }
 }

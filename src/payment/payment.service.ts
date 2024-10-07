@@ -5,7 +5,7 @@ import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 import { HistoryService } from '../history/history.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaymentInput } from './dto/payment.input';
-import { Payment } from './entities/payment.entity';
+import { PaymentWithIncluded } from './types/payment-with-included.type';
 
 @Injectable()
 export class PaymentService {
@@ -13,6 +13,7 @@ export class PaymentService {
     user: { include: { role: true, courses: true, payments: true } },
     feeType: true,
   };
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly historyService: HistoryService,
@@ -21,7 +22,7 @@ export class PaymentService {
   async create(
     paymentInput: PaymentInput,
     authenticatedUser: JwtPayloadType,
-  ): Promise<Payment> {
+  ): Promise<PaymentWithIncluded> {
     return await this.prismaService.$transaction(async (tx) => {
       const payment = await tx.payment.create({
         data: paymentInput,
@@ -56,7 +57,7 @@ export class PaymentService {
     endDate?: Date,
     page: number = 1,
     limit: number = 25,
-  ): Promise<Payment[]> {
+  ): Promise<PaymentWithIncluded[]> {
     const take = limit;
     const skip = (page - 1) * take;
 

@@ -4,14 +4,14 @@ import { ActionType } from './entities/action.entity';
 
 @Resolver(() => ActionType)
 export class ActionResolver {
-  constructor(private actionService: ActionService) {}
+  constructor(private readonly actionService: ActionService) {}
   @Query(() => [ActionType])
-  getAllActions() {
+  async getAllActions(): Promise<ActionType[]> {
     return this.actionService.getAllActions();
   }
 
   @Query(() => ActionType)
-  getActionById(@Args('id') id: string) {
+  async getActionById(@Args('id') id: string): Promise<ActionType> {
     return this.actionService.getActionById(id);
   }
 }

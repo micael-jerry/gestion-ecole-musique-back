@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateRoleInput } from './dto/create-role.input';
 import { UpdateRoleInput } from './dto/update-role.input';
 import { RoleWithIncluded } from './types/role-with-included.type';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
@@ -19,28 +18,6 @@ export class RoleService {
   async getAllRoles(): Promise<RoleWithIncluded[]> {
     return await this.prisma.role.findMany({
       include: RoleService.roleInclude,
-    });
-  }
-
-  async createRole(
-    createRoleInput: CreateRoleInput,
-    authenticatedUser: JwtPayloadType,
-  ): Promise<RoleWithIncluded> {
-    return await this.prisma.$transaction(async (tx) => {
-      const roleCreated = await tx.role.create({
-        data: createRoleInput,
-        include: RoleService.roleInclude,
-      });
-      await this.historyService.create(
-        {
-          entityId: roleCreated.id,
-          entityType: EntityType.ROLE,
-          operationType: OperationType.CREATE,
-          userId: authenticatedUser.userId,
-        },
-        tx,
-      );
-      return roleCreated;
     });
   }
 
@@ -100,32 +77,6 @@ export class RoleService {
           tx,
         );
         return roleUpdated;
-      });
-    }
-  }
-
-  async deleteRole(
-    id: string,
-    authenticatedUser: JwtPayloadType,
-  ): Promise<RoleWithIncluded> {
-    const found = await this.getRoleById(id);
-
-    if (found) {
-      return await this.prisma.$transaction(async (tx) => {
-        const roleDeleted = await tx.role.delete({
-          where: { id },
-          include: RoleService.roleInclude,
-        });
-        await this.historyService.create(
-          {
-            entityId: roleDeleted.id,
-            entityType: EntityType.ROLE,
-            operationType: OperationType.DELETE,
-            userId: authenticatedUser.userId,
-          },
-          tx,
-        );
-        return roleDeleted;
       });
     }
   }

@@ -1,20 +1,14 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { RoleType } from '../../role/entities/role.entity';
+import { Field, ObjectType, PickType } from '@nestjs/graphql';
+import { ActionTypeBase } from './action-base.entity';
+import { RoleTypeBase } from '../../role/entities/role-base.entity';
 
 @ObjectType('Action')
-export class ActionType {
-  @Field(() => ID)
-  id: string;
-
-  @Field()
-  tag: string;
-
-  @Field()
-  name: string;
-
-  @Field({ nullable: true })
-  description?: string;
-
-  @Field(() => [RoleType], { nullable: true })
-  roles?: RoleType[];
+export class ActionType extends PickType(ActionTypeBase, [
+  'id',
+  'name',
+  'tag',
+  'description',
+] as const) {
+  @Field(() => [RoleTypeBase], { nullable: true })
+  roles?: RoleTypeBase[];
 }

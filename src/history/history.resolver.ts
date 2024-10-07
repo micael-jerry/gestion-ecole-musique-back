@@ -14,18 +14,18 @@ export class HistoryResolver {
   @Actions('GET_HISTORY')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => History)
-  findHistoryById(@Args('id') id: string) {
+  findHistoryById(@Args('id') id: string): Promise<History> {
     return this.historyService.findById(id);
   }
 
   @Actions('GET_HISTORY')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [History])
-  findAllHistory(
+  async findAllHistory(
     @Args('entityType', { type: () => EntityType, nullable: true })
     entityType: EntityType,
     @Args('entityId', { nullable: true }) entityId: string,
-  ) {
+  ): Promise<History[]> {
     return this.historyService.findAll(entityType, entityId);
   }
 }

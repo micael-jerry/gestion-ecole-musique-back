@@ -26,7 +26,7 @@ export const HistoryCourseOne: HistoryWithIncluded = {
   entityType: EntityType.COURSE,
   userId: UserAdminOne.id,
   user: UserAdminOne,
-  entity: CourseOne,
+  entity: CourseOne as unknown as JSON,
   operationType: OperationType.CREATE,
   createdAt: new Date('2023-02-15T10:20:30Z'),
 };
@@ -34,7 +34,7 @@ export const HistoryCourseOne: HistoryWithIncluded = {
 export const HistoryCourseTwo: HistoryWithIncluded = {
   id: 'history_course_two_id',
   entityId: CourseTwo.id,
-  entity: CourseTwo,
+  entity: CourseTwo as unknown as JSON,
   entityType: EntityType.COURSE,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -45,7 +45,7 @@ export const HistoryCourseTwo: HistoryWithIncluded = {
 export const HistoryCourseThree: HistoryWithIncluded = {
   id: 'history_course_three_id',
   entityId: CourseThree.id,
-  entity: CourseThree,
+  entity: CourseThree as unknown as JSON,
   entityType: EntityType.COURSE,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -56,7 +56,7 @@ export const HistoryCourseThree: HistoryWithIncluded = {
 export const HistoryCourseFour: HistoryWithIncluded = {
   id: 'history_course_four_id',
   entityId: CourseFour.id,
-  entity: CourseFour,
+  entity: CourseFour as unknown as JSON,
   entityType: EntityType.COURSE,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -67,7 +67,7 @@ export const HistoryCourseFour: HistoryWithIncluded = {
 export const HistoryCourseFive: HistoryWithIncluded = {
   id: 'history_course_five_id',
   entityId: CourseFive.id,
-  entity: CourseFive,
+  entity: CourseFive as unknown as JSON,
   entityType: EntityType.COURSE,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -78,7 +78,7 @@ export const HistoryCourseFive: HistoryWithIncluded = {
 export const HistoryCourseSix: HistoryWithIncluded = {
   id: 'history_course_six_id',
   entityId: CourseSix.id,
-  entity: CourseSix,
+  entity: CourseSix as unknown as JSON,
   entityType: EntityType.COURSE,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -89,7 +89,7 @@ export const HistoryCourseSix: HistoryWithIncluded = {
 export const HistoryFeeTypeOne: HistoryWithIncluded = {
   id: 'history_fee_type_one_id',
   entityId: FeeTypeOne.id,
-  entity: FeeTypeOne,
+  entity: FeeTypeOne as unknown as JSON,
   entityType: EntityType.FEE_TYPE,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -100,7 +100,7 @@ export const HistoryFeeTypeOne: HistoryWithIncluded = {
 export const HistoryFeeTypeTwo: HistoryWithIncluded = {
   id: 'history_fee_type_two_id',
   entityId: FeeTypeTwo.id,
-  entity: FeeTypeTwo,
+  entity: FeeTypeTwo as unknown as JSON,
   entityType: EntityType.FEE_TYPE,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -111,7 +111,7 @@ export const HistoryFeeTypeTwo: HistoryWithIncluded = {
 export const HistorySettingOne: HistoryWithIncluded = {
   id: 'history_setting_one_id',
   entityId: SettingOne.id,
-  entity: SettingOne,
+  entity: SettingOne as unknown as JSON,
   entityType: EntityType.SETTING,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -122,7 +122,7 @@ export const HistorySettingOne: HistoryWithIncluded = {
 export const HistoryUserOne: HistoryWithIncluded = {
   id: 'history_user_one_id',
   entityId: UserAdminOne.id,
-  entity: UserAdminOne,
+  entity: UserAdminOne as unknown as JSON,
   entityType: EntityType.USER,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -133,7 +133,7 @@ export const HistoryUserOne: HistoryWithIncluded = {
 export const HistoryUserTwo: HistoryWithIncluded = {
   id: 'history_user_two_id',
   entityId: UserAdminTwo.id,
-  entity: UserAdminTwo,
+  entity: UserAdminTwo as unknown as JSON,
   entityType: EntityType.USER,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -144,7 +144,7 @@ export const HistoryUserTwo: HistoryWithIncluded = {
 export const HistoryUserThree: HistoryWithIncluded = {
   id: 'history_user_three_id',
   entityId: UserManagerOne.id,
-  entity: UserManagerOne,
+  entity: UserManagerOne as unknown as JSON,
   entityType: EntityType.USER,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -155,7 +155,7 @@ export const HistoryUserThree: HistoryWithIncluded = {
 export const HistoryUserFour: HistoryWithIncluded = {
   id: 'history_user_four_id',
   entityId: UserManagerTwo.id,
-  entity: UserManagerTwo,
+  entity: UserManagerTwo as unknown as JSON,
   entityType: EntityType.USER,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -166,7 +166,7 @@ export const HistoryUserFour: HistoryWithIncluded = {
 export const HistoryUserFive: HistoryWithIncluded = {
   id: 'history_user_five_id',
   entityId: UserStudentOne.id,
-  entity: UserStudentOne,
+  entity: UserStudentOne as unknown as JSON,
   entityType: EntityType.USER,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -177,7 +177,7 @@ export const HistoryUserFive: HistoryWithIncluded = {
 export const HistoryUserSix: HistoryWithIncluded = {
   id: 'history_user_six_id',
   entityId: UserTeacherOne.id,
-  entity: UserTeacherOne,
+  entity: UserTeacherOne as unknown as JSON,
   entityType: EntityType.USER,
   userId: UserAdminOne.id,
   user: UserAdminOne,
@@ -188,7 +188,7 @@ export const HistoryUserSix: HistoryWithIncluded = {
 export const HistoryUserSeven: HistoryWithIncluded = {
   id: 'history_user_seven_id',
   entityId: UserStudentTwo.id,
-  entity: UserStudentTwo,
+  entity: UserStudentTwo as unknown as JSON,
   entityType: EntityType.USER,
   userId: UserAdminOne.id,
   user: UserAdminOne,

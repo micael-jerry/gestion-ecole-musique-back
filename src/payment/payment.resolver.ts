@@ -15,24 +15,24 @@ export class PaymentResolver {
   @Actions('CREATE_PAYMENT')
   @UseGuards(AuthGuard, ActionGuard)
   @Mutation(() => Payment)
-  createPayment(
+  async createPayment(
     @Context('user') user: JwtPayloadType,
     @Args('paymentInput')
     paymentInput: PaymentInput,
-  ) {
+  ): Promise<Payment> {
     return this.paymentService.create(paymentInput, user);
   }
 
   @Actions('SEARCH_PAYMENT')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [Payment])
-  getPayments(
+  async getPayments(
     @Args('keyword', { nullable: true }) keyword?: string,
     @Args('startDate', { nullable: true }) startDate?: Date,
     @Args('endDate', { nullable: true }) endDate?: Date,
     @Args('page', { nullable: true }) page?: number,
     @Args('limit', { nullable: true }) limit?: number,
-  ) {
+  ): Promise<Payment[]> {
     return this.paymentService.getPayments(
       keyword,
       startDate,

@@ -1,37 +1,20 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { PaymentType } from '@prisma/client';
-import { FeeType } from 'src/fee-type/entities/fee-type.entity';
-import { User } from 'src/user/entities/user.entity';
+import { Field, ObjectType, PickType } from '@nestjs/graphql';
+import { User } from '../../user/entities/user.entity';
+import { PaymentBase } from './payment-base.entity';
+import { FeeTypeBase } from '../../fee-type/entities/fee-type-base.entity';
 
 @ObjectType()
-export class Payment {
-  @Field(() => ID)
-  id: string;
-
-  @Field()
-  feeTypeId: string;
-
-  @Field()
-  amount: number;
-
-  @Field({ nullable: true })
-  description?: string;
-
-  @Field(() => [Date])
-  date: Date[];
-
-  @Field()
-  paymentType: PaymentType;
-
-  @Field(() => Date)
-  createdAt: Date;
-
-  @Field()
-  userId: string;
-
+export class Payment extends PickType(PaymentBase, [
+  'id',
+  'amount',
+  'paymentType',
+  'date',
+  'description',
+  'createdAt',
+]) {
   @Field(() => User, { nullable: true })
   user?: User;
 
-  @Field(() => FeeType, { nullable: true })
-  feeType?: FeeType;
+  @Field(() => FeeTypeBase, { nullable: true })
+  feeType?: FeeTypeBase;
 }

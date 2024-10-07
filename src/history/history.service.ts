@@ -32,7 +32,7 @@ export class HistoryService {
       data: history,
       include: HistoryService.historyInclude,
     });
-    return { ...createdHistory, entity };
+    return { ...createdHistory, entity: entity as unknown as JSON };
   }
 
   async findById(id: string): Promise<HistoryWithIncluded> {
@@ -47,7 +47,7 @@ export class HistoryService {
       history.entityId,
       history.entityType,
     );
-    return { ...history, entity };
+    return { ...history, entity: entity as unknown as JSON };
   }
 
   async findAll(
@@ -93,7 +93,10 @@ export class HistoryService {
       where: { entityId, entityType },
       include: HistoryService.historyInclude,
     });
-    return historyList.map((history) => ({ ...history, entity }));
+    return historyList.map((history) => ({
+      ...history,
+      entity: entity as unknown as JSON,
+    }));
   }
 
   async findAllEntityByEntityType(entityType: EntityType | 'ALL') {
