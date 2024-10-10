@@ -276,6 +276,27 @@ export const ActionSearchPayment: Action = {
   description: 'A les privilèges pour faire des recherche sur le paiment.',
 };
 
+export const ActionCreateTimeSlot: Action = {
+  id: 'action_create_time_slot_id',
+  tag: 'CREATE_TIME_SLOT',
+  name: 'Créer un créneau horaire',
+  description: 'Autorisation pour ajouter un nouveau créneau horaire.',
+};
+
+export const ActionUpdateTimeSlot: Action = {
+  id: 'action_update_time_slot_id',
+  tag: 'UPDATE_TIME_SLOT',
+  name: 'Mettre à jour un créneau horaire',
+  description: 'Autorisation pour modifier un créneau horaire.',
+};
+
+export const ActionGetTimeSlot: Action = {
+  id: 'action_get_time_slot_id',
+  tag: 'GET_TIME_SLOT',
+  name: 'Voir un créneau horaire',
+  description: 'Autorisation pour consulter un créneau horaire.',
+};
+
 export const AllAction: Action[] = [
   ActionGetAdmin,
   ActionCreateAdmin,
@@ -315,4 +336,7 @@ export const AllAction: Action[] = [
   ActionGetPayment,
   ActionCreatePayment,
   ActionSearchPayment,
+  ActionCreateTimeSlot,
+  ActionUpdateTimeSlot,
+  ActionGetTimeSlot,
 ];

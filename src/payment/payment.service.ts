@@ -6,16 +6,22 @@ import { HistoryService } from '../history/history.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaymentInput } from './dto/payment.input';
 import { PaymentWithIncluded } from './types/payment-with-included.type';
+import { FeeTypeService } from '../fee-type/fee-type.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class PaymentService {
   private static readonly paymentsInclude = {
-    user: { include: { role: true, courses: true, payments: true } },
+    user: {
+      include: { role: true, courses: true, payments: true, timeSlots: true },
+    },
     feeType: true,
   };
 
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly feeTypeService: FeeTypeService,
+    private readonly userService: UserService,
     private readonly historyService: HistoryService,
   ) {}
 
@@ -23,9 +29,12 @@ export class PaymentService {
     paymentInput: PaymentInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<PaymentWithIncluded> {
+    const feeType = await this.feeTypeService.findById(paymentInput.feeTypeId);
+    const user = await this.userService.findById(paymentInput.userId);
+
     return await this.prismaService.$transaction(async (tx) => {
       const payment = await tx.payment.create({
-        data: paymentInput,
+        data: { feeTypeId: feeType.id, userId: user.id, ...paymentInput },
         include: PaymentService.paymentsInclude,
       });
       await this.historyService.create(

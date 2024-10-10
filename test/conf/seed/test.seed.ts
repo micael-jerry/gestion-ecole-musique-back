@@ -1,4 +1,4 @@
-import { PrismaClient, Role, User } from '@prisma/client';
+import { Prisma, PrismaClient, Role } from '@prisma/client';
 import { FeeTypeOne, FeeTypeTwo } from '../test-utils/fee-type.test-utils';
 import {
   CourseFive,
@@ -21,11 +21,16 @@ import { AllAction } from '../test-utils/action.test-utils';
 import { RoleWithIncluded } from 'src/role/types/role-with-included.type';
 import { AllHistory } from '../test-utils/history.test-utils';
 import { HistoryWithIncluded } from '../../../src/history/types/history-with-included.type';
+import { TeacherOneAllTimeSlot } from '../test-utils/time-slot.test-utils';
+import { DefaultArgs } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
 const seederTestRole = async (
-  p: PrismaClient,
+  p: Omit<
+    PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+    '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+  >,
   roleWithIncludedList: RoleWithIncluded[],
 ) => {
   roleWithIncludedList.forEach(async (roleWithIncluded) => {
@@ -40,11 +45,14 @@ const seederTestRole = async (
 };
 
 const seederTestUser = async (
-  p: PrismaClient,
+  p: Omit<
+    PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+    '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+  >,
   userWithIncludedList: UserWithIncluded[],
 ) => {
   userWithIncludedList.forEach(async (userWithIncluded) => {
-    const user: User = {
+    const user: Prisma.UserUncheckedCreateInput = {
       id: userWithIncluded.id,
       roleId: userWithIncluded.roleId,
       firstname: userWithIncluded.firstname,
@@ -67,20 +75,29 @@ const seederTestUser = async (
 };
 
 export const seederTest = async () => {
-  await prisma.$transaction(async () => {
+  await prisma.$transaction(async (tx) => {
     // seed action
-    await prisma.action.createMany({ data: AllAction });
+    await tx.action.createMany({ data: AllAction });
     // seed role
-    await seederTestRole(prisma, [
+    await seederTestRole(tx, [
       RoleAdmin,
       RoleManager,
       RoleTeacher,
       RoleStudent,
     ]);
     // seed feeType
-    await prisma.feeType.createMany({ data: [FeeTypeOne, FeeTypeTwo] });
+    await tx.feeType.createMany({
+      data: [FeeTypeOne, FeeTypeTwo].map(
+        ({ id, name, description, value }) => ({
+          id,
+          name,
+          description,
+          value,
+        }),
+      ),
+    });
     // seed course
-    await prisma.course.createMany({
+    await tx.course.createMany({
       data: [
         CourseOne,
         CourseTwo,
@@ -91,24 +108,39 @@ export const seederTest = async () => {
       ],
     });
     // seed setting
-    await prisma.setting.create({ data: SettingOne });
+    await tx.setting.create({ data: SettingOne });
     // seed user
-    await seederTestUser(prisma, AllUser);
+    await seederTestUser(tx, AllUser);
     // seed history
-    await prisma.history.createMany({
+    await tx.history.createMany({
       data: AllHistory.map(
         ({
+          id,
           entityId,
           entityType,
           operationType,
           userId,
           createdAt,
         }: HistoryWithIncluded) => ({
+          id,
           entityId,
           entityType,
           operationType,
           userId,
           createdAt,
+        }),
+      ),
+    });
+
+    // seed time slots
+    await tx.timeSlot.createMany({
+      data: TeacherOneAllTimeSlot.map(
+        ({ id, status, start, end, teacherId }) => ({
+          id,
+          status,
+          start,
+          end,
+          teacherId,
         }),
       ),
     });

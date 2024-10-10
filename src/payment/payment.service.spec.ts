@@ -6,9 +6,19 @@ import { PrismaService } from '../prisma/prisma.service';
 import { PaymentInput } from './dto/payment.input';
 import { PaymentService } from './payment.service';
 import { PaymentWithIncluded } from './types/payment-with-included.type';
+import { FeeTypeOne } from '../../test/conf/test-utils/fee-type.test-utils';
+import {
+  UserStudentNine,
+  UserStudentOne,
+  UserStudentTwo,
+} from '../../test/conf/test-utils/user.test-utils';
+import { FeeTypeService } from '../fee-type/fee-type.service';
+import { UserService } from '../user/user.service';
 
 describe('PaymentService', () => {
   let service: PaymentService;
+  let feeTypeService: FeeTypeService;
+  let userService: UserService;
   let prismaService: PrismaService;
   let historyService: HistoryService;
 
@@ -32,12 +42,26 @@ describe('PaymentService', () => {
             create: jest.fn(),
           },
         },
+        {
+          provide: FeeTypeService,
+          useValue: {
+            findById: jest.fn(),
+          },
+        },
+        {
+          provide: UserService,
+          useValue: {
+            findById: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<PaymentService>(PaymentService);
     prismaService = module.get<PrismaService>(PrismaService);
     historyService = module.get<HistoryService>(HistoryService);
+    feeTypeService = module.get<FeeTypeService>(FeeTypeService);
+    userService = module.get<UserService>(UserService);
   });
 
   it('should be defined', () => {
@@ -47,11 +71,11 @@ describe('PaymentService', () => {
   describe('create', () => {
     it('should create a payment and log history', async () => {
       const paymentInput: PaymentInput = {
-        feeTypeId: 'fee_type_one_id',
+        feeTypeId: FeeTypeOne.id,
         amount: 7000,
         description: 'test',
         date: [new Date()],
-        userId: 'user_nine_id',
+        userId: UserStudentNine.id,
         paymentType: 'CASH',
       };
       const authenticatedUser: JwtPayloadType = {
@@ -70,6 +94,8 @@ describe('PaymentService', () => {
         user: null,
       };
 
+      jest.spyOn(feeTypeService, 'findById').mockResolvedValue(FeeTypeOne);
+      jest.spyOn(userService, 'findById').mockResolvedValue(UserStudentNine);
       jest
         .spyOn(prismaService, '$transaction')
         .mockImplementation((callback) => {
@@ -86,7 +112,14 @@ describe('PaymentService', () => {
       expect(prismaService.payment.create).toHaveBeenCalledWith({
         data: paymentInput,
         include: {
-          user: { include: { role: true, courses: true, payments: true } },
+          user: {
+            include: {
+              role: true,
+              courses: true,
+              payments: true,
+              timeSlots: true,
+            },
+          },
           feeType: true,
         },
       });
@@ -103,11 +136,11 @@ describe('PaymentService', () => {
 
     it('should throw an error if payment creation fails', async () => {
       const paymentInput: PaymentInput = {
-        feeTypeId: 'fee_type_one_id',
+        feeTypeId: FeeTypeOne.id,
         amount: 7000,
         description: 'test',
         date: [new Date()],
-        userId: 'user_nine_id',
+        userId: UserStudentNine.id,
         paymentType: 'CASH',
       };
       const authenticatedUser: JwtPayloadType = {
@@ -116,6 +149,8 @@ describe('PaymentService', () => {
         actionTags: ['CREATE_PAYMENT'],
       };
 
+      jest.spyOn(feeTypeService, 'findById').mockResolvedValue(FeeTypeOne);
+      jest.spyOn(userService, 'findById').mockResolvedValue(UserStudentNine);
       jest
         .spyOn(prismaService, '$transaction')
         .mockImplementation((callback) => {
@@ -139,69 +174,23 @@ describe('PaymentService', () => {
       const payments: PaymentWithIncluded[] = [
         {
           id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
-          feeType: {
-            id: 'fee_type_one_id',
-            name: 'Ecolage',
-            value: 100000,
-            description: null,
-          },
+          feeType: FeeTypeOne,
           amount: 7000,
           description: 'test',
           date: [date],
           paymentType: 'CASH',
           createdAt: new Date(),
-          user: {
-            id: 'user_nine_id',
-            firstname: 'Charlie',
-            lastname: 'Brown',
-            email: 'charliebrown@example.com',
-            phone: '0350000000',
-            picture: null,
-            address: '345 Pine St',
-            courses: [],
-            payments: [],
-            role: {
-              id: 'role_one_id',
-              name: 'Student',
-            },
-            description: null,
-            isArchive: null,
-            password: null,
-            roleId: null,
-          },
+          user: UserStudentOne,
         },
         {
           id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
-          feeType: {
-            id: 'fee_type_one_id',
-            name: 'Ecolage',
-            value: 100000,
-            description: null,
-          },
+          feeType: FeeTypeOne,
           amount: 7000,
           description: 'test',
           date: [date],
           paymentType: 'CASH',
           createdAt: new Date(),
-          user: {
-            id: 'user_nine_id',
-            firstname: 'Charlie',
-            lastname: 'Brown',
-            email: 'charliebrown@example.com',
-            phone: '0350000000',
-            picture: null,
-            address: '345 Pine St',
-            courses: [],
-            payments: [],
-            role: {
-              id: 'role_one_id',
-              name: 'Student',
-            },
-            description: null,
-            isArchive: null,
-            password: null,
-            roleId: null,
-          },
+          user: UserStudentTwo,
         },
       ];
 
@@ -215,7 +204,14 @@ describe('PaymentService', () => {
       expect(prismaService.payment.findMany).toHaveBeenCalledWith({
         where: {},
         include: {
-          user: { include: { role: true, courses: true, payments: true } },
+          user: {
+            include: {
+              role: true,
+              courses: true,
+              payments: true,
+              timeSlots: true,
+            },
+          },
           feeType: true,
         },
         take: 25,
@@ -228,36 +224,13 @@ describe('PaymentService', () => {
       const payments: PaymentWithIncluded[] = [
         {
           id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
-          feeType: {
-            id: 'fee_type_one_id',
-            name: 'Ecolage',
-            value: 100000,
-            description: null,
-          },
+          feeType: FeeTypeOne,
           amount: 7000,
           description: 'test',
           date: [date],
           paymentType: 'CASH',
           createdAt: new Date(),
-          user: {
-            id: 'user_nine_id',
-            firstname: 'Charlie',
-            lastname: 'Brown',
-            email: 'charliebrown@example.com',
-            phone: '0350000000',
-            picture: null,
-            address: '345 Pine St',
-            courses: [],
-            payments: [],
-            role: {
-              id: 'role_one_id',
-              name: 'Student',
-            },
-            description: null,
-            isArchive: false,
-            password: null,
-            roleId: null,
-          },
+          user: UserStudentOne,
         },
       ];
 
@@ -322,7 +295,14 @@ describe('PaymentService', () => {
           ],
         },
         include: {
-          user: { include: { role: true, courses: true, payments: true } },
+          user: {
+            include: {
+              role: true,
+              courses: true,
+              payments: true,
+              timeSlots: true,
+            },
+          },
           feeType: true,
         },
         take: 10,

@@ -7,23 +7,29 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { ActionGuard } from '../auth/guard/action.guard';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { RoleMapper } from './role.mapper';
 
 @Resolver(() => RoleType)
 export class RoleResolver {
-  constructor(private readonly roleService: RoleService) {}
+  constructor(
+    private readonly roleService: RoleService,
+    private readonly roleMapper: RoleMapper,
+  ) {}
 
   @Actions('GET_ROLE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [RoleType])
   async getAllRoles(): Promise<RoleType[]> {
-    return this.roleService.getAllRoles();
+    return (await this.roleService.getAllRoles()).map((r) =>
+      this.roleMapper.toGraphql(r),
+    );
   }
 
   @Actions('GET_ROLE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => RoleType)
   async getRoleById(@Args('id') id: string): Promise<RoleType> {
-    return this.roleService.getRoleById(id);
+    return this.roleMapper.toGraphql(await this.roleService.getRoleById(id));
   }
 
   @Actions('UPDATE_ROLE')
@@ -33,6 +39,8 @@ export class RoleResolver {
     @Context('user') user: JwtPayloadType,
     @Args('updateRoleInput') updateRoleInput: UpdateRoleInput,
   ): Promise<RoleType> {
-    return this.roleService.updateRole(updateRoleInput, user);
+    return this.roleMapper.toGraphql(
+      await this.roleService.updateRole(updateRoleInput, user),
+    );
   }
 }

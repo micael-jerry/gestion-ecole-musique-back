@@ -6,6 +6,7 @@ import { FeeTypeService } from './fee-type.service';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 import { HistoryService } from '../history/history.service';
 import { FeeTypeWithIncluded } from './types/fee-type-with-included.type';
+import { FeeTypeOne } from '../../test/conf/test-utils/fee-type.test-utils';
 
 describe('FeeTypeService', () => {
   let service: FeeTypeService;
@@ -62,6 +63,7 @@ describe('FeeTypeService', () => {
 
       const result: FeeType = {
         id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
+        isDeleted: false,
         ...createFeeTypeInput,
       };
       jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
@@ -82,14 +84,7 @@ describe('FeeTypeService', () => {
 
   describe('findAllFeeType', () => {
     it('should return an array of fee type', async () => {
-      const result: FeeType[] = [
-        {
-          id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
-          name: 'fee type',
-          description: 'fee type description',
-          value: 0,
-        },
-      ];
+      const result: FeeType[] = [FeeTypeOne];
       jest.spyOn(prisma.feeType, 'findMany').mockResolvedValue(result);
 
       const feeType = await service.findAll();
@@ -100,17 +95,10 @@ describe('FeeTypeService', () => {
 
   describe('findByIdFeeType', () => {
     it('should return a single fee type by ID', async () => {
-      const result: FeeType = {
-        id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
-        name: 'fee type',
-        description: 'fee type description',
-        value: 0,
-      };
+      const result: FeeTypeWithIncluded = FeeTypeOne;
       jest.spyOn(prisma.feeType, 'findUnique').mockResolvedValue(result);
 
-      const feeType = await service.findById(
-        '0cdd1713-d391-451c-b60b-0ecefb22c049',
-      );
+      const feeType = await service.findById(FeeTypeOne.id);
       expect(feeType).toEqual(result);
       expect(prisma.feeType.findUnique).toHaveBeenCalled();
     });
@@ -128,7 +116,7 @@ describe('FeeTypeService', () => {
         `Fee type with id ${id} does not exist`,
       );
       expect(prisma.feeType.findUnique).toHaveBeenCalledWith({
-        where: { id },
+        where: { id, isDeleted: false },
         include: { payments: true },
       });
     });
@@ -137,13 +125,19 @@ describe('FeeTypeService', () => {
   describe('updateFeeType', () => {
     it('should update and return the fee type', async () => {
       const updateFeeTypeInput = {
-        id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
+        id: FeeTypeOne.id,
         name: 'Updated fee type',
         description: 'Updated fee type description',
       };
 
-      const result: FeeType = { ...updateFeeTypeInput, value: 0 };
+      const result: FeeTypeWithIncluded = {
+        ...updateFeeTypeInput,
+        value: 0,
+        isDeleted: false,
+        payments: [],
+      };
 
+      jest.spyOn(service, 'findById').mockResolvedValue(FeeTypeOne);
       jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
         return callback(prisma);
       });
@@ -156,7 +150,7 @@ describe('FeeTypeService', () => {
       expect(updatedFeeType).toEqual(result);
       expect(historyService.create).toHaveBeenCalledTimes(1);
       expect(prisma.feeType.update).toHaveBeenCalledWith({
-        where: { id: updateFeeTypeInput.id },
+        where: { id: updateFeeTypeInput.id, isDeleted: false },
         data: updateFeeTypeInput,
         include: { payments: true },
       });
@@ -173,17 +167,13 @@ describe('FeeTypeService', () => {
         return callback(prisma);
       });
       jest
-        .spyOn(prisma.feeType, 'update')
+        .spyOn(service, 'findById')
         .mockRejectedValue(new Error('Fee type not found'));
 
       await expect(
         service.update(updateFeeTypeInput, JWT_PAYLOAD),
       ).rejects.toThrow('Fee type not found');
-      expect(prisma.feeType.update).toHaveBeenCalledWith({
-        where: { id: updateFeeTypeInput.id },
-        data: updateFeeTypeInput,
-        include: { payments: true },
-      });
+      expect(prisma.feeType.update).not.toHaveBeenCalled();
     });
   });
 
@@ -191,25 +181,20 @@ describe('FeeTypeService', () => {
     it('should delete and return the fee type deleted', async () => {
       const id = '0cdd1713-d391-451c-b60b-0ecefb22c049';
 
-      const result: FeeTypeWithIncluded = {
-        id,
-        name: 'delete fee type',
-        description: 'delete fee type description',
-        value: 0,
-        payments: [],
-      };
+      const result: FeeTypeWithIncluded = FeeTypeOne;
 
       jest.spyOn(service, 'findById').mockResolvedValue(result);
       jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
         return callback(prisma);
       });
-      jest.spyOn(prisma.feeType, 'delete').mockResolvedValue(result);
+      jest.spyOn(prisma.feeType, 'update').mockResolvedValue(result);
 
       const deleteFeeType = await service.remove(id, JWT_PAYLOAD);
       expect(deleteFeeType).toEqual(result);
       expect(historyService.create).toHaveBeenCalledTimes(1);
-      expect(prisma.feeType.delete).toHaveBeenCalledWith({
-        where: { id },
+      expect(prisma.feeType.update).toHaveBeenCalledWith({
+        data: { isDeleted: true },
+        where: { id, isDeleted: false },
         include: { payments: true },
       });
     });

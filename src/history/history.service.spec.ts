@@ -86,7 +86,14 @@ describe('HistoryService', () => {
       expect(prismaService.history.create).toHaveBeenCalledWith({
         data: historyInput,
         include: {
-          user: { include: { role: true, courses: true, payments: true } },
+          user: {
+            include: {
+              role: true,
+              courses: true,
+              payments: true,
+              timeSlots: true,
+            },
+          },
         },
       });
       expect(result).toEqual({ ...HistoryCourseOne, entity: CourseOne });
@@ -118,7 +125,14 @@ describe('HistoryService', () => {
       expect(prismaService.history.findUnique).toHaveBeenCalledWith({
         where: { id: historyId },
         include: {
-          user: { include: { role: true, courses: true, payments: true } },
+          user: {
+            include: {
+              role: true,
+              courses: true,
+              payments: true,
+              timeSlots: true,
+            },
+          },
         },
       });
       expect(service.findEntityById).toHaveBeenCalledWith(

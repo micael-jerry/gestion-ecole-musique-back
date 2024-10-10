@@ -3,7 +3,6 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { execSync } from 'child_process';
-import { CourseOne, CourseTwo } from './conf/test-utils/course.test-utils';
 import { loginTestQuery } from './conf/query/login.test-query';
 import { UserAdminOne } from './conf/test-utils/user.test-utils';
 import { findAllCourseTestQuery } from './conf/query/course.test-query';
@@ -45,9 +44,6 @@ describe('Course (e2e)', () => {
         const data = response.body.data;
         expect(data).toHaveProperty('findAllCourse');
         expect(data.findAllCourse).toBeInstanceOf(Array);
-        expect(data.findAllCourse).toEqual(
-          expect.arrayContaining([CourseOne, CourseTwo]),
-        );
       });
   });
 

@@ -61,6 +61,7 @@ describe('CourseService', () => {
 
       const result: Course = {
         id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
+        isDeleted: false,
         ...createCourseInput,
       };
       jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
@@ -86,6 +87,7 @@ describe('CourseService', () => {
           id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
           name: 'course',
           description: 'course description',
+          isDeleted: false,
         },
       ];
       jest.spyOn(prisma.course, 'findMany').mockResolvedValue(result);
@@ -102,6 +104,7 @@ describe('CourseService', () => {
         id: '0cdd1713-d391-451c-b60b-0ecefb22c049',
         name: 'course',
         description: 'course description',
+        isDeleted: false,
       };
       jest.spyOn(prisma.course, 'findUnique').mockResolvedValue(result);
 
@@ -112,7 +115,7 @@ describe('CourseService', () => {
       expect(prisma.course.findUnique).toHaveBeenCalled();
     });
 
-    it('should return null if no course is found by ID', async () => {
+    it('should return error if no course is found by ID', async () => {
       const id = '0cdd1713-d391-451c-b60b-0ecefb22c049';
 
       jest
@@ -125,7 +128,7 @@ describe('CourseService', () => {
         `course with ID "${id}" not found`,
       );
       expect(prisma.course.findUnique).toHaveBeenCalledWith({
-        where: { id },
+        where: { id, isDeleted: false },
         include: { users: true },
       });
     });
@@ -139,7 +142,7 @@ describe('CourseService', () => {
         description: 'Updated course description',
       };
 
-      const result: Course = { ...updateCourseInput };
+      const result: Course = { ...updateCourseInput, isDeleted: false };
 
       jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
         return callback(prisma);
@@ -152,7 +155,7 @@ describe('CourseService', () => {
       );
       expect(updatedCourse).toEqual(result);
       expect(prisma.course.update).toHaveBeenCalledWith({
-        where: { id: updateCourseInput.id },
+        where: { id: updateCourseInput.id, isDeleted: false },
         data: updateCourseInput,
         include: { users: true },
       });
@@ -177,7 +180,7 @@ describe('CourseService', () => {
         service.update(updateCourseInput, JWT_PAYLOAD),
       ).rejects.toThrow('Course not found');
       expect(prisma.course.update).toHaveBeenCalledWith({
-        where: { id: updateCourseInput.id },
+        where: { id: updateCourseInput.id, isDeleted: false },
         data: updateCourseInput,
         include: { users: true },
       });
@@ -192,6 +195,7 @@ describe('CourseService', () => {
         id,
         name: 'delete course',
         description: 'delete course description',
+        isDeleted: false,
         users: [],
       };
 
@@ -199,13 +203,14 @@ describe('CourseService', () => {
       jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
         return callback(prisma);
       });
-      jest.spyOn(prisma.course, 'delete').mockResolvedValue(result);
+      jest.spyOn(prisma.course, 'update').mockResolvedValue(result);
 
       const deleteCourse = await service.remove(id, JWT_PAYLOAD);
       expect(deleteCourse).toEqual(result);
-      expect(prisma.course.delete).toHaveBeenCalledWith({
-        where: { id },
+      expect(prisma.course.update).toHaveBeenCalledWith({
+        where: { id, isDeleted: false },
         include: { users: true },
+        data: { isDeleted: true },
       });
     });
 

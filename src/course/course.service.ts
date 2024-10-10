@@ -44,13 +44,14 @@ export class CourseService {
 
   async findAll(): Promise<CourseWithIncluded[]> {
     return await this.prismaService.course.findMany({
+      where: { isDeleted: false },
       include: CourseService.courseInclude,
     });
   }
 
   async findById(id: string): Promise<CourseWithIncluded> {
     const course = await this.prismaService.course.findUnique({
-      where: { id: id },
+      where: { id: id, isDeleted: false },
       include: CourseService.courseInclude,
     });
     if (!course) {
@@ -63,9 +64,10 @@ export class CourseService {
     updateCourseInput: UpdateCourseInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<CourseWithIncluded> {
+    await this.findById(updateCourseInput.id);
     return await this.prismaService.$transaction(async (tx) => {
       const courseUpdated = await tx.course.update({
-        where: { id: updateCourseInput.id },
+        where: { id: updateCourseInput.id, isDeleted: false },
         data: updateCourseInput,
         include: CourseService.courseInclude,
       });
@@ -94,8 +96,9 @@ export class CourseService {
     }
 
     return await this.prismaService.$transaction(async (tx) => {
-      const courseRemoved = await tx.course.delete({
-        where: { id: id },
+      const courseRemoved = await tx.course.update({
+        where: { id: id, isDeleted: false },
+        data: { isDeleted: true },
         include: CourseService.courseInclude,
       });
       await this.historyService.create(
