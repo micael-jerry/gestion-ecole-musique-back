@@ -12,6 +12,7 @@ export class UserArchiveService {
     role: true,
     courses: true,
     payments: true,
+    timeSlots: true,
   };
 
   constructor(

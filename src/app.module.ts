@@ -18,6 +18,7 @@ import { UserArchiveModule } from './archive/user-archive.module';
 import { HistoryModule } from './history/history.module';
 import { PaymentModule } from './payment/payment.module';
 import GraphQLJSON from 'graphql-type-json';
+import { TimeSlotModule } from './time-slot/time-slot.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import GraphQLJSON from 'graphql-type-json';
     UserArchiveModule,
     HistoryModule,
     PaymentModule,
+    TimeSlotModule,
   ],
   controllers: [],
   providers: [PrismaService],

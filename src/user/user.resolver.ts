@@ -10,15 +10,19 @@ import { Actions } from '../auth/decorator/set-metadata-action.decorator';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
 import { PictureInput } from '../picture/dto/picture.input';
 import { PaginationInput } from './dto/pagination.input';
+import { UserMapper } from './user.mapper';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly userMapper: UserMapper,
+  ) {}
 
   @Actions('GET_ADMIN', 'GET_MANAGER', 'GET_TEACHER', 'GET_STUDENT')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [User])
-  findAllUser(
+  async findAllUser(
     @Args({
       name: 'roleName',
       nullable: true,
@@ -48,28 +52,32 @@ export class UserResolver {
       type: () => PaginationInput,
     })
     pagination: PaginationInput,
-  ) {
-    return this.userService.findAll(
-      roleName,
-      courseId,
-      criteria,
-      false,
-      pagination,
+  ): Promise<User[]> {
+    return (
+      await this.userService.findAll(
+        roleName,
+        courseId,
+        criteria,
+        false,
+        pagination,
+      )
+    ).map((u) => this.userMapper.toGraphql(u));
+  }
+
+  @Actions('GET_ADMIN', 'GET_MANAGER', 'GET_TEACHER', 'GET_STUDENT')
+  @UseGuards(AuthGuard, ActionGuard)
+  @Query(() => User)
+  async findByIdUser(@Args('id') id: string): Promise<User> {
+    return this.userMapper.toGraphql(await this.userService.findById(id));
+  }
+
+  @Actions('GET_ADMIN', 'GET_MANAGER', 'GET_TEACHER', 'GET_STUDENT')
+  @UseGuards(AuthGuard, ActionGuard)
+  @Query(() => User)
+  async findCurrentUser(@Context('user') user: JwtPayloadType) {
+    return this.userMapper.toGraphql(
+      await this.userService.findById(user.userId),
     );
-  }
-
-  @Actions('GET_ADMIN', 'GET_MANAGER', 'GET_TEACHER', 'GET_STUDENT')
-  @UseGuards(AuthGuard, ActionGuard)
-  @Query(() => User)
-  findByIdUser(@Args('id') id: string) {
-    return this.userService.findById(id);
-  }
-
-  @Actions('GET_ADMIN', 'GET_MANAGER', 'GET_TEACHER', 'GET_STUDENT')
-  @UseGuards(AuthGuard, ActionGuard)
-  @Query(() => User)
-  findCurrentUser(@Context('user') user: JwtPayloadType) {
-    return this.userService.findById(user.userId);
   }
 
   @Actions('CREATE_ADMIN', 'CREATE_MANAGER', 'CREATE_TEACHER', 'CREATE_STUDENT')
@@ -84,8 +92,10 @@ export class UserResolver {
       nullable: true,
     })
     picture: PictureInput,
-  ) {
-    return await this.userService.create(createUserInput, picture, user);
+  ): Promise<User> {
+    return this.userMapper.toGraphql(
+      await this.userService.create(createUserInput, picture, user),
+    );
   }
 
   @Actions('DELETE_ADMIN', 'DELETE_MANAGER', 'DELETE_TEACHER', 'DELETE_STUDENT')
@@ -94,8 +104,8 @@ export class UserResolver {
   async removeUser(
     @Context('user') user: JwtPayloadType,
     @Args('id') id: string,
-  ) {
-    return await this.userService.remove(user, id);
+  ): Promise<User> {
+    return this.userMapper.toGraphql(await this.userService.remove(user, id));
   }
 
   @Actions('UPDATE_ADMIN', 'UPDATE_MANAGER', 'UPDATE_TEACHER', 'UPDATE_STUDENT')
@@ -110,7 +120,9 @@ export class UserResolver {
       nullable: true,
     })
     picture: PictureInput,
-  ) {
-    return await this.userService.update(updateUserInput, picture, user);
+  ): Promise<User> {
+    return this.userMapper.toGraphql(
+      await this.userService.update(updateUserInput, picture, user),
+    );
   }
 }

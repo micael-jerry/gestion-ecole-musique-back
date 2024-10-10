@@ -17,6 +17,7 @@ import { CreateUserInput } from './dto/create-user.input';
 import { PaginationInput } from './dto/pagination.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UserWithIncluded } from './types/user-with-included.type';
+import { UserValidator } from './validator/user.validator';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,7 @@ export class UserService {
     role: true,
     courses: true,
     payments: true,
+    timeSlots: true,
   };
 
   constructor(
@@ -31,6 +33,7 @@ export class UserService {
     private readonly pictureService: PictureService,
     private readonly roleService: RoleService,
     private readonly historyService: HistoryService,
+    private readonly userValidator: UserValidator,
   ) {}
 
   async findAll(
@@ -56,7 +59,7 @@ export class UserService {
       ];
 
     return this.prismaService.user.findMany({
-      where: userWhereInput,
+      where: { isDeleted: false, ...userWhereInput },
       include: UserService.userInclude,
       orderBy: { lastname: 'asc' },
       skip: pagination ? pagination.page * pagination.pageSize : undefined,
@@ -69,7 +72,7 @@ export class UserService {
     isArchive: boolean = false,
   ): Promise<UserWithIncluded> {
     const user = await this.prismaService.user.findUnique({
-      where: { id: id, isArchive: isArchive },
+      where: { id: id, isArchive: isArchive, isDeleted: false },
       include: UserService.userInclude,
     });
     if (!user) {
@@ -81,7 +84,7 @@ export class UserService {
   // Only used by auth
   async findByEmail(email: string): Promise<UserWithIncluded> {
     const user = await this.prismaService.user.findUnique({
-      where: { email: email, isArchive: false },
+      where: { email: email, isArchive: false, isDeleted: false },
       include: UserService.userInclude,
     });
     if (!user) {
@@ -95,6 +98,12 @@ export class UserService {
     picture: PictureInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<UserWithIncluded> {
+    await this.userValidator.createUserValidator({
+      role,
+      courses,
+      password,
+      ...createUserInput,
+    });
     const userRole = await this.roleService.getRoleByIdOrName(role);
     const pictureUrl: string | null = await this.pictureService
       .upload(picture)
@@ -142,12 +151,9 @@ export class UserService {
       this.pictureService.remove(user.picture);
     }
     return await this.prismaService.$transaction(async (tx) => {
-      await tx.user.update({
-        where: { id: id },
-        data: { courses: { set: [] } },
-      });
-      const userDeleted = await tx.user.delete({
-        where: { id: id },
+      const userDeleted = await tx.user.update({
+        where: { id: id, isDeleted: false },
+        data: { isDeleted: true },
         include: UserService.userInclude,
       });
       await this.historyService.create(
@@ -168,6 +174,12 @@ export class UserService {
     picture: PictureInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<UserWithIncluded> {
+    await this.userValidator.updateUserValidator({
+      role,
+      courses,
+      password,
+      ...updateUserInput,
+    });
     const user = await this.findById(updateUserInput.id);
     let newUserRole: RoleType | null = null;
     const newPicture: string | null = await this.pictureService.update(
@@ -180,7 +192,7 @@ export class UserService {
 
     return this.prismaService.$transaction(async (tx) => {
       const userUpdated = await tx.user.update({
-        where: { id: updateUserInput.id },
+        where: { id: updateUserInput.id, isDeleted: false },
         data: {
           password: password
             ? bcrypt.hashSync(password, bcrypt.genSaltSync())

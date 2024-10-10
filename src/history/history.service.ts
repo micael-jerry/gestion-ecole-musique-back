@@ -12,10 +12,32 @@ import { DefaultArgs } from '@prisma/client/runtime/library';
 @Injectable()
 export class HistoryService {
   private static readonly historyInclude = {
-    user: { include: { role: true, courses: true, payments: true } },
+    user: {
+      include: { role: true, courses: true, payments: true, timeSlots: true },
+    },
   };
 
   constructor(private readonly prismaService: PrismaService) {}
+
+  async createMany(
+    historyList: CreateHistoryInput[],
+    tx:
+      | Omit<
+          PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+          | '$connect'
+          | '$disconnect'
+          | '$on'
+          | '$transaction'
+          | '$use'
+          | '$extends'
+        >
+      | PrismaClient = this.prismaService,
+  ): Promise<void> {
+    await tx.history.createManyAndReturn({
+      data: historyList,
+      include: HistoryService.historyInclude,
+    });
+  }
 
   async create(
     history: CreateHistoryInput,
@@ -119,8 +141,12 @@ export class HistoryService {
         return await this.prismaService.payment.findMany({
           include: { user: true, feeType: true },
         });
+      case EntityType.TIME_SLOT:
+        return await this.prismaService.timeSlot.findMany({
+          include: { teacher: true },
+        });
       case 'ALL': {
-        const [courses, settings, feeTypes, roles, users, payments] =
+        const [courses, settings, feeTypes, roles, users, payments, timeSlots] =
           await Promise.all([
             this.prismaService.course.findMany(),
             this.prismaService.setting.findMany(),
@@ -134,6 +160,9 @@ export class HistoryService {
             this.prismaService.payment.findMany({
               include: { user: true, feeType: true },
             }),
+            this.prismaService.timeSlot.findMany({
+              include: { teacher: true },
+            }),
           ]);
         return [
           ...courses,
@@ -142,6 +171,7 @@ export class HistoryService {
           ...roles,
           ...users,
           ...payments,
+          ...timeSlots,
         ];
       }
       default:
@@ -181,6 +211,11 @@ export class HistoryService {
               feeType: true,
               user: { include: { role: true, courses: true } },
             },
+          });
+        case EntityType.TIME_SLOT:
+          return await this.prismaService.timeSlot.findUnique({
+            where: { id: entityId },
+            include: { teacher: true },
           });
         default:
           throw new BadRequestException(`Unknown entity type`);

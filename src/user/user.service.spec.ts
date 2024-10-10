@@ -17,6 +17,7 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UserWithIncluded } from './types/user-with-included.type';
 import { UserService } from './user.service';
+import { UserValidator } from './validator/user.validator';
 
 describe('UserService', () => {
   let prisma: PrismaService;
@@ -64,6 +65,13 @@ describe('UserService', () => {
           provide: HistoryService,
           useValue: {
             create: jest.fn(),
+          },
+        },
+        {
+          provide: UserValidator,
+          useValue: {
+            createUserValidator: jest.fn(),
+            updateUserValidator: jest.fn(),
           },
         },
         UserService,
@@ -124,8 +132,8 @@ describe('UserService', () => {
 
       expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { id: userId, isArchive: false },
-        include: { role: true, courses: true, payments: true },
+        where: { id: userId, isArchive: false, isDeleted: false },
+        include: { role: true, courses: true, payments: true, timeSlots: true },
       });
       expect(result).toEqual(expectedUser);
     });
@@ -152,8 +160,8 @@ describe('UserService', () => {
 
       expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { email: email, isArchive: false },
-        include: { role: true, courses: true, payments: true },
+        where: { email: email, isArchive: false, isDeleted: false },
+        include: { role: true, courses: true, payments: true, timeSlots: true },
       });
       expect(result).toEqual(expectedUser);
     });
@@ -255,7 +263,7 @@ describe('UserService', () => {
           courses: { connect: [] },
           ...createUserInput,
         },
-        include: { role: true, courses: true, payments: true },
+        include: { role: true, courses: true, payments: true, timeSlots: true },
       });
       expect(result).toEqual(UserAdminOne);
     });
@@ -319,7 +327,6 @@ describe('UserService', () => {
         return callback(prisma);
       });
       jest.spyOn(prisma.user, 'update').mockResolvedValueOnce(expectedUser);
-      jest.spyOn(prisma.user, 'delete').mockResolvedValueOnce(expectedUser);
       jest.spyOn(prisma, '$transaction').mockImplementation((callback) => {
         return callback(prisma);
       });
@@ -332,13 +339,14 @@ describe('UserService', () => {
       expect(pictureService.remove).toHaveBeenCalledWith(expectedUser.picture);
       expect(prisma.user.update).toHaveBeenCalledTimes(1);
       expect(prisma.user.update).toHaveBeenCalledWith({
-        where: { id: userId },
-        data: { courses: { set: [] } },
-      });
-      expect(prisma.user.delete).toHaveBeenCalledTimes(1);
-      expect(prisma.user.delete).toHaveBeenCalledWith({
-        where: { id: userId },
-        include: { role: true, courses: true, payments: true },
+        where: { id: userId, isDeleted: false },
+        data: { isDeleted: true },
+        include: {
+          courses: true,
+          payments: true,
+          role: true,
+          timeSlots: true,
+        },
       });
       expect(result).toEqual(expectedUser);
     });
@@ -410,7 +418,7 @@ describe('UserService', () => {
 
       expect(prisma.user.update).toHaveBeenCalledTimes(1);
       expect(prisma.user.update).toHaveBeenCalledWith({
-        where: { id: userId },
+        where: { id: userId, isDeleted: false },
         data: {
           password: UserAdminOne.password,
           roleId: RoleAdmin.id,
@@ -421,7 +429,7 @@ describe('UserService', () => {
           },
           ...updateUserInput,
         },
-        include: { role: true, courses: true, payments: true },
+        include: { role: true, courses: true, payments: true, timeSlots: true },
       });
       expect(result).toEqual(UserAdminTwo);
     });

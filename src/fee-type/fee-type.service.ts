@@ -44,13 +44,14 @@ export class FeeTypeService {
 
   async findAll(): Promise<FeeTypeWithIncluded[]> {
     return await this.prismaService.feeType.findMany({
+      where: { isDeleted: false },
       include: FeeTypeService.feeTypeInclude,
     });
   }
 
   async findById(id: string): Promise<FeeTypeWithIncluded> {
     const feeType = await this.prismaService.feeType.findUnique({
-      where: { id: id },
+      where: { id: id, isDeleted: false },
       include: FeeTypeService.feeTypeInclude,
     });
     if (!feeType) {
@@ -63,9 +64,10 @@ export class FeeTypeService {
     updateFeeTypeInput: UpdateFeeTypeInput,
     authenticatedUser: JwtPayloadType,
   ): Promise<FeeTypeWithIncluded> {
+    await this.findById(updateFeeTypeInput.id);
     return await this.prismaService.$transaction(async (tx) => {
       const feeTypeUpdated = await tx.feeType.update({
-        where: { id: updateFeeTypeInput.id },
+        where: { id: updateFeeTypeInput.id, isDeleted: false },
         data: updateFeeTypeInput,
         include: FeeTypeService.feeTypeInclude,
       });
@@ -94,8 +96,9 @@ export class FeeTypeService {
     }
     try {
       return await this.prismaService.$transaction(async (tx) => {
-        const feeTypeRemoved = await tx.feeType.delete({
-          where: { id: id },
+        const feeTypeRemoved = await tx.feeType.update({
+          data: { isDeleted: true },
+          where: { id: id, isDeleted: false },
           include: FeeTypeService.feeTypeInclude,
         });
         await this.historyService.create(

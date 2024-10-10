@@ -199,4 +199,21 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
     name: 'Voir l’historique',
     description: "Autorisation pour consulter l’historique d'activité.",
   },
+
+  // TIME SLOT AUTHORIZATION
+  {
+    tag: 'CREATE_TIME_SLOT',
+    name: 'Créer un créneau horaire',
+    description: 'Autorisation pour ajouter un nouveau créneau horaire.',
+  },
+  {
+    tag: 'UPDATE_TIME_SLOT',
+    name: 'Mettre à jour un créneau horaire',
+    description: 'Autorisation pour modifier un créneau horaire.',
+  },
+  {
+    tag: 'GET_TIME_SLOT',
+    name: 'Voir un créneau horaire',
+    description: 'Autorisation pour consulter un créneau horaire.',
+  },
 ];

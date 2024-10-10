@@ -8,10 +8,14 @@ import { AuthGuard } from '../auth/guard/auth.guard';
 import { Actions } from '../auth/decorator/set-metadata-action.decorator';
 import { ActionGuard } from '../auth/guard/action.guard';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { CourseMapper } from './course.mapper';
 
 @Resolver(() => Course)
 export class CourseResolver {
-  constructor(private readonly courseService: CourseService) {}
+  constructor(
+    private readonly courseService: CourseService,
+    private readonly courseMapper: CourseMapper,
+  ) {}
 
   @Actions('CREATE_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
@@ -21,21 +25,25 @@ export class CourseResolver {
     @Args('createCourseInput')
     createCourseInput: CreateCourseInput,
   ): Promise<Course> {
-    return this.courseService.create(createCourseInput, user);
+    return this.courseMapper.toGraphql(
+      await this.courseService.create(createCourseInput, user),
+    );
   }
 
   @Actions('GET_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => [Course])
   async findAllCourse(): Promise<Course[]> {
-    return this.courseService.findAll();
+    return (await this.courseService.findAll()).map((c) =>
+      this.courseMapper.toGraphql(c),
+    );
   }
 
   @Actions('GET_COURSE')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => Course)
   async findByIdCourse(@Args('id') id: string): Promise<Course> {
-    return this.courseService.findById(id);
+    return this.courseMapper.toGraphql(await this.courseService.findById(id));
   }
 
   @Actions('UPDATE_COURSE')
@@ -46,7 +54,9 @@ export class CourseResolver {
     @Args('updateCourseInput')
     updateCourseInput: UpdateCourseInput,
   ): Promise<Course> {
-    return this.courseService.update(updateCourseInput, user);
+    return this.courseMapper.toGraphql(
+      await this.courseService.update(updateCourseInput, user),
+    );
   }
 
   @Actions('DELETE_COURSE')
@@ -56,6 +66,8 @@ export class CourseResolver {
     @Context('user') user: JwtPayloadType,
     @Args('id') id: string,
   ): Promise<Course> {
-    return this.courseService.remove(id, user);
+    return this.courseMapper.toGraphql(
+      await this.courseService.remove(id, user),
+    );
   }
 }

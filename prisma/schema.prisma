@@ -17,6 +17,7 @@ model Course {
   id          String  @id @default(uuid())
   name        String  @unique @db.VarChar()
   description String? @db.Text
+  isDeleted   Boolean @default(false)
   users       User[]
 }
 
@@ -33,6 +34,7 @@ model FeeType {
   name        String    @unique @db.VarChar()
   description String?
   value       Float     @default(0)
+  isDeleted   Boolean   @default(false)
   payments    Payment[]
 }
 
@@ -52,48 +54,23 @@ model Action {
 }
 
 model User {
-  id          String    @id @default(uuid())
+  id          String     @id @default(uuid())
   roleId      String
-  firstname   String    @db.VarChar(100)
-  lastname    String    @db.VarChar(100)
-  email       String    @unique @db.VarChar(50)
+  firstname   String     @db.VarChar(100)
+  lastname    String     @db.VarChar(100)
+  email       String     @unique @db.VarChar(50)
   password    String
-  address     String    @db.VarChar()
-  phone       String?   @db.VarChar(20)
-  picture     String?   @db.VarChar()
+  address     String     @db.VarChar()
+  phone       String?    @db.VarChar(20)
+  picture     String?    @db.VarChar()
   description String?
-  isArchive   Boolean   @default(false)
-  role        Role      @relation(fields: [roleId], references: [id])
+  isArchive   Boolean    @default(false)
+  isDeleted   Boolean    @default(false)
+  role        Role       @relation(fields: [roleId], references: [id])
   courses     Course[]
   histories   History[]
   payments    Payment[]
-}
-
-enum EntityType {
-  COURSE
-  SETTING
-  FEE_TYPE
-  ROLE
-  USER
-  PAYMENT
-}
-
-enum OperationType {
-  CREATE
-  UPDATE
-  DELETE
-  ARCHIVE
-  UNARCHIVE
-}
-
-model History {
-  id            String        @id @default(uuid())
-  entityId      String
-  entityType    EntityType
-  operationType OperationType
-  userId        String
-  user          User          @relation(fields: [userId], references: [id])
-  createdAt     DateTime      @default(now())
+  timeSlots   TimeSlot[]
 }
 
 model Payment {
@@ -114,4 +91,62 @@ enum PaymentType {
   BANK
   MOBILE
   CARD
+}
+
+enum TimeSlotStatus {
+  AVAILABLE
+  TAKEN
+  CANCELLED
+  EXPIRED
+}
+
+model TimeSlot {
+  id        String         @id @default(uuid())
+  status    TimeSlotStatus @default(AVAILABLE)
+  start     DateTime
+  end       DateTime
+  teacherId String
+  teacher   User           @relation(fields: [teacherId], references: [id])
+}
+
+// enum ReservationStatus {
+//   PENDING
+//   APPROVED
+//   REJECTED
+//   CANCELLED
+// }
+
+// model Reservation {
+//   id        String            @id @default(uuid())
+//   status    ReservationStatus
+//   studentId String
+//   student   User              @relation(fields: [studentId], references: [id])
+// }
+
+enum EntityType {
+  COURSE
+  SETTING
+  FEE_TYPE
+  ROLE
+  USER
+  PAYMENT
+  TIME_SLOT
+}
+
+enum OperationType {
+  CREATE
+  UPDATE
+  DELETE
+  ARCHIVE
+  UNARCHIVE
+}
+
+model History {
+  id            String        @id @default(uuid())
+  entityId      String
+  entityType    EntityType
+  operationType OperationType
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  createdAt     DateTime      @default(now())
 }
