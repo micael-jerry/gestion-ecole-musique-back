@@ -54,23 +54,24 @@ model Action {
 }
 
 model User {
-  id          String     @id @default(uuid())
-  roleId      String
-  firstname   String     @db.VarChar(100)
-  lastname    String     @db.VarChar(100)
-  email       String     @unique @db.VarChar(50)
-  password    String
-  address     String     @db.VarChar()
-  phone       String?    @db.VarChar(20)
-  picture     String?    @db.VarChar()
-  description String?
-  isArchive   Boolean    @default(false)
-  isDeleted   Boolean    @default(false)
-  role        Role       @relation(fields: [roleId], references: [id])
-  courses     Course[]
-  histories   History[]
-  payments    Payment[]
-  timeSlots   TimeSlot[]
+  id           String        @id @default(uuid())
+  roleId       String
+  firstname    String        @db.VarChar(100)
+  lastname     String        @db.VarChar(100)
+  email        String        @unique @db.VarChar(50)
+  password     String
+  address      String        @db.VarChar()
+  phone        String?       @db.VarChar(20)
+  picture      String?       @db.VarChar()
+  description  String?
+  isArchive    Boolean       @default(false)
+  isDeleted    Boolean       @default(false)
+  role         Role          @relation(fields: [roleId], references: [id])
+  courses      Course[]
+  histories    History[]
+  payments     Payment[]
+  timeSlots    TimeSlot[]
+  reservations Reservation[]
 }
 
 model Payment {
@@ -101,27 +102,29 @@ enum TimeSlotStatus {
 }
 
 model TimeSlot {
-  id        String         @id @default(uuid())
-  status    TimeSlotStatus @default(AVAILABLE)
-  start     DateTime
-  end       DateTime
-  teacherId String
-  teacher   User           @relation(fields: [teacherId], references: [id])
+  id           String         @id @default(uuid())
+  status       TimeSlotStatus @default(AVAILABLE)
+  start        DateTime
+  end          DateTime
+  teacherId    String
+  teacher      User           @relation(fields: [teacherId], references: [id])
+  reservations Reservation[]
 }
 
-// enum ReservationStatus {
-//   PENDING
-//   APPROVED
-//   REJECTED
-//   CANCELLED
-// }
+enum ReservationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
 
-// model Reservation {
-//   id        String            @id @default(uuid())
-//   status    ReservationStatus
-//   studentId String
-//   student   User              @relation(fields: [studentId], references: [id])
-// }
+model Reservation {
+  id        String            @id @default(uuid())
+  status    ReservationStatus
+  studentId String
+  student   User              @relation(fields: [studentId], references: [id])
+  timeSlots TimeSlot[]
+}
 
 enum EntityType {
   COURSE
@@ -131,6 +134,7 @@ enum EntityType {
   USER
   PAYMENT
   TIME_SLOT
+  RESERVATION
 }
 
 enum OperationType {

@@ -145,6 +145,10 @@ export class HistoryService {
         return await this.prismaService.timeSlot.findMany({
           include: { teacher: true },
         });
+      case EntityType.RESERVATION:
+        return await this.prismaService.reservation.findMany({
+          include: { student: true },
+        });
       case 'ALL': {
         const [courses, settings, feeTypes, roles, users, payments, timeSlots] =
           await Promise.all([
@@ -216,6 +220,11 @@ export class HistoryService {
           return await this.prismaService.timeSlot.findUnique({
             where: { id: entityId },
             include: { teacher: true },
+          });
+        case EntityType.RESERVATION:
+          return await this.prismaService.reservation.findUnique({
+            where: { id: entityId },
+            include: { student: true },
           });
         default:
           throw new BadRequestException(`Unknown entity type`);

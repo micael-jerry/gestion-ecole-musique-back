@@ -216,4 +216,21 @@ export const SeedAction: Prisma.ActionCreateInput[] = [
     name: 'Voir un créneau horaire',
     description: 'Autorisation pour consulter un créneau horaire.',
   },
+
+  // RESERVATION AUTHORIZTION
+  {
+    tag: 'CREATE_RESERVATION',
+    name: 'Créer une réservation',
+    description: 'Autorisation pour réserver un creneau.',
+  },
+  {
+    tag: 'UPDATE_RESERVATION',
+    name: 'Mettre à jour une réservation',
+    description: 'Autorisation pour modifier une réservation.',
+  },
+  {
+    tag: 'GET_RESERVATION',
+    name: 'Voir une réservation',
+    description: 'Autorisation pour consulter une réservation.',
+  },
 ];

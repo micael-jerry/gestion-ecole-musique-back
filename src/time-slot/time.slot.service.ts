@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TimeSlotWithIncluded } from './types/time-slot-with-included.type';
 import { CreateTimeSlotInput } from './dto/create-time-slot.input';
@@ -95,12 +91,9 @@ export class TimeSlotService {
     updateTimeSlotListInput: UpdateTimeSlotInput[],
     authenticatedUser: JwtPayloadType,
   ): Promise<TimeSlotWithIncluded[]> {
-    const actualTimeSlotList = await this.prismaService.timeSlot.findMany({
-      where: { id: { in: updateTimeSlotListInput.map((t) => t.id) } },
-    });
-    if (actualTimeSlotList.length !== updateTimeSlotListInput.length) {
-      throw new BadRequestException('Invalid time slot IDs');
-    }
+    await this.timeSlotValidator.updateTimeSlotValidate(
+      updateTimeSlotListInput,
+    );
 
     await this.prismaService
       .$transaction([

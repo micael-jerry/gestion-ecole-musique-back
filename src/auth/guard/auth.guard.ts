@@ -8,6 +8,10 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayloadType } from '../entities/jwt-payload.entity';
 
+/**
+ * AuthGuard is a NestJS guard that protects GraphQL routes by verifying JWT tokens.
+ * It implements the CanActivate interface from the NestJS common module.
+ */
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
