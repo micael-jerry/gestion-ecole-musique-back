@@ -7,6 +7,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { TIME_SLOT_MINIMUM_MINUTES } from '../constant/time-slot.constant';
 import { areSameDay, getMinutesDifference } from '../utils/time-slot.util';
 import { Prisma, TimeSlot, TimeSlotStatus } from '@prisma/client';
+import { UpdateTimeSlotInput } from '../dto/update-time-slot.input';
 
 @Injectable()
 export class TimeSlotValidator {
@@ -30,12 +31,32 @@ export class TimeSlotValidator {
   }: CreateTimeSlotInput): Promise<void> {
     await this.prismaService.user
       .findFirstOrThrow({
-        where: { id: teacherId },
+        where: { id: teacherId, role: { name: 'TEACHER' } },
       })
       .catch(() => {
         throw new BadRequestException(`Teacher with id ${teacherId} not found`);
       });
     times.forEach((time) => this.timeValidator(time));
+  }
+
+  async updateTimeSlotValidate(
+    updateTimeSlotListInput: UpdateTimeSlotInput[],
+  ): Promise<void> {
+    const actualTimeSlotList = await this.prismaService.timeSlot.findMany({
+      where: { id: { in: updateTimeSlotListInput.map((t) => t.id) } },
+    });
+    if (actualTimeSlotList.length !== updateTimeSlotListInput.length) {
+      throw new BadRequestException('Invalid time slot IDs');
+    }
+    if (
+      new Set(updateTimeSlotListInput.map((t) => t.status)).has(
+        TimeSlotStatus.TAKEN,
+      )
+    ) {
+      throw new BadRequestException(
+        `You can't set the status of a time slot on TAKEN directly without reservation`,
+      );
+    }
   }
 
   /**

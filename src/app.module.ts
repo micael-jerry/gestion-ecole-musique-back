@@ -19,6 +19,8 @@ import { HistoryModule } from './history/history.module';
 import { PaymentModule } from './payment/payment.module';
 import GraphQLJSON from 'graphql-type-json';
 import { TimeSlotModule } from './time-slot/time-slot.module';
+import { ReservationModule } from './reservation/reservation.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -40,6 +42,7 @@ import { TimeSlotModule } from './time-slot/time-slot.module';
       secret: process.env.JWT_SECRET_KEY,
       signOptions: { expiresIn: '30d' },
     }),
+    ScheduleModule.forRoot(),
     PrismaModule,
     CourseModule,
     SettingModule,
@@ -52,6 +55,7 @@ import { TimeSlotModule } from './time-slot/time-slot.module';
     HistoryModule,
     PaymentModule,
     TimeSlotModule,
+    ReservationModule,
   ],
   controllers: [],
   providers: [PrismaService],

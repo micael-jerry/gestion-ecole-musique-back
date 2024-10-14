@@ -23,14 +23,18 @@ import { AllHistory } from '../test-utils/history.test-utils';
 import { HistoryWithIncluded } from '../../../src/history/types/history-with-included.type';
 import { TeacherOneAllTimeSlot } from '../test-utils/time-slot.test-utils';
 import { DefaultArgs } from '@prisma/client/runtime/library';
+import { ReservationWithIncluded } from 'src/reservation/types/reservation-with-included.type';
+import { AllReservation } from '../test-utils/reservation.test-utils';
 
 const prisma = new PrismaClient();
 
+type PrismaTransaction = Omit<
+  PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+  '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+>;
+
 const seederTestRole = async (
-  p: Omit<
-    PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-    '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
-  >,
+  p: PrismaTransaction,
   roleWithIncludedList: RoleWithIncluded[],
 ) => {
   roleWithIncludedList.forEach(async (roleWithIncluded) => {
@@ -45,10 +49,7 @@ const seederTestRole = async (
 };
 
 const seederTestUser = async (
-  p: Omit<
-    PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-    '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
-  >,
+  p: PrismaTransaction,
   userWithIncludedList: UserWithIncluded[],
 ) => {
   userWithIncludedList.forEach(async (userWithIncluded) => {
@@ -72,6 +73,24 @@ const seederTestUser = async (
       },
     });
   });
+};
+
+const seederTestReservation = async (
+  p: PrismaTransaction,
+  reservationWithIncludedList: ReservationWithIncluded[],
+) => {
+  for (const reservation of reservationWithIncludedList) {
+    await p.reservation.create({
+      data: {
+        id: reservation.id,
+        status: reservation.status,
+        studentId: reservation.studentId,
+        timeSlots: {
+          connect: reservation.timeSlots.map((t) => ({ id: t.id })),
+        },
+      },
+    });
+  }
 };
 
 export const seederTest = async () => {
@@ -144,6 +163,9 @@ export const seederTest = async () => {
         }),
       ),
     });
+
+    // seed reservation
+    await seederTestReservation(tx, AllReservation);
   });
   await prisma.$disconnect();
 };

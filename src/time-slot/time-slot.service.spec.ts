@@ -57,6 +57,7 @@ describe('TimeSlotService', () => {
           useValue: {
             createTimeSloteValidate: jest.fn(),
             validateTimeSlotCreateInputList: jest.fn(),
+            updateTimeSlotValidate: jest.fn(),
           },
         },
         {
@@ -271,7 +272,11 @@ describe('TimeSlotService', () => {
   describe('updateTimeSlot', () => {
     it('should throw an error when updating a time slot with an invalid ID', async () => {
       const invalidId = 'invalid-id';
+
       jest.spyOn(prismaService.timeSlot, 'findMany').mockResolvedValue([]);
+      jest
+        .spyOn(timeSlotValidator, 'updateTimeSlotValidate')
+        .mockRejectedValue(new Error('Invalid time slot IDs'));
 
       await expect(
         service.update(
@@ -321,6 +326,9 @@ describe('TimeSlotService', () => {
       jest
         .spyOn(historyService, 'createMany')
         .mockResolvedValue(Promise.resolve());
+      jest
+        .spyOn(timeSlotValidator, 'updateTimeSlotValidate')
+        .mockResolvedValue(undefined);
 
       // Act
       const result = await service.update(
@@ -331,6 +339,8 @@ describe('TimeSlotService', () => {
       // Assert
       expect(prismaService.timeSlot.findMany).toHaveBeenCalledWith({
         where: { id: { in: updateTimeSlotListInput.map((t) => t.id) } },
+        include: INCLUDE,
+        orderBy: { start: 'asc' },
       });
       expect(prismaService.timeSlot.update).toHaveBeenCalledTimes(2);
       expect(prismaService.timeSlot.update).toHaveBeenCalledWith({

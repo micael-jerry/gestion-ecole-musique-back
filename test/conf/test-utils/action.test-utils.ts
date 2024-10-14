@@ -297,6 +297,27 @@ export const ActionGetTimeSlot: Action = {
   description: 'Autorisation pour consulter un créneau horaire.',
 };
 
+export const ActionCreateReservation: Action = {
+  id: 'action_create_reservation_id',
+  tag: 'CREATE_RESERVATION',
+  name: 'Créer une réservation',
+  description: 'Autorisation pour réserver un creneau.',
+};
+
+export const ActionUpdateReservation: Action = {
+  id: 'action_update_reservation_id',
+  tag: 'UPDATE_RESERVATION',
+  name: 'Mettre à jour une réservation',
+  description: 'Autorisation pour modifier une réservation.',
+};
+
+export const ActionGetReservation: Action = {
+  id: 'action_get_reservation_id',
+  tag: 'GET_RESERVATION',
+  name: 'Voir une réservation',
+  description: 'Autorisation pour consulter une réservation.',
+};
+
 export const AllAction: Action[] = [
   ActionGetAdmin,
   ActionCreateAdmin,
@@ -339,4 +360,7 @@ export const AllAction: Action[] = [
   ActionCreateTimeSlot,
   ActionUpdateTimeSlot,
   ActionGetTimeSlot,
+  ActionCreateReservation,
+  ActionUpdateReservation,
+  ActionGetReservation,
 ];
