@@ -2,13 +2,27 @@ import { TimeSlotStatus } from '@prisma/client';
 import { TimeSlotWithIncluded } from 'src/time-slot/types/time-slot-with-included.type';
 import { UserTeacherOne } from './user.test-utils';
 
+// Get today's date
+const today = new Date();
+
+// Calculate tomorrow's date
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+
+function getTomorrowDate(dateString: string): string {
+  const year = tomorrow.getFullYear();
+  const month = tomorrow.getMonth() + 1; // Months are 0-indexed
+  const day = tomorrow.getDate();
+  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${dateString}`;
+}
+
 export const TeacherOneTimeSlotOne: TimeSlotWithIncluded = {
   id: 'time_slot_one_id',
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
-  start: new Date(`${new Date().getFullYear() + 1}-01-05T08:00:00Z`),
-  end: new Date(`${new Date().getFullYear() + 1}-01-05T08:30:00Z`),
+  start: new Date(getTomorrowDate('08:00:00')),
+  end: new Date(getTomorrowDate('08:30:00')),
 };
 
 export const TeacherOneTimeSlotTwo: TimeSlotWithIncluded = {
@@ -16,8 +30,8 @@ export const TeacherOneTimeSlotTwo: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
-  start: new Date(`${new Date().getFullYear() + 1}-01-05T08:30:00Z`),
-  end: new Date(`${new Date().getFullYear() + 1}-01-05T09:00:00Z`),
+  start: new Date(getTomorrowDate('08:30:00')),
+  end: new Date(getTomorrowDate('09:00:00')),
 };
 
 export const TeacherOneTimeSlotThree: TimeSlotWithIncluded = {
@@ -25,8 +39,8 @@ export const TeacherOneTimeSlotThree: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
-  start: new Date(`${new Date().getFullYear() + 1}-01-05T09:00:00Z`),
-  end: new Date(`${new Date().getFullYear() + 1}-01-05T09:30:00Z`),
+  start: new Date(getTomorrowDate('09:00:00')),
+  end: new Date(getTomorrowDate('09:30:00')),
 };
 
 export const TeacherOneTimeSlotFour: TimeSlotWithIncluded = {
@@ -34,8 +48,8 @@ export const TeacherOneTimeSlotFour: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
-  start: new Date(`${new Date().getFullYear() + 1}-01-05T09:30:00Z`),
-  end: new Date(`${new Date().getFullYear() + 1}-01-05T10:00:00Z`),
+  start: new Date(getTomorrowDate('09:30:00')),
+  end: new Date(getTomorrowDate('10:00:00')),
 };
 
 export const TeacherOneTimeSlotFive: TimeSlotWithIncluded = {
@@ -43,8 +57,8 @@ export const TeacherOneTimeSlotFive: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
-  start: new Date(`${new Date().getFullYear() + 1}-01-05T10:00:00Z`),
-  end: new Date(`${new Date().getFullYear() + 1}-01-05T10:30:00Z`),
+  start: new Date(getTomorrowDate('10:00:00')),
+  end: new Date(getTomorrowDate('10:30:00')),
 };
 
 export const TeacherOneTimeSlotSix: TimeSlotWithIncluded = {
@@ -52,8 +66,8 @@ export const TeacherOneTimeSlotSix: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
-  start: new Date(`${new Date().getFullYear() + 1}-01-05T10:30:00Z`),
-  end: new Date(`${new Date().getFullYear() + 1}-01-05T11:00:00Z`),
+  start: new Date(getTomorrowDate('10:30:00')),
+  end: new Date(getTomorrowDate('11:00:00')),
 };
 
 export const TeacherOneTimeSlotSeven: TimeSlotWithIncluded = {
@@ -61,8 +75,8 @@ export const TeacherOneTimeSlotSeven: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
-  start: new Date(`${new Date().getFullYear() + 1}-01-05T11:00:00Z`),
-  end: new Date(`${new Date().getFullYear() + 1}-01-05T11:30:00Z`),
+  start: new Date(getTomorrowDate('11:00:00')),
+  end: new Date(getTomorrowDate('11:30:00')),
 };
 
 export const TeacherOneTimeSlotEight: TimeSlotWithIncluded = {
@@ -70,8 +84,8 @@ export const TeacherOneTimeSlotEight: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
-  start: new Date(`${new Date().getFullYear() + 1}-01-05T11:30:00Z`),
-  end: new Date(`${new Date().getFullYear() + 1}-01-05T12:00:00Z`),
+  start: new Date(getTomorrowDate('11:30:00')),
+  end: new Date(getTomorrowDate('12:00:00')),
 };
 
 export const TeacherOneAllTimeSlot: TimeSlotWithIncluded[] = [
