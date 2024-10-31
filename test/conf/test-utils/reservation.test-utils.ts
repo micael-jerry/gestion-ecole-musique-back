@@ -17,6 +17,7 @@ export const StudentOneReservation: ReservationWithIncluded = {
   status: ReservationStatus.PENDING,
   studentId: UserStudentOne.id,
   student: UserStudentOne,
+  createdAt: new Date(),
   timeSlots: [
     TeacherOneTimeSlotOne,
     TeacherOneTimeSlotTwo,
@@ -30,6 +31,7 @@ export const StudentTwoReservation: ReservationWithIncluded = {
   status: ReservationStatus.PENDING,
   studentId: UserStudentTwo.id,
   student: UserStudentTwo,
+  createdAt: new Date(),
   timeSlots: [
     TeacherOneTimeSlotFive,
     TeacherOneTimeSlotSix,

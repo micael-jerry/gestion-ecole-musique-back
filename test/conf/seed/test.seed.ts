@@ -8,7 +8,7 @@ import {
   CourseThree,
   CourseTwo,
 } from '../test-utils/course.test-utils';
-import { SettingOne } from '../test-utils/setting.test-utils';
+import { SettingOne, SettingTwo } from '../test-utils/setting.test-utils';
 import {
   RoleAdmin,
   RoleManager,
@@ -127,7 +127,7 @@ export const seederTest = async () => {
       ],
     });
     // seed setting
-    await tx.setting.create({ data: SettingOne });
+    await tx.setting.createMany({ data: [SettingOne, SettingTwo] });
     // seed user
     await seederTestUser(tx, AllUser);
     // seed history

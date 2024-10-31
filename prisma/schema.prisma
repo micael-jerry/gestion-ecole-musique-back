@@ -122,6 +122,7 @@ model Reservation {
   id        String            @id @default(uuid())
   status    ReservationStatus
   studentId String
+  createdAt DateTime          @default(now())
   student   User              @relation(fields: [studentId], references: [id])
   timeSlots TimeSlot[]
 }

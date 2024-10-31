@@ -9,6 +9,7 @@ CREATE TABLE "Reservation" (
     "id" TEXT NOT NULL,
     "status" "ReservationStatus" NOT NULL,
     "studentId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Reservation_pkey" PRIMARY KEY ("id")
 );
