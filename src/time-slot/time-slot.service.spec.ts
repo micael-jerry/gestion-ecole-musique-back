@@ -58,6 +58,7 @@ describe('TimeSlotService', () => {
             createTimeSloteValidate: jest.fn(),
             validateTimeSlotCreateInputList: jest.fn(),
             updateTimeSlotValidate: jest.fn(),
+            validateTimeSlotUpdateInputList: jest.fn(),
           },
         },
         {
@@ -258,7 +259,7 @@ describe('TimeSlotService', () => {
         createTimeSlotInput,
       );
       expect(
-        timeSlotValidator.validateTimeSlotCreateInputList,
+        timeSlotValidator.validateTimeSlotUpdateInputList,
       ).toHaveBeenCalledWith(getTimeSlotCreateInputList(createTimeSlotInput));
       expect(prismaService.timeSlot.createManyAndReturn).toHaveBeenCalledWith({
         data: getTimeSlotCreateInputList(createTimeSlotInput),

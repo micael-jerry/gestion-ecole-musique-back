@@ -6,6 +6,12 @@ export class UpdateTimeSlotInput {
   @Field()
   id: string;
 
-  @Field(() => TimeSlotStatus)
-  status: TimeSlotStatus;
+  @Field(() => TimeSlotStatus, { nullable: true })
+  status?: TimeSlotStatus;
+
+  @Field(() => Date, { nullable: true })
+  start?: Date;
+
+  @Field(() => Date, { nullable: true })
+  end?: Date;
 }

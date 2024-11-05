@@ -39,51 +39,6 @@ export class TimeSlotValidator {
     times.forEach((time) => this.timeValidator(time));
   }
 
-  async updateTimeSlotValidate(
-    updateTimeSlotListInput: UpdateTimeSlotInput[],
-  ): Promise<void> {
-    const actualTimeSlotList = await this.prismaService.timeSlot.findMany({
-      where: { id: { in: updateTimeSlotListInput.map((t) => t.id) } },
-    });
-    if (actualTimeSlotList.length !== updateTimeSlotListInput.length) {
-      throw new BadRequestException('Invalid time slot IDs');
-    }
-    if (
-      new Set(updateTimeSlotListInput.map((t) => t.status)).has(
-        TimeSlotStatus.TAKEN,
-      )
-    ) {
-      throw new BadRequestException(
-        `You can't set the status of a time slot on TAKEN directly without reservation`,
-      );
-    }
-  }
-
-  /**
-   * Validates the start and end times of a time slot to ensure they meet specific criteria.
-   *
-   * @param {CreateTimeSlotTimeInput} { start, end } - The start and end times of the time slot to validate.
-   *
-   * @throws {BadRequestException} - If the start time is not before the end time, or if it is in the past.
-   * @throws {BadRequestException} - If the start and end times are not for the same day.
-   * @throws {BadRequestException} - If the duration of the time slot is not divisible by the minimum time slot duration.
-   *
-   * @returns {void} - The function does not return a value.
-   */
-  private timeValidator({ start, end }: CreateTimeSlotTimeInput): void {
-    if (start.getTime() >= end.getTime() || start.getTime() < Date.now()) {
-      throw new BadRequestException('Invalid time slot range');
-    }
-    if (!areSameDay(start, end)) {
-      throw new BadRequestException('Time slots must be for the same day');
-    }
-    if (getMinutesDifference(start, end) % TIME_SLOT_MINIMUM_MINUTES !== 0) {
-      throw new BadRequestException(
-        `Time slots must be divisible by ${TIME_SLOT_MINIMUM_MINUTES} minutes.`,
-      );
-    }
-  }
-
   /**
    * Validates a list of time slots to ensure they do not overlap within the same day.
    * Throws a `BadRequestException` if any overlap is detected.
@@ -139,6 +94,126 @@ export class TimeSlotValidator {
           );
         }
       }
+    }
+  }
+
+  async updateTimeSlotValidate(
+    updateTimeSlotListInput: UpdateTimeSlotInput[],
+  ): Promise<void> {
+    const actualTimeSlotList = await this.prismaService.timeSlot.findMany({
+      where: { id: { in: updateTimeSlotListInput.map((t) => t.id) } },
+    });
+    if (actualTimeSlotList.length !== updateTimeSlotListInput.length) {
+      throw new BadRequestException('Invalid time slot IDs');
+    }
+    if (
+      new Set(updateTimeSlotListInput.map((t) => t.status)).has(
+        TimeSlotStatus.TAKEN,
+      )
+    ) {
+      throw new BadRequestException(
+        `You can't set the status of a time slot on TAKEN directly without reservation`,
+      );
+    }
+    updateTimeSlotListInput.forEach(({ status, start, end }) => {
+      if (start && !end && !start && end) {
+        throw new BadRequestException(
+          'You must provide both start and end time for a time slot update',
+        );
+      }
+      if (start && end) {
+        if (status === 'CANCELLED') {
+          throw new BadRequestException(
+            'You cannot cancel a time slot and change its date at the same time.',
+          );
+        }
+        if (getMinutesDifference(start, end) !== TIME_SLOT_MINIMUM_MINUTES)
+          throw new BadRequestException(
+            `Time slots must last exactly ${TIME_SLOT_MINIMUM_MINUTES} minutes during the update.`,
+          );
+        this.timeValidator({ start, end });
+      }
+    });
+  }
+
+  // TODO: reduce the cognitive complexity
+  async validateTimeSlotUpdateInputList(
+    timeSloteUpdateInputList: Prisma.TimeSlotUncheckedUpdateInput[],
+  ): Promise<void> {
+    for (let i = 0; i < timeSloteUpdateInputList.length; i++) {
+      if (timeSloteUpdateInputList[i].start) {
+        const startDateOne: Date = new Date(
+          timeSloteUpdateInputList[i].start as string | Date,
+        );
+        for (let j = i + 1; j < timeSloteUpdateInputList.length; j++) {
+          if (timeSloteUpdateInputList[j].start) {
+            const startDateTwo: Date = new Date(
+              timeSloteUpdateInputList[j].start as string | Date,
+            );
+            if (
+              areSameDay(startDateOne, startDateTwo) &&
+              getMinutesDifference(startDateOne, startDateTwo) <
+                TIME_SLOT_MINIMUM_MINUTES
+            ) {
+              throw new BadRequestException(
+                'Time slots must not overlap within the same day.',
+              );
+            }
+          }
+        }
+      }
+
+      const actualTimeSlots: TimeSlot[] =
+        await this.prismaService.timeSlot.findMany({
+          where: {
+            id: { in: timeSloteUpdateInputList.map((t) => t.id as string) },
+          },
+        });
+
+      for (const timeSloteToUpdate of timeSloteUpdateInputList) {
+        if (timeSloteToUpdate.start) {
+          const startDateOne: Date = new Date(
+            timeSloteToUpdate.start as string | Date,
+          );
+          for (const actualTimeSlot of actualTimeSlots) {
+            const startDateTwo: Date = new Date(actualTimeSlot.start);
+            if (
+              areSameDay(startDateOne, startDateTwo) &&
+              getMinutesDifference(startDateOne, startDateTwo) <
+                TIME_SLOT_MINIMUM_MINUTES
+            ) {
+              throw new BadRequestException(
+                'Time slots must not overlap with existing time slots.',
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Validates the start and end times of a time slot to ensure they meet specific criteria.
+   *
+   * @param {CreateTimeSlotTimeInput} { start, end } - The start and end times of the time slot to validate.
+   *
+   * @throws {BadRequestException} - If the start time is not before the end time, or if it is in the past.
+   * @throws {BadRequestException} - If the start and end times are not for the same day.
+   * @throws {BadRequestException} - If the duration of the time slot is not divisible by the minimum time slot duration.
+   *
+   * @returns {void} - The function does not return a value.
+   */
+  private timeValidator({ start, end }: CreateTimeSlotTimeInput): void {
+    if (start.getTime() >= end.getTime() || start.getTime() < Date.now()) {
+      throw new BadRequestException('Invalid time slot range');
+    }
+    if (!areSameDay(start, end)) {
+      throw new BadRequestException('Time slots must be for the same day');
+    }
+    if (getMinutesDifference(start, end) % TIME_SLOT_MINIMUM_MINUTES !== 0) {
+      throw new BadRequestException(
+        `Time slots must be divisible by ${TIME_SLOT_MINIMUM_MINUTES} minutes.`,
+      );
     }
   }
 }
