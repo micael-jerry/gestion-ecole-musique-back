@@ -180,7 +180,8 @@ export class TimeSlotValidator {
             if (
               areSameDay(startDateOne, startDateTwo) &&
               getMinutesDifference(startDateOne, startDateTwo) <
-                TIME_SLOT_MINIMUM_MINUTES
+                TIME_SLOT_MINIMUM_MINUTES &&
+              timeSloteToUpdate.id !== actualTimeSlot.id
             ) {
               throw new BadRequestException(
                 'Time slots must not overlap with existing time slots.',

@@ -65,7 +65,7 @@ export class TimeSlotService {
 
     const timeSlotCreateInputList: Prisma.TimeSlotUncheckedCreateInput[] =
       getTimeSlotCreateInputList(createTimeSlotInput);
-    await this.timeSlotValidator.validateTimeSlotUpdateInputList(
+    await this.timeSlotValidator.validateTimeSlotCreateInputList(
       timeSlotCreateInputList,
     );
 
