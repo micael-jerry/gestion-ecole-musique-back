@@ -276,6 +276,27 @@ export const ActionSearchPayment: Action = {
   description: 'A les privilèges pour faire des recherche sur le paiment.',
 };
 
+export const ActionUpdatePayment: Action = {
+  id: 'action_update_payment_id',
+  tag: 'UPDATE_PAYMENT',
+  name: 'Modifier un paiement',
+  description: 'A les privilèges pour faire des modification sur le paiment.',
+};
+
+export const ActionDeletePayment: Action = {
+  id: 'action_delete_payment_id',
+  tag: 'DELETE_PAYMENT',
+  name: 'Supprimer un paiement',
+  description: 'A les privilèges pour supprimer un paiment.',
+};
+
+export const ActionCountPayment: Action = {
+  id: 'action_count_payment_id',
+  tag: 'PAYMENT_COUNT',
+  name: 'Conter un paiement',
+  description: 'A les privilèges pour avoir le nombre total des paiments.',
+};
+
 export const ActionCreateTimeSlot: Action = {
   id: 'action_create_time_slot_id',
   tag: 'CREATE_TIME_SLOT',
@@ -357,6 +378,9 @@ export const AllAction: Action[] = [
   ActionGetPayment,
   ActionCreatePayment,
   ActionSearchPayment,
+  ActionDeletePayment,
+  ActionUpdatePayment,
+  ActionCountPayment,
   ActionCreateTimeSlot,
   ActionUpdateTimeSlot,
   ActionGetTimeSlot,
