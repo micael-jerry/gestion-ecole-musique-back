@@ -9,10 +9,14 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { ActionGuard } from '../auth/guard/action.guard';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { TimeSlotMapper } from './time-slot.mapper';
 
 @Resolver(() => TimeSlot)
 export class TimeSlotResolver {
-  constructor(private readonly timeSlotService: TimeSlotService) {}
+  constructor(
+    private readonly timeSlotService: TimeSlotService,
+    private readonly timeSlotMapper: TimeSlotMapper,
+  ) {}
 
   @Actions('GET_TIME_SLOT')
   @UseGuards(AuthGuard, ActionGuard)
@@ -34,19 +38,18 @@ export class TimeSlotResolver {
     })
     endDate: Date,
   ): Promise<TimeSlot[]> {
-    return await this.timeSlotService.findAll(
-      teacherId,
-      status,
-      startDate,
-      endDate,
-    );
+    return (
+      await this.timeSlotService.findAll(teacherId, status, startDate, endDate)
+    ).map((timeSlot) => this.timeSlotMapper.toGraphql(timeSlot));
   }
 
   @Actions('GET_TIME_SLOT')
   @UseGuards(AuthGuard, ActionGuard)
   @Query(() => TimeSlot)
   async findByIdTimeSlot(@Args('id') id: string): Promise<TimeSlot> {
-    return await this.timeSlotService.findById(id);
+    return this.timeSlotMapper.toGraphql(
+      await this.timeSlotService.findById(id),
+    );
   }
 
   @Actions('CREATE_TIME_SLOT')
@@ -56,7 +59,9 @@ export class TimeSlotResolver {
     @Context('user') user: JwtPayloadType,
     @Args('createTimeSlotInput') createTimeSlotInput: CreateTimeSlotInput,
   ): Promise<TimeSlot[]> {
-    return await this.timeSlotService.create(createTimeSlotInput, user);
+    return (await this.timeSlotService.create(createTimeSlotInput, user)).map(
+      (timeSlot) => this.timeSlotMapper.toGraphql(timeSlot),
+    );
   }
 
   @Actions('UPDATE_TIME_SLOT')
@@ -67,6 +72,8 @@ export class TimeSlotResolver {
     @Args('updateTimeSlotListInput', { type: () => [UpdateTimeSlotInput] })
     updateTimeSlotListInput: UpdateTimeSlotInput[],
   ): Promise<TimeSlot[]> {
-    return await this.timeSlotService.update(updateTimeSlotListInput, user);
+    return (
+      await this.timeSlotService.update(updateTimeSlotListInput, user)
+    ).map((timeSlot) => this.timeSlotMapper.toGraphql(timeSlot));
   }
 }

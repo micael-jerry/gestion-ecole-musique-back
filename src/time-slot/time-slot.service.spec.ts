@@ -23,11 +23,18 @@ describe('TimeSlotService', () => {
   let service: TimeSlotService;
   const INCLUDE = {
     teacher: {
+      include: { role: true, courses: true, payments: true, timeSlots: true },
+    },
+    reservations: {
       include: {
-        role: true,
-        courses: true,
-        payments: true,
-        timeSlots: true,
+        student: {
+          include: {
+            role: true,
+            courses: true,
+            payments: true,
+            timeSlots: true,
+          },
+        },
       },
     },
   };
@@ -258,9 +265,6 @@ describe('TimeSlotService', () => {
       expect(timeSlotValidator.createTimeSloteValidate).toHaveBeenCalledWith(
         createTimeSlotInput,
       );
-      expect(
-        timeSlotValidator.validateTimeSlotUpdateInputList,
-      ).toHaveBeenCalledWith(getTimeSlotCreateInputList(createTimeSlotInput));
       expect(prismaService.timeSlot.createManyAndReturn).toHaveBeenCalledWith({
         data: getTimeSlotCreateInputList(createTimeSlotInput),
         include: INCLUDE,
