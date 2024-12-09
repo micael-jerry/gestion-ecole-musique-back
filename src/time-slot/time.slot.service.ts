@@ -20,6 +20,18 @@ export class TimeSlotService {
     teacher: {
       include: { role: true, courses: true, payments: true, timeSlots: true },
     },
+    reservations: {
+      include: {
+        student: {
+          include: {
+            role: true,
+            courses: true,
+            payments: true,
+            timeSlots: true,
+          },
+        },
+      },
+    },
   };
 
   constructor(

@@ -11,4 +11,7 @@ export class TimeSlot extends PickType(TimeSlotBase, [
 ]) {
   @Field(() => User)
   teacher: User;
+
+  @Field(() => User, { nullable: true })
+  student?: User;
 }
