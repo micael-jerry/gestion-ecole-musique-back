@@ -9,9 +9,12 @@ export class TimeSlot extends PickType(TimeSlotBase, [
   'start',
   'end',
 ]) {
-  @Field(() => User)
+  @Field(() => User, { description: 'the teacher who owns the slot' })
   teacher: User;
 
-  @Field(() => User, { nullable: true })
+  @Field(() => User, {
+    nullable: true,
+    description: 'the student with an accepted reservation',
+  })
   student?: User;
 }
