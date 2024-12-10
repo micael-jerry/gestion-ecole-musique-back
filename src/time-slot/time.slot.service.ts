@@ -81,22 +81,36 @@ export class TimeSlotService {
       timeSlotCreateInputList,
     );
 
-    return await this.prismaService.$transaction(async (tx) => {
-      const createdList = await tx.timeSlot.createManyAndReturn({
-        data: timeSlotCreateInputList,
-        include: TimeSlotService.timeSlodeInclude,
-      });
-      await this.historyService.createMany(
-        createdList.map(({ id }) => ({
-          entityId: id,
-          entityType: EntityType.TIME_SLOT,
-          operationType: OperationType.CREATE,
-          userId: authenticatedUser.userId,
-        })),
-        tx,
-      );
-      return createdList;
-    });
+    return (
+      await this.prismaService.$transaction(async (tx) => {
+        const createdList = await tx.timeSlot.createManyAndReturn({
+          data: timeSlotCreateInputList,
+          include: {
+            teacher: {
+              include: {
+                role: true,
+                courses: true,
+                payments: true,
+                timeSlots: true,
+              },
+            },
+          },
+        });
+        await this.historyService.createMany(
+          createdList.map(({ id }) => ({
+            entityId: id,
+            entityType: EntityType.TIME_SLOT,
+            operationType: OperationType.CREATE,
+            userId: authenticatedUser.userId,
+          })),
+          tx,
+        );
+        return createdList;
+      })
+    ).map((timeSlot) => ({
+      reservations: [],
+      ...timeSlot,
+    }));
   }
 
   async update(
