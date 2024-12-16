@@ -1,7 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateReservationInput } from '../dto/create-reservation.input';
-import { TimeSlotStatus } from '@prisma/client';
+import { TimeSlot, TimeSlotStatus } from '@prisma/client';
+import {
+  areSameDay,
+  getMinutesDifference,
+} from '../../time-slot/utils/time-slot.util';
+import { TIME_SLOT_MINIMUM_MINUTES } from '../../time-slot/constant/time-slot.constant';
 
 @Injectable()
 export class ReservationValidator {
@@ -33,12 +38,24 @@ export class ReservationValidator {
         throw new BadRequestException(`Student with id ${studentId} not found`);
       });
 
-    const actualTimeSlots = await this.prismaService.timeSlot.findMany({
-      where: { id: { in: timeSlots.map((t) => t.id) } },
-    });
+    const actualTimeSlots: TimeSlot[] =
+      await this.prismaService.timeSlot.findMany({
+        where: { id: { in: timeSlots.map((t) => t.id) } },
+        orderBy: { start: 'asc' },
+      });
     if (actualTimeSlots.length !== timeSlots.length) {
       throw new BadRequestException('Invalid time slot IDs');
     }
+
+    const reservedTimeSlots = await this.prismaService.timeSlot.findMany({
+      where: {
+        status: 'TAKEN',
+        reservations: { every: { studentId: studentId } },
+      },
+    });
+
+    this.validateReservationTimeSlotList(actualTimeSlots, reservedTimeSlots);
+
     if (new Set(actualTimeSlots.map((t) => t.teacherId)).size !== 1) {
       throw new BadRequestException(
         'All time slots must be from the same teacher',
@@ -54,6 +71,30 @@ export class ReservationValidator {
       throw new BadRequestException(
         'All selected time slots must be available',
       );
+    }
+  }
+
+  validateReservationTimeSlotList(
+    timeSlotListToReservation: TimeSlot[],
+    timeSlotListReserved: TimeSlot[],
+  ): void {
+    for (const timeSloteToCreate of timeSlotListToReservation) {
+      for (const actualTimeSlot of timeSlotListReserved) {
+        if (
+          areSameDay(
+            new Date(timeSloteToCreate.start),
+            new Date(actualTimeSlot.start),
+          ) &&
+          getMinutesDifference(
+            new Date(timeSloteToCreate.start),
+            new Date(actualTimeSlot.start),
+          ) < TIME_SLOT_MINIMUM_MINUTES
+        ) {
+          throw new BadRequestException(
+            'This student already has a course with another teacher at one or more of these levels.',
+          );
+        }
+      }
     }
   }
 }
