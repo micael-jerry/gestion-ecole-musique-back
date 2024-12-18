@@ -7,9 +7,13 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-    restart: always
+    restart: no
+    ports:
+      - 5433:5432
     networks:
       - appli_gestion_network
+    volumes:
+      - db-prod-data-volume:/var/lib/postgresql/data
 
   backend-prod:
     container_name: backend-prod
@@ -18,7 +22,7 @@ services:
       dockerfile: Dockerfile.prod
     env_file:
       - .env
-    restart: always
+    restart: no
     ports:
       - 8080:8080
     depends_on:
@@ -28,3 +32,6 @@ services:
 
 networks:
   appli_gestion_network:
+
+volumes:
+  db-prod-data-volume:
