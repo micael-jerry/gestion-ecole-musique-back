@@ -267,7 +267,16 @@ describe('TimeSlotService', () => {
       );
       expect(prismaService.timeSlot.createManyAndReturn).toHaveBeenCalledWith({
         data: getTimeSlotCreateInputList(createTimeSlotInput),
-        include: INCLUDE,
+        include: {
+          teacher: {
+            include: {
+              role: true,
+              courses: true,
+              payments: true,
+              timeSlots: true,
+            },
+          },
+        },
       });
       expect(historyService.createMany).toHaveBeenCalled();
       expect(result).toEqual(expectedResult);
