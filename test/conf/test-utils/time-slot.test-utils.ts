@@ -21,6 +21,7 @@ export const TeacherOneTimeSlotOne: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
+  reservations: [],
   start: new Date(getTomorrowDate('08:00:00')),
   end: new Date(getTomorrowDate('08:30:00')),
 };
@@ -30,6 +31,7 @@ export const TeacherOneTimeSlotTwo: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
+  reservations: [],
   start: new Date(getTomorrowDate('08:30:00')),
   end: new Date(getTomorrowDate('09:00:00')),
 };
@@ -39,6 +41,7 @@ export const TeacherOneTimeSlotThree: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
+  reservations: [],
   start: new Date(getTomorrowDate('09:00:00')),
   end: new Date(getTomorrowDate('09:30:00')),
 };
@@ -48,6 +51,7 @@ export const TeacherOneTimeSlotFour: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
+  reservations: [],
   start: new Date(getTomorrowDate('09:30:00')),
   end: new Date(getTomorrowDate('10:00:00')),
 };
@@ -57,6 +61,7 @@ export const TeacherOneTimeSlotFive: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
+  reservations: [],
   start: new Date(getTomorrowDate('10:00:00')),
   end: new Date(getTomorrowDate('10:30:00')),
 };
@@ -66,6 +71,7 @@ export const TeacherOneTimeSlotSix: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
+  reservations: [],
   start: new Date(getTomorrowDate('10:30:00')),
   end: new Date(getTomorrowDate('11:00:00')),
 };
@@ -75,6 +81,7 @@ export const TeacherOneTimeSlotSeven: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
+  reservations: [],
   start: new Date(getTomorrowDate('11:00:00')),
   end: new Date(getTomorrowDate('11:30:00')),
 };
@@ -84,6 +91,7 @@ export const TeacherOneTimeSlotEight: TimeSlotWithIncluded = {
   status: TimeSlotStatus.AVAILABLE,
   teacherId: UserTeacherOne.id,
   teacher: UserTeacherOne,
+  reservations: [],
   start: new Date(getTomorrowDate('11:30:00')),
   end: new Date(getTomorrowDate('12:00:00')),
 };
