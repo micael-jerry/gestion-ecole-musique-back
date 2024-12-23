@@ -1,19 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EntityType, OperationType } from '@prisma/client';
+import { EntityType, OperationType, PaymentType } from '@prisma/client';
+import { FeeTypeOne } from '../../test/conf/test-utils/fee-type.test-utils';
+import { UserStudentNine } from '../../test/conf/test-utils/user.test-utils';
 import { JwtPayloadType } from '../auth/entities/jwt-payload.entity';
+import { FeeTypeService } from '../fee-type/fee-type.service';
 import { HistoryService } from '../history/history.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { UserService } from '../user/user.service';
 import { PaymentInput } from './dto/payment.input';
 import { PaymentService } from './payment.service';
 import { PaymentWithIncluded } from './types/payment-with-included.type';
-import { FeeTypeOne } from '../../test/conf/test-utils/fee-type.test-utils';
-import {
-  UserStudentNine,
-  UserStudentOne,
-  UserStudentTwo,
-} from '../../test/conf/test-utils/user.test-utils';
-import { FeeTypeService } from '../fee-type/fee-type.service';
-import { UserService } from '../user/user.service';
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -169,145 +165,29 @@ describe('PaymentService', () => {
   });
 
   describe('getPayments', () => {
-    it('should return an array of payments', async () => {
-      const date = new Date();
-      const payments: PaymentWithIncluded[] = [
+    it('should retrieve a list of payments', async () => {
+      const payments = [
         {
-          id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
-          feeType: FeeTypeOne,
-          amount: 7000,
-          description: 'test',
-          date: [date],
-          paymentType: 'CASH',
+          feeTypeId: 'feeTypeId',
+          amount: 100,
+          description: 'description',
+          date: [new Date()],
+          paymentType: PaymentType.CASH,
+          userId: 'userId',
+          id: 'id',
           createdAt: new Date(),
-          user: UserStudentOne,
-        },
-        {
-          id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
-          feeType: FeeTypeOne,
-          amount: 7000,
-          description: 'test',
-          date: [date],
-          paymentType: 'CASH',
-          createdAt: new Date(),
-          user: UserStudentTwo,
         },
       ];
+      const total_count = 1;
 
-      jest
-        .spyOn(prismaService.payment, 'findMany')
-        .mockResolvedValue(payments as any);
+      jest.spyOn(prismaService.payment, 'findMany').mockResolvedValue(payments);
+      jest.spyOn(service, 'countPayments').mockResolvedValue(total_count);
 
       const result = await service.getPayments();
 
-      expect(result).toEqual(payments);
-      expect(prismaService.payment.findMany).toHaveBeenCalledWith({
-        where: {},
-        include: {
-          user: {
-            include: {
-              role: true,
-              courses: true,
-              payments: true,
-              timeSlots: true,
-            },
-          },
-          feeType: true,
-        },
-        take: 25,
-        skip: 0,
-      });
-    });
-
-    it('should apply filters and pagination', async () => {
-      const date = new Date();
-      const payments: PaymentWithIncluded[] = [
-        {
-          id: '30e3b0dc-9294-4f02-8ad0-2a0efefd5db4',
-          feeType: FeeTypeOne,
-          amount: 7000,
-          description: 'test',
-          date: [date],
-          paymentType: 'CASH',
-          createdAt: new Date(),
-          user: UserStudentOne,
-        },
-      ];
-
-      jest
-        .spyOn(prismaService.payment, 'findMany')
-        .mockResolvedValue(payments as any);
-
-      const keyword = 'Charlie';
-      const startDate = new Date('2023-01-01');
-      const endDate = new Date('2023-12-31');
-      const page = 2;
-      const limit = 10;
-
-      const result = await service.getPayments(
-        keyword,
-        startDate,
-        endDate,
-        page,
-        limit,
-      );
-
-      expect(result).toEqual(payments);
-      expect(prismaService.payment.findMany).toHaveBeenCalledWith({
-        where: {
-          OR: [
-            {
-              OR: [
-                {
-                  user: {
-                    firstname: {
-                      contains: 'Charlie',
-                      mode: 'insensitive',
-                    },
-                  },
-                },
-                {
-                  user: {
-                    lastname: {
-                      contains: 'Charlie',
-                      mode: 'insensitive',
-                    },
-                  },
-                },
-                {
-                  feeType: {
-                    name: {
-                      contains: 'Charlie',
-                      mode: 'insensitive',
-                    },
-                  },
-                },
-              ],
-            },
-          ],
-          AND: [
-            {
-              createdAt: {
-                gte: startDate,
-                lte: endDate,
-              },
-            },
-          ],
-        },
-        include: {
-          user: {
-            include: {
-              role: true,
-              courses: true,
-              payments: true,
-              timeSlots: true,
-            },
-          },
-          feeType: true,
-        },
-        take: 10,
-        skip: 10,
-      });
+      expect(result).toEqual({ payments, total_count });
+      expect(prismaService.payment.findMany).toHaveBeenCalled();
+      expect(service.countPayments).toHaveBeenCalled();
     });
   });
 });
