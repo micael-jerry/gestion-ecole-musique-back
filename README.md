@@ -7,7 +7,6 @@ Appli-Gestion-Backend is a backend API developed using NestJS, GraphQL, PostgreS
 - Node.js (v20 or later)
 - Yarn
 - PostgreSQL
-- Prisma
 
 ## Installation
 
@@ -21,28 +20,39 @@ Appli-Gestion-Backend is a backend API developed using NestJS, GraphQL, PostgreS
 2. **install dependencies :**
 
    ```bash
-   $ yarn install
+   yarn install
    ```
 
-## Configure the database
+## Configuration
 
-Ensure that PostgreSQL is installed and running. Update the .env file with your database connection information.
+### Environment
+
+Create an **.env** file and use the **.env.template** file as inspiration.
+
+### Database configuration
+
+#### Generate prisma client
 
 ```bash
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/DATABASE_NAME?schema=public"
+yarn prisma generate
 ```
 
-## Initialize Prisma
+#### Generate database
 
 ```bash
-npx prisma migrate dev --name init
-npx prisma generate
+yarn prisma db push
 ```
 
-## Initialize DataBase
+#### Reset database
 
 ```bash
-yarn seed
+yarn prisma migrate reset -f
+```
+
+#### Seed database with test data
+
+```bash
+yarn seed:test
 ```
 
 ## Running the app
@@ -70,6 +80,39 @@ $ yarn run test:e2e
 # test coverage
 $ yarn run test:cov
 ```
+
+## Start application with docker
+
+### Prerequisites
+
+You must have docker and docker compose installed on your machine
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+### Running application
+
+- **Development mode:**
+
+```bash
+docker compose -f docker-compose.dev.yml down
+```
+
+- **Production mode:**
+
+```bash
+docker compose -f docker-compose.prod.yml down
+```
+
+#### ***NB:***
+
+> if you want to execute a command in the container:
+
+```bash
+docker compose exec <container-name-or-id> <commande>
+```
+
+example: **docker compose exec db-dev "yarn prisma migrate reset -f"**
 
 ## Using GraphQL
 
